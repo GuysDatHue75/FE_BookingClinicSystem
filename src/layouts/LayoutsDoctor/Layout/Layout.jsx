@@ -1,88 +1,60 @@
+import React, { useContext } from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
-import { Outlet } from "react-router-dom";
-import imageDocotor from "../../../assets/svg/OIP (2).webp";
-import { useContext, useState } from "react";
+import Footer from "../Footer/Footer"; 
+import menuItems from "../Sidebar/sidebarMenu";
 import { State } from "../../../state/context";
+
 const Layout = () => {
   const { image } = useContext(State);
-  const menuItems = [
-    { icon: "👥", label: "Quản lý bệnh nhân", path: "/doctor/Patients" },
-    { icon: "📅", label: "Lập lịch khám", path: "/doctor/schedule" },
-    {
-      icon: "✔️",
-      label: "Duyệt yêu cầu khám",
-      path: "/doctor/View",
-      index: true,
-      noti: 3,
-    },
-    {
-      icon: "💬",
-      label: "Trả lời hỏi đáp",
-      path: "/doctor/QnA",
-      index: true,
-      noti: 4,
-    },
-    {
-      icon: "💻",
-      label: "Khám online",
-      path: "/doctor/OnlineConsult",
-      index: true,
-      noti: 2,
-    },
-    { icon: "🧾", label: "Lập hóa đơn", path: "/doctor/Invoice" },
-    {
-      icon: "📊",
-      label: "Thống kê báo cáo",
-      path: "/doctor/DoctorStatistics",
-      subMenu: [
-        { label: "Doanh thu", path: "/doctor/DoctorStatistics/Revenue" },
-        { label: "Lượt khám", path: "/doctor/DoctorStatistics/Visits" },
-      ],
-    },
-    {
-      icon: "👤",
-      label: "Profile",
-      path: "/doctor/Profile",
-      subMenu: [{ label: "Sửa Profile", path: "/doctor/Profile/EditProfile" }],
-    },
-    { icon: "🔑", label: "Đổi mật khẩu", path: "/doctor/doi-mat-khau" },
-    { icon: "↩️", label: "Đăng xuất", path: "/login" },
-  ];
+
   return (
     <div
       style={{
         display: "flex",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        minHeight: "100vh",
+        backgroundColor: "#ffffff", 
       }}
     >
+      {/* 1. SIDEBAR CỐ ĐỊNH BÊN TRÁI */}
       <Sidebar
-        role={"Nguyễn Hữu Cảnh"}
+        role={"Bác sĩ"}
+        name={"Nguyễn Hữu Cảnh"}
         menuItems={menuItems}
-        name={"Bác sĩ"}
         urlimage={image}
       />
+
+      {/* 2. KHU VỰC BÊN PHẢI (CHỨA HEADER, CONTENT, FOOTER) */}
       <div
         style={{
+          marginLeft: "230px", 
           flexGrow: 1,
+          width: "calc(100% - 230px)",
           display: "flex",
           flexDirection: "column",
           position: "relative",
-          left: "19%",
-          maxWidth: "80%",
         }}
       >
+        
         <Header urlImage={image} />
-        <div
+
+        {/* NỘI DUNG CHÍNH (PHẦN CUỘN) */}
+        <main
           style={{
             flexGrow: 1,
-            padding: "10px",
-            overflowY: "auto",
-            marginTop: "50px",
+            padding: "24px",
+            marginTop: "80px",   
+            marginBottom: "40px", 
+            minHeight: "calc(100vh - 120px)", 
+            boxSizing: "border-box",
           }}
         >
           <Outlet />
-        </div>
+        </main>
+
+        {/* FOOTER CỐ ĐỊNH (Cao 40px) */}
+        <Footer />
       </div>
     </div>
   );

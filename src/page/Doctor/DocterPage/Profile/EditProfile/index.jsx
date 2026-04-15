@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./../Profile.css";
-import avatarDoctorProfile from "./../../../../../assets/svg/OIP (2).webp";
+import avatarDoctorProfile from "./../../../../../assets/image/user-avt.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { State } from "../../../../../state/context";

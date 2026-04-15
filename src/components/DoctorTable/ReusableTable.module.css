@@ -1,0 +1,60 @@
+.tableWrapper {
+    background: #ffffff;
+    padding: 20px;
+    width: 100%;
+}
+
+.filterSection {
+    margin-bottom: 20px;
+}
+
+.tableContainer {
+    /*Responsive tạo thanh cuộn scroll */
+    overflow-x: auto; 
+}
+
+.mainTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mainTable th {
+    background-color: #F0F0F0;
+    color: #818789;
+    padding: 15px;
+    font-family: inter,'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+
+}
+
+.mainTable td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+    color: #202124;
+    font-size: 14px;
+    
+}
+
+.mainTable tr:hover {
+    background-color: #f8f9fa;
+}
+
+.loadingText,
+.noData {
+    text-align: center;
+    padding: 30px !important;
+    color: #888;
+    font-style: italic;
+}
+
+.paginationSection {
+    margin-top: 20px;
+}
