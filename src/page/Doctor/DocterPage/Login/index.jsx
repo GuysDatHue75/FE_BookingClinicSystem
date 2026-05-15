@@ -1,64 +1,78 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 import { State } from "../../../../state/context";
 
 import iconLogin from "../../../../assets/image/login.png";
 import iconLogo from "../../../../assets/image/logo.png";
 import bcg from "../../../../assets/image/backgroundBody.webp";
-import accounts from "../../../../data/account.json";
-
+import apiClient from '../../../../api/api'
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const { setRole } = useContext(State);
-  const role = JSON.parse(localStorage.getItem("role"));
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = () => {
-    const foundAccount = accounts.find(
-      (acc) => acc.phone === phone && acc.password === password
-    );
+  const [error, setError] = useState("")
+  const handleLogin = async () => {
 
-    if (foundAccount) {
-      localStorage.setItem("role", JSON.stringify(foundAccount.role));
+    const body = {
+      phone: phone,
+      pass: password,
+      otp: ""
+    }
+    if (phone == "" || password == "") {
+      setError("vui lòng nhập thông tin");
+      return;
+    }
+    try {
 
-      switch (foundAccount.role) {
-        case "doctor":
-          setRole("doctor");
-          setTimeout(() => navigate("/doctor"), 200);
-          break;
-        case "admin":
-          setRole("admin");
-          setTimeout(() => navigate("/admin"), 200);
-          break;
-        case "user":
-          setRole("user");
-          setTimeout(() => navigate("/trang-chu"), 200);
-          break;
-        case "clinic":
-          setRole("clinic");
-          setTimeout(() => navigate("/clinic"), 200);
-          break;
-        default:
-          break;
+      const response = await apiClient.post('/api/v1/login', body);
+      if (response.data.taiKhoan?.vaiTro) {
+        localStorage.setItem("role", response.data.taiKhoan.vaiTro);
+        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("idPatient", response.data.maBenhNhan);
+        localStorage.setItem("idAccount", response.data.taiKhoan.maTaiKhoan);
+        localStorage.setItem("city", response.data.queQuan);
+        setRole(response.data.taiKhoan.vaiTro);
       }
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
-    } else {
-      toast.error("Sai số điện thoại hoặc mật khẩu!", {
-        position: "top-center",
-        autoClose: 2000,
-        style: { marginBottom: "400px" },
-      });
+      const roleApi = response.data.taiKhoan.vaiTro;
+      if (roleApi === "BN") {
+        if (response.data.taiKhoan.lanDauDangNhap === 1) {
+          navigate("/chon-tinhthanh");
+        } else {
+          navigate("/trang-chu");
+        }
+      } else if (roleApi === "BS") {
+        navigate("/doctor")
+      } else if (roleApi === "ADPK") {
+        navigate("/clinic")
+      } else {
+        navigate("/admin")
+      }
+    } catch (err) {
+      const message = err.response?.data;
+      if (err.response?.status === 401) {
+        setError(message || "Sai mật khẩu");
+      } else if (err.response?.status === 404) {
+        setError(message || "Tài khoản không tồn tại");
+      } else { setError("Đã có lỗi xảy ra"); }
+    }
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
+  const loginWithGoogle = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+  const loginWithFacebook = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/facebook";
+  };
   return (
     <div className="login-container">
       <img className="bcg-login" src={bcg} alt="bcg" />
@@ -77,16 +91,16 @@ const Login = () => {
             placeholder="Số điện thoại"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            style={{ width: role === "user" ? "93%" : "85%" }}
+            onKeyDown={handleKeyDown}
           />
           <input
             type="password"
             placeholder="Mật khẩu"
             value={password}
-            style={{ width: role === "user" ? "93%" : "85%" }}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
-
+          {error && <div className="error-message">{error}</div>}
           <button onClick={handleLogin}>Đăng nhập</button>
 
           <div className="links">
@@ -99,10 +113,12 @@ const Login = () => {
               <img
                 src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
                 alt="Facebook"
+                onClick={loginWithFacebook}
               />
               <img
                 src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
                 alt="Google"
+                onClick={loginWithGoogle}
               />
             </div>
           </div>
@@ -111,5 +127,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;
