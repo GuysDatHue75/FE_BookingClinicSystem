@@ -2,10 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import styles from "./PatientManagement.module.css";
 import axios from "axios";
 import ReusableTable from "../../../../components/DoctorTable/ReusableTable";
-
+import { useNavigate } from "react-router-dom"; // Bỏ import Navigate thừa
 
 const PatientManagement = () => {
-  /*const [tenBien, hamDoiGiaTri] = useState(giaTriBanDau);*/
+  // 1. Đưa useNavigate lên đúng vị trí trên cùng của Component
+  const navigate = useNavigate();
+
   const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -13,11 +15,25 @@ const PatientManagement = () => {
   const [loading, setLoading] = useState(false);
   const pageSize = 5;
 
+  const handleViewProfile = (maBenhNhan) => {
+    navigate(`/doctor/Patients/Detail/${maBenhNhan}`);
+  };
+
+  // 2. Tạm thời fix cứng ID bác sĩ đang đăng nhập (Sau này sếp lấy từ LocalStorage/Redux)
+  const maBacSiDangNhap = "BS01";
+  const maPhongKham = "PK01";
+
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:8080/api/v1/patient/get-all", {
-        params: { page: currentPage, size: pageSize, keyword: searchTerm },
+        params: {
+          page: currentPage,
+          size: pageSize,
+          keyword: searchTerm,
+          maBacSi: maBacSiDangNhap,
+          maPhongKham: maPhongKham
+        },
       });
       setPatients(response.data.content || []);
       setTotalPages(response.data.totalPages || 0);
@@ -26,7 +42,7 @@ const PatientManagement = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm]); //Dặn React: Chỉ tạo lại hàm này nếu page hoặc search thay đổi
+  }, [currentPage, searchTerm]);
 
   useEffect(() => {
     fetchPatients();
@@ -37,28 +53,31 @@ const PatientManagement = () => {
     setCurrentPage(0);
   };
 
-  // Cấu hình các cột hiển thị
+
   const columns = [
     { header: "Mã BN", render: (p) => p.maBenhNhan },
     {
       header: "Họ tên",
       render: (p) => (
         <div className={styles.patientNameCell}>
-          <img src={p.taiKhoan?.anh || 'default-avatar.png'} alt="avatar" />
-          <span>{p.taiKhoan?.hoVaTen || p.hoVaTen}</span>
+          <img src={p.anhDaiDien || 'default-avatar.png'} alt="avatar" />
+          <span>{p.hoVaTen}</span>
         </div>
       )
     },
-    { header: "Ngày Sinh", render: (p) => p.taiKhoan?.ngaySinh },
-    { header: "Giới tính", render: (p) => p.taiKhoan?.gioiTinh ? "Nam" : "Nữ" },
-    { header: "Số điện thoại", render: (p) => p.taiKhoan?.soDienThoai },
-    { header: "Địa chỉ", render: (p) => p.taiKhoan?.diaChi },
+    { header: "Ngày Sinh", render: (p) => p.ngaySinh },
+    // Tùy theo Backend sếp trả về boolean hay String, cứ check an toàn
+    { header: "Giới tính", render: (p) => (p.gioiTinh === true || p.gioiTinh === "Nam") ? "Nam" : "Nữ" },
+    { header: "Số điện thoại", render: (p) => p.soDienThoai },
+    { header: "Địa chỉ", render: (p) => p.diaChi },
     {
       header: "Thao tác",
       render: (p) => (
         <div className={styles.actionGroup}>
-          <button className={styles.btnAction} title="Hồ sơ"><i className="fa-solid fa-file-invoice"></i></button>
-          <button className={styles.btnAction} title="Nhắn tin"><i className="fa-solid fa-comment-dots"></i></button>
+          <button className={styles.btnAction} title="Hồ sơ" onClick={() => handleViewProfile(p.maBenhNhan)}
+          ><i className="fa-solid fa-file-invoice"></i></button>
+          {/* Nút nhắn tin sếp có thể xử lý onClick ở đây */}
+          <button className={styles.btnAction} title="Nhắn tin"><i className="fa-solid fa-comment"></i></button>
           <button className={styles.btnAction} title="Sửa"><i className="fa-solid fa-pen-to-square"></i></button>
           <button className={styles.btnAction} title="Xóa"><i className="fa-solid fa-trash"></i></button>
         </div>
@@ -73,10 +92,6 @@ const PatientManagement = () => {
         <div className={styles.inputWrapper}>
           <input type="date" className={styles.inputDate} />
         </div>
-        <div className={styles.inputWrapper}>
-          <i className="fa-solid fa-filter"></i>
-          <select className={styles.selectAge}><option>Ngày sinh</option></select>
-        </div>
       </div>
 
       <div className={styles.filterRight}>
@@ -90,7 +105,7 @@ const PatientManagement = () => {
             className={styles.searchBar}
           />
         </div>
-        <button className={styles.btnAdd}>+ Thêm bệnh nhân</button>
+
       </div>
     </div>
   );

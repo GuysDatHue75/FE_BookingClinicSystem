@@ -137,6 +137,10 @@ function App() {
                     element={<PatientManagementv2 />}
                   />
                   <Route
+                    path="/doctor/Patients/Detail/:maBenhNhan"
+                    element={<PatientDetail />}
+                  />
+                  <Route
                     path="/doctor/doi-mat-khau"
                     element={<Changepassword />}
                   />

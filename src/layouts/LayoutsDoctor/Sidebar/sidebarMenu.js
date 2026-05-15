@@ -4,11 +4,8 @@ import quanLyBenhNhanIcon from "../../../assets/svg/QuanLy.svg";
 import duyetLichKhamIcon from "../../../assets/svg/Duyet.svg";
 import quanLyLichKhamIcon from "../../../assets/svg/LapLich.svg";
 import donThuocIcon from "../../../assets/svg/DonThuoc.svg";
-import dienDanIcon from "../../../assets/svg/DienDan.svg";
-import tinTucIcon from "../../../assets/svg/TinTuc.svg";
 import tuVanIcon from "../../../assets/svg/TuVan.svg";
 import khamOnlineIcon from "../../../assets/svg/KhamOnline.svg";
-import thongKeIcon from "../../../assets/svg/ThongKe.svg";
 import bacSiIcon from "../../../assets/svg/BacSi.svg";
 
 const menuItems = [
@@ -29,15 +26,7 @@ const menuItems = [
     path: "/doctor/Profile",
     subMenu: [{ label: "Sửa Profile", path: "/doctor/Profile/EditProfile" }],
   },
-  {
-    icon: thongKeIcon,
-    label: "Thống kê báo cáo",
-    path: "/doctor/DoctorStatistics",
-    subMenu: [
-      { label: "Doanh thu", path: "/doctor/DoctorStatistics/Revenue" },
-      { label: "Lượt khám", path: "/doctor/DoctorStatistics/Visits" },
-    ],
-  },
+
 
 ];
 
