@@ -67,7 +67,7 @@ import Clinicmanagers from "./page/Clinicmanager/Clinicmanagers";
 import Createpackage from "./page/package/createpackage/Createpackage";
 import UserProfile from "./page/profile/Userprofile";
 import Statistical from "./page/statistical/Statistical";
-import SidebarAdmin from "./layouts/LayoutSystem/Sidebar/SidebarSystem";
+import SidebarAdmin from "./layouts/Sidebar/Sidebar.jsx";
 import Registration from "./page/Doctor/DocterPage/Regester/Registration.js";
 
 function App() {

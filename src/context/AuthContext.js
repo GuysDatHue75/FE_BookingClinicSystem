@@ -1,35 +1,54 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import axiosClient from "../utils/axios";
+import apiClient from "../api/api";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth phải được sử dụng trong AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
+};
+
+// Map vaiTro từ Backend sang roleName cho frontend
+const mapRoleToRoleName = (vaiTro) => {
+  const roleMap = {
+    "BenhNhan": "user",
+    "BacSi": "doctor",
+    "PhongKham": "clinic",
+    "Admin": "admin"
+  };
+  return roleMap[vaiTro] || "admin"; // Default là admin nếu không khớp
 };
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Load user info từ localStorage khi app khởi động
   useEffect(() => {
     const loadUser = async () => {
-      const storedToken = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
       
-      if (storedToken && storedUser) {
+      if (storedUser) {
         try {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+          const userData = JSON.parse(storedUser);
+          // Transform user data để khớp với format Layout.jsx cần
+          const transformedUser = {
+            ...userData,
+            roleName: mapRoleToRoleName(userData.taiKhoan?.vaiTro),
+            fullName: userData.taiKhoan?.hoTen || userData.ten || "Người dùng",
+            avatar: userData.avatar || "",
+            maTaiKhoan: userData.taiKhoan?.maTaiKhoan,
+            maBenhNhan: userData.maBenhNhan,
+            queQuan: userData.queQuan
+          };
+          setUser(transformedUser);
         } catch (error) {
-          console.error("Lỗi phân tích user từ localStorage:", error);
-          localStorage.removeItem("token");
+          console.error("Lỗi parse user từ localStorage:", error);
           localStorage.removeItem("user");
+          localStorage.removeItem("role");
         }
       }
       setLoading(false);
@@ -41,46 +60,59 @@ export const AuthProvider = ({ children }) => {
   // Hàm login - Gọi API Backend
   const login = async (phone, password) => {
     try {
-      const response = await axiosClient.post("/auth/login", {
-        phone,
-        password,
-      });
+      const body = {
+        phone: phone,
+        pass: password,
+        otp: ""
+      };
 
-      // Backend trả về: { token, user: { id, fullName, roleName, avatar, ... } }
-      const { token: newToken, user: userData } = response;
+      const response = await apiClient.post('/api/v1/login', body);
+      const userData = response.data;
 
-      // Lưu vào localStorage
-      localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(userData));
-      
-      // Lưu role cho compatibility với code cũ
-      localStorage.setItem("role", JSON.stringify(userData.roleName));
+      if (userData.taiKhoan?.vaiTro) {
+        // Lưu vào localStorage
+        localStorage.setItem("role", userData.taiKhoan.vaiTro);
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("idPatient", userData.maBenhNhan);
+        localStorage.setItem("idAccount", userData.taiKhoan.maTaiKhoan);
+        localStorage.setItem("city", userData.queQuan);
 
-      // Update state
-      setToken(newToken);
-      setUser(userData);
+        // Transform user data để khớp với format Layout.jsx cần
+        const transformedUser = {
+          ...userData,
+          roleName: mapRoleToRoleName(userData.taiKhoan.vaiTro),
+          fullName: userData.taiKhoan?.hoTen || userData.ten || "Người dùng",
+          avatar: userData.avatar || "",
+          maTaiKhoan: userData.taiKhoan.maTaiKhoan,
+          maBenhNhan: userData.maBenhNhan,
+          queQuan: userData.queQuan
+        };
 
-      return { success: true, user: userData };
+        setUser(transformedUser);
+
+        return { success: true, user: transformedUser, role: transformedUser.roleName };
+      }
+
+      return { success: false, message: "Không tìm thấy vai trò trong response" };
     } catch (error) {
       console.error("Lỗi login:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Đăng nhập thất bại" 
-      };
+      const message = error.response?.data || "Đăng nhập thất bại";
+      return { success: false, message };
     }
   };
 
   // Hàm logout
   const logout = () => {
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("role");
-    setToken(null);
+    localStorage.removeItem("idPatient");
+    localStorage.removeItem("idAccount");
+    localStorage.removeItem("city");
     setUser(null);
     window.location.href = "/login";
   };
 
-  // Hàm cập nhật user info (sau khi edit profile, đổi avatar, v.v.)
+  // Hàm cập nhật user info
   const updateUser = (updatedUser) => {
     const newUser = { ...user, ...updatedUser };
     setUser(newUser);
@@ -89,12 +121,11 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    token,
     loading,
     login,
     logout,
     updateUser,
-    isAuthenticated: !!token,
+    isAuthenticated: !!user,
   };
 
   return (

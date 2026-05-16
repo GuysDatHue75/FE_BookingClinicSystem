@@ -3,7 +3,7 @@ import axios from 'axios';
 // Tạo một thực thể axios với cấu hình base
 const axiosClient = axios.create({
     // THAY CỔNG 8080 BẰNG CỔNG XỊN CỦA BRO NẾU BRO CHẠY CỔNG KHÁC NHÉ
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
     timeout: 10000, // Đợi 10 giây, nếu Backend không trả lời thì tự ngắt
 });
 

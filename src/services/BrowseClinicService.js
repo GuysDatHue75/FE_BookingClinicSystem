@@ -1,6 +1,6 @@
 import axiosClient from "../utils/axios";
 
-const Base_url = '/adminsystem/browse-clinic';
+const Base_url = 'api/v1/adminsystem/browse-clinic';
 
 const browseClinicService = {
     getPendingClinics: (page = 0, size = 10) => {

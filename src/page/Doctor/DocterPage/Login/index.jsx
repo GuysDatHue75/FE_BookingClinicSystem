@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
 
 import { State } from "../../../../state/context";
 
@@ -12,6 +13,7 @@ import "./login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); //
   const { setRole } = useContext(State);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -39,15 +41,15 @@ const Login = () => {
         setRole(response.data.taiKhoan.vaiTro);
       }
       const roleApi = response.data.taiKhoan.vaiTro;
-      if (roleApi === "BN") {
+      if (roleApi === "BenhNhan") {
         if (response.data.taiKhoan.lanDauDangNhap === 1) {
           navigate("/chon-tinhthanh");
         } else {
           navigate("/trang-chu");
         }
-      } else if (roleApi === "BS") {
+      } else if (roleApi === "BacSi") {
         navigate("/doctor")
-      } else if (roleApi === "ADPK") {
+      } else if (roleApi === "PhongKham") {
         navigate("/clinic")
       } else {
         navigate("/admin")
