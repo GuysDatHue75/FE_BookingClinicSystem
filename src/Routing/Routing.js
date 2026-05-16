@@ -13,7 +13,7 @@ import { Fixpackage } from "../page/package/Fixpackage/Fixpackage";
 import { Changepassword } from "../page/Changepassword/Changepassword";
 import { UserProfile } from "../page/profile/Userprofile";
 import Statistical from "../page/statistical/Statistical";
-import SidebarAdmin from "../layouts/Sidebar/Sidebar";
+import SidebarAdmin from "../layouts/LayoutSystem/Sidebar/SidebarSystem";
 
 function Routing() {
   return (
@@ -62,7 +62,7 @@ function Routing() {
         element={<div>Revenue Statistics</div>}
       />
       <Route path="/doi-mat-khau" element={<Changepassword />} />
-      <Route path="/login" element={<div></div>} />;
+      <Route path="/login" element={<div></div>} />
     </Routes>
   );
 }

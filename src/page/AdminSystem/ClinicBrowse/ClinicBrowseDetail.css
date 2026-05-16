@@ -1,0 +1,142 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal,
+.modalClinic {
+  background: white;
+  border-radius: 12px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin-left: 200px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.modalClinic {
+  max-width: 1000px;
+}
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #7f8c8d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  color: #e74c3c;
+}
+
+.modalContent {
+  padding: 25px;
+}
+
+.clinicInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.infoSection {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.sectionTitle {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.infoItem {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.infoLabel {
+  font-weight: 600;
+  color: #34495e;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  color: #2c3e50;
+  flex: 1;
+}
+
+.attachmentLink {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.attachmentLink:hover {
+  text-decoration: underline;
+}
+
+.modalFooter {
+  padding: 20px 25px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.closeModalButton {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.closeModalButton:hover {
+  background: #5a6268;
+}

@@ -1,0 +1,33 @@
+import axiosClient from "../utils/axios";
+
+const Base_url = '/adminsystem/browse-clinic';
+
+const browseClinicService = {
+    getPendingClinics: (page = 0, size = 10) => {
+        return axiosClient.get(`${Base_url}/pending`, {
+            params: {
+                page: page,
+                size: size
+            }
+        });
+    },
+
+    getAllClinics: (page = 0, size = 10) => {
+        return axiosClient.get(`${Base_url}/all`, {
+            params: {page, size}
+        })
+    },
+
+    searchClinics: (searchRequest) => {
+        return axiosClient.post(`${Base_url}/search`, searchRequest);
+    },
+    
+    handleBrowseClinic: (maPhongKham, actionRequest) => {
+        return axiosClient.post(`${Base_url}/${maPhongKham}/browse`, actionRequest);
+    },
+
+    detailBrowseClinic: (maPhongKham) => {
+        return axiosClient.get(`${Base_url}/detail/${maPhongKham}`);
+    }
+
+} 

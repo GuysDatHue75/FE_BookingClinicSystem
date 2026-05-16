@@ -27,7 +27,7 @@ const SideBar = ({ mobileRef }) => {
           alt="logo"
           className="image-islogin"
         />
-        {optionMenuMobile.slice(0, 11).map((item) => (
+        {optionMenuMobile.slice(0, 11)?.map((item) => (
           <Link key={item.id} to={item.path}>
             {item.name}
           </Link>
