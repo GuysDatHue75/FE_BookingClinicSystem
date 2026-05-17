@@ -6,6 +6,7 @@
   column-gap: 200px;
   height: 100vh;
 }
+
 .bcg-login {
   position: fixed;
   z-index: 1;
@@ -15,15 +16,17 @@
   right: 0;
   bottom: 0;
 }
+
 .wrapper-container {
   height: 100vh;
-  position: absolute;
+  /* position: absolute; */
   z-index: 999999999999;
   display: flex;
   column-gap: 300px !important;
   align-items: center;
   justify-content: center;
 }
+
 .login-image {
   width: 380px;
   z-index: 999999999999999999;
@@ -41,6 +44,7 @@
   align-items: center;
   justify-content: center;
   z-index: 9999999999;
+  position: relative;
 }
 
 .login-box img.logo {
@@ -55,13 +59,19 @@
 }
 
 .login-box input {
-  /* width: 85%; */
+  display: block;       
+  width: 92.5%;           
+  max-width: 100%;        
   padding: 12px;
-  margin: 10px 0;
+  
+  margin: 10px 0 !important; 
+  
   border: 1px solid #ddd;
   border-radius: 8px;
   outline: none;
   font-size: 14px;
+  
+  box-sizing: border-box; 
 }
 
 .login-box button {
@@ -105,9 +115,11 @@
   margin-top: 10px;
   gap: 15px;
 }
-.social-icons > img {
+
+.social-icons>img {
   margin: 0;
 }
+
 .login-box .social-icons img {
   width: 35px;
   height: 35px;
@@ -118,10 +130,21 @@
 .login-box .social-icons img:hover {
   transform: scale(1.1);
 }
+
+.error-message {
+  color: #ff4d4f;
+  font-size: 13px;
+  width: max-content;
+  position: absolute;
+  top:53%;
+  left: 7%;
+}
+
 @media (max-width: 950px) {
   .login-image {
     display: none;
   }
+
   .bcg-login {
     height: 100vh;
   }
