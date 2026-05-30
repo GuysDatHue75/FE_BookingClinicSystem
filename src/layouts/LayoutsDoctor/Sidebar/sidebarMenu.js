@@ -4,12 +4,15 @@ import quanLyBenhNhanIcon from "../../../assets/svg/QuanLy.svg";
 import duyetLichKhamIcon from "../../../assets/svg/Duyet.svg";
 import quanLyLichKhamIcon from "../../../assets/svg/LapLich.svg";
 import donThuocIcon from "../../../assets/svg/DonThuoc.svg";
+
+import dienDanIcon from "../../../assets/svg/DienDan.svg";
+import tinTucIcon from "../../../assets/svg/TinTuc.svg";
 import tuVanIcon from "../../../assets/svg/TuVan.svg";
 import khamOnlineIcon from "../../../assets/svg/KhamOnline.svg";
+import thongKeIcon from "../../../assets/svg/ThongKe.svg";
 import bacSiIcon from "../../../assets/svg/BacSi.svg";
 
 const menuItems = [
-  // 💥 SỬA Ở ĐÂY: Truyền thẳng biến vào, KHÔNG DÙNG THẺ < ... /> NỮA!
   //{ icon: dashboardIcon, label: "Dashboard", path: "" },
   { icon: quanLyBenhNhanIcon, label: "Quản lý bệnh nhân", path: "/doctor/Patients" },
   { icon: duyetLichKhamIcon, label: "Duyệt lịch khám", path: "/doctor/View" },
@@ -27,6 +30,7 @@ const menuItems = [
     subMenu: [{ label: "Sửa Profile", path: "/doctor/Profile/EditProfile" }],
   },
 
+  
 
 ];
 

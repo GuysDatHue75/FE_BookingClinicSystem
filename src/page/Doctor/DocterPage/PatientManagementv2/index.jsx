@@ -2,47 +2,39 @@ import React, { useCallback, useEffect, useState } from "react";
 import styles from "./PatientManagement.module.css";
 import axios from "axios";
 import ReusableTable from "../../../../components/DoctorTable/ReusableTable";
-import { useNavigate } from "react-router-dom"; // Bỏ import Navigate thừa
+import ConfirmModal from "../../../../components/ConfirmModal/ConfirmModal";
+import apiClient from "../../../../api/api";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 const PatientManagement = () => {
-  // 1. Đưa useNavigate lên đúng vị trí trên cùng của Component
-  const navigate = useNavigate();
-
+  /*const [tenBien, hamDoiGiaTri] = useState(giaTriBanDau);*/
   const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [patientIdToDelete, setPatientIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const idDoctor = localStorage.getItem("idDoctor");
+  const idClinic = localStorage.getItem("idClinic");
   const pageSize = 5;
-
-  const handleViewProfile = (maBenhNhan) => {
-    navigate(`/doctor/Patients/Detail/${maBenhNhan}`);
-  };
-
-  // 2. Tạm thời fix cứng ID bác sĩ đang đăng nhập (Sau này sếp lấy từ LocalStorage/Redux)
-  const maBacSiDangNhap = "BS01";
-  const maPhongKham = "PK01";
 
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api/v1/patient/get-all", {
-        params: {
-          page: currentPage,
-          size: pageSize,
-          keyword: searchTerm,
-          maBacSi: maBacSiDangNhap,
-          maPhongKham: maPhongKham
-        },
-      });
+      const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
       setTotalPages(response.data.totalPages || 0);
+      console.log(response.data.content);
     } catch (error) {
       console.error("Lỗi API:", error);
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm]);
+
+  }, [currentPage, searchTerm, idDoctor, idClinic]);
 
   useEffect(() => {
     fetchPatients();
@@ -52,34 +44,53 @@ const PatientManagement = () => {
     setSearchTerm(e.target.value);
     setCurrentPage(0);
   };
+  const handleDeleteClick = (id) => {
+    setPatientIdToDelete(id);
+    setIsDeleteModalOpen(true);
+  }
+  const navigate = useNavigate();
 
 
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await apiClient.delete(`/api/v1/patient/delete/${patientIdToDelete}`);
+      toast.success(response.data || "Xóa bệnh nhân thành công!");
+      setIsDeleteModalOpen(false);
+      fetchPatients();
+    } catch (error) {
+      toast.error(error.response?.data || "Lỗi khi xóa bệnh nhân");
+    }
+  }
+  // Cấu hình các cột hiển thị
   const columns = [
     { header: "Mã BN", render: (p) => p.maBenhNhan },
     {
       header: "Họ tên",
       render: (p) => (
         <div className={styles.patientNameCell}>
-          <img src={p.anhDaiDien || 'default-avatar.png'} alt="avatar" />
-          <span>{p.hoVaTen}</span>
+
+          <img src={p.taiKhoan?.anh || 'default-avatar.png'} alt="avatar" />
+          <span>{p.taiKhoan?.hoVaTen || p.hoVaTen}</span>
         </div>
       )
     },
     { header: "Ngày Sinh", render: (p) => p.ngaySinh },
-    // Tùy theo Backend sếp trả về boolean hay String, cứ check an toàn
-    { header: "Giới tính", render: (p) => (p.gioiTinh === true || p.gioiTinh === "Nam") ? "Nam" : "Nữ" },
+
+    { header: "Giới tính", render: (p) => p.taiKhoan?.gioiTinh ? "Nam" : "Nữ" },
     { header: "Số điện thoại", render: (p) => p.soDienThoai },
     { header: "Địa chỉ", render: (p) => p.diaChi },
     {
       header: "Thao tác",
       render: (p) => (
         <div className={styles.actionGroup}>
-          <button className={styles.btnAction} title="Hồ sơ" onClick={() => handleViewProfile(p.maBenhNhan)}
-          ><i className="fa-solid fa-file-invoice"></i></button>
-          {/* Nút nhắn tin sếp có thể xử lý onClick ở đây */}
-          <button className={styles.btnAction} title="Nhắn tin"><i className="fa-solid fa-comment"></i></button>
-          <button className={styles.btnAction} title="Sửa"><i className="fa-solid fa-pen-to-square"></i></button>
-          <button className={styles.btnAction} title="Xóa"><i className="fa-solid fa-trash"></i></button>
+
+          <button className={styles.btnAction} title="Hồ sơ" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-file-invoice"></i></button>
+          <button className={styles.btnAction} title="Nhắn tin" onClick={() => navigate(`/doctor/chat`)}><i className="fa-solid fa-comment-dots"></i></button>
+          <button className={styles.btnAction} title="Sửa" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-pen-to-square"></i></button>
+          <button className={styles.btnAction} title="Xóa" onClick={() => handleDeleteClick(p.maBenhNhan)}>
+            <i className="fa-solid fa-trash"></i>
+          </button>
+
         </div>
       )
     }
@@ -88,11 +99,15 @@ const PatientManagement = () => {
   // Giao diện Bộ lọc
   const FilterUI = (
     <div className={styles.filterContainer}>
-      <div className={styles.filterLeft}>
+      {/* <div className={styles.filterLeft}>
         <div className={styles.inputWrapper}>
           <input type="date" className={styles.inputDate} />
         </div>
-      </div>
+        <div className={styles.inputWrapper}>
+          <i className="fa-solid fa-filter"></i>
+          <select className={styles.selectAge}><option>Ngày sinh</option></select>
+        </div>
+      </div> */}
 
       <div className={styles.filterRight}>
         <div className={styles.inputWrapper}>
@@ -105,10 +120,10 @@ const PatientManagement = () => {
             className={styles.searchBar}
           />
         </div>
-
       </div>
     </div>
   );
+
 
   // Giao diện Phân trang
   const PaginationUI = (
@@ -119,21 +134,33 @@ const PatientManagement = () => {
           <i className="fa-solid fa-chevron-left"></i>
         </button>
         <span className={styles.pageCurrent}>{currentPage + 1}</span>
-        <button disabled={currentPage >= totalPages - 1} onClick={() => setCurrentPage(p => p + 1)}>
-          <i className="fa-solid fa-chevron-right"></i>
-        </button>
+
       </div>
     </div>
   );
 
   return (
-    <ReusableTable
-      columns={columns}
-      data={patients}
-      loading={loading}
-      filterComponent={FilterUI}
-      pagination={PaginationUI}
-    />
+
+    <>
+      {/* Component Bảng của sếp */}
+      <ReusableTable
+        columns={columns}
+        data={patients}
+        loading={loading}
+        filterComponent={FilterUI}
+        pagination={PaginationUI}
+      />
+
+      {/* --- SẾP PHẢI NHÉT THÊM CỤC NÀY VÀO ĐÂY THÌ NÓ MỚI HIỆN POPUP ĐƯỢC --- */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Xác nhận xóa"
+        // Custom câu thông báo động theo mã bệnh nhân đang chọn
+        message={`Bạn có chắc chắn muốn xóa bệnh nhân mã ${patientIdToDelete}? Dữ liệu sẽ không thể khôi phục.`}
+      />
+    </>
   );
 };
 

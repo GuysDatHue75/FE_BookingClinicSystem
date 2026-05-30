@@ -69,34 +69,37 @@ import UserProfile from "./page/profile/Userprofile";
 import Statistical from "./page/statistical/Statistical";
 import SidebarAdmin from "./layouts/Sidebar/Sidebar.jsx";
 import Registration from "./page/Doctor/DocterPage/Regester/Registration.js";
+
+import FloatingChatBubble from "./components/FloatingChatBubble/FloatingChatBubble.jsx";
+import ChatPage from "./components/Chat/ChatPage.jsx";
+import AIChatBox from "./ai/AIChatBox.jsx";
+import BookingGuide from "./page/User/BookingGuide/BookingGuide.jsx";
+import Newss from "./page/User/NewsPage/Newss.jsx";
 import AuthGuard from "./components/AuthGuardComponent/AuthGuard.jsx";
 import LoginSuccess from "./page/User/LoginCuccessForGG/LoginCuccess.jsx";
-import RegionSelection from "./page/User/RegionSelection/RegionSelection.jsx";
-import AIChatBox from "./ai/AIChatBox.jsx";
-import NotificationDetail from "./page/User/Notification/Notification.jsx";
-import ChangePass from "./page/User/ChangePass/ChangePass.jsx";
-import NewsDetail from "./page/User/NewsDetail/NewsDetail.jsx";
-import Newss from "./page/User/NewsPage/Newss.jsx";
-import BookingGuide from "./page/User/BookingGuide/BookingGuide.jsx";
+
+
 function App() {
   const { valueText, roleLocal, loading } = useContext(State);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState(() => localStorage.getItem("role") || "");
   const location = useLocation()
   const storedRole = localStorage.getItem("role");
-  
+
   useEffect(() => {
-    if (storedRole) {
-      setRole(storedRole);
-      return;
+    const currentRole = localStorage.getItem("role") || "";
+    setRole(currentRole);
+    const savedRole = roleLocal || currentRole;
+    if (!savedRole) {
+      localStorage.setItem("role", "BacSi");
+      setRole("BacSi");
     }
+
     if (location.pathname === "/login-success") {
       return;
     }
-
-    localStorage.setItem("role", "TD");
-    setRole("TD");
-
-  }, [location.pathname]);
+    // localStorage.setItem("role", "TD");
+    // setRole("TD");
+  }, [location.pathname, roleLocal]);
 
   useEffect(() => {
     if (role === "BenhNhan" || role === "TD") {
@@ -126,7 +129,7 @@ function App() {
             <Route path="/register" element={<Registration />} />
             <Route path="/login-success" element={<LoginSuccess />} />
             {/* User */}
-            {(role == "BenhNhan" || role == "TD") && (
+            {role === "BenhNhan" && (
               <>
 
                 <Route path="/trang-chu" element={<Home />} />
@@ -139,16 +142,9 @@ function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/chinh-sach-bao-mat" element={<Security />} />
                 <Route path="/confirm" element={<Confirm />} />
-                <Route path="/dang-ky-phong-kham" element={<AuthGuard role={role}><CreateClinic /></AuthGuard>} />
-                <Route path="/:id/dat-lich-kham" element={<AuthGuard role={role}><Booking /></AuthGuard>} />
-                <Route path="/lich-su-kham-benh" element={<HistoryBooking />} />
-                <Route path="/trang-ca-nhan" element={<AuthGuard role={role}><Profiles /></AuthGuard>} />
-                <Route path="/xem-lich-kham" element={<AuthGuard role={role}><AppointmentList /> </AuthGuard>} />
-                <Route path="/thong-bao/:id" element={<AuthGuard role={role}><NotificationDetail /> </AuthGuard>} />
-                <Route path="/kham-lam-san" element={<AuthGuard role={role}><CallDocter /></AuthGuard>} />
-                <Route path="/doi-mat-khau" element={<AuthGuard role={role}><ChangePass /></AuthGuard>} />
-                <Route path="/chon-tinhthanh" element={<RegionSelection />} />
-                <Route path="/tin-tuc/xem-chi-tiet/:id" element={<NewsDetail />} />
+                <Route path="/dang-ky-phong-kham" element={<CreateClinic />} />
+                <Route path="/patient/chat" element={<ChatPage />} />
+
                 <Route
                   path="/chi-tiet-phong-kham/:id"
                   element={<DetailClinic />}
@@ -177,6 +173,7 @@ function App() {
                     path="/doctor/patients"
                     element={<PatientManagementv2 />}
                   />
+                  <Route path="/doctor/patient-detail/:id" element={<PatientDetail />}></Route>
                   <Route
                     path="/doctor/Patients/Detail/:maBenhNhan"
                     element={<PatientDetail />}
@@ -185,6 +182,7 @@ function App() {
                     path="/doctor/doi-mat-khau"
                     element={<Changepassword />}
                   />
+                  <Route path="/doctor/chat" element={<ChatPage />} />
                   <Route path="/doctor" element={<DoctorStatistics />} />
                   <Route
                     path="/doctor/schedule"
@@ -397,8 +395,9 @@ function App() {
                 <Route path="/*" element={<NotFound />} />
               </>
             )}
-          </Routes>
 
+          </Routes>
+          <FloatingChatBubble />
           <ToastContainer />
         </PatientProvider>
       </CommonProvider>

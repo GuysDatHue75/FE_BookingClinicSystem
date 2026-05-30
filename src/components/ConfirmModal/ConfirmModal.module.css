@@ -1,75 +1,76 @@
 .overlay {
+
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999999999999999;
-  animation: fadeIn 0.2s ease;
+  z-index: 9999;
 }
 
-.modal {
-  background: white;
+.modalContent {
+  background-color: #ffeaea;
+  /* Màu nền hồng nhạt */
+  border: 1px solid #d9534f;
+  border-radius: 20px;
+  padding: 30px 40px;
   width: 400px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  animation: slideUp 0.3s ease;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.header {
-  padding: 15px 20px;
-  color: white;
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 15px;
 }
 
-.danger { background-color: #ff4d4d; }
-.primary { background-color: #0275d8; }
-.success { background-color: #5cb85c; }
-
-.body {
-  padding: 20px;
-  font-size: 16px;
-  color: #333;
+.message {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
 }
 
-.footer {
-  padding: 15px 20px;
+.actionGroup {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  background: #f9f9f9;
+  justify-content: center;
+  gap: 15px;
 }
 
-.cancelBtn {
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.confirmBtn {
-  padding: 8px 16px;
+.btnConfirm {
+  background-color: #f18c86;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
   border: none;
-  border-radius: 4px;
-  color: white;
+  border-radius: 8px;
+  padding: 10px 25px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.btn-danger { background: #ff4d4d; }
-.btn-primary { background: #0275d8; }
-.btn-success { background: #5cb85c; }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.btnConfirm:hover {
+  background-color: #e5756f;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.btnCancel {
+  background-color: #dcdcdc;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnCancel:hover {
+  background-color: #c4c4c4;
 }

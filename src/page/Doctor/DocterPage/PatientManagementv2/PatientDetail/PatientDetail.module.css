@@ -1,0 +1,298 @@
+/* ---- 1. NÚT TRỞ LẠI (BACK BUTTON) ---- */
+.backButton {
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    /* Màu xám giống thiết kế */
+    font-size: 14px;
+    font-style: italic;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.backButton:hover {
+    color: #374151;
+    text-decoration: underline;
+}
+
+/* ---- LAYOUT TỔNG ---- */
+.pageTitle {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+}
+
+.gridLayout {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    /* Chia cột trái rộng hơn cột phải */
+    gap: 24px;
+}
+
+/* ---- CARD GIAO DIỆN CHUNG ---- */
+.patientHeaderCard,
+.infoCard,
+.historyCard,
+.contactCard,
+.reportCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+}
+
+/* ---- HEADER BỆNH NHÂN ---- */
+.patientHeaderCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e0f2fe;
+    /* Màu xanh nhạt nền header */
+}
+
+.avtGroup {
+    display: flex;
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    gap: 16px;
+    /* Khoảng cách giữa Avatar và phần chữ */
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ---- 3. AVATAR BỆNH NHÂN ---- */
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #0284c7;
+    /* Nền xanh đậm */
+    color: white;
+    /* Chữ trắng */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.patientName {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+    color: #0c4a6e;
+    font-weight: 700;
+}
+
+.patientId {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 12px;
+}
+
+
+/* ---- 4. NÚT EDIT (GIỚI HẠN LẠI KÍCH THƯỚC) ---- */
+.iconBtn {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.iconBtn:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+/* Chỉnh nhỏ file SVG bên trong nút */
+.iconBtn img,
+.editIconImg {
+    width: 10px;
+    height: 10px;
+    object-fit: contain;
+}
+
+/* ---- THÔNG TIN CHI TIẾT ---- */
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.infoCard,
+.historyCard,
+.contactCard,
+.reportCard {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* Bóng đổ rất nhẹ */
+    border: 1px solid #f1f5f9;
+    margin-bottom: 24px;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 16px;
+    column-gap: 24px;
+}
+
+.infoGrid p {
+    margin: 0;
+    font-size: 14px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+}
+
+.infoGrid span {
+    color: #64748b;
+    display: inline-block;
+    width: 130px;
+    /* Cố định chiều rộng nhãn để text thẳng hàng */
+}
+
+.subTitle {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed #eee;
+}
+
+/* ---- TABLE LỊCH SỬ ---- */
+.historyTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    /* Giữ khoảng cách các ô là 0 */
+    font-size: 14px;
+
+}
+
+.historyTable th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.historyTable th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.historyTable th {
+    background-color: #D9D9D9;
+    padding: 12px 16px;
+    text-align: left;
+    color: #4b5563;
+}
+
+.historyTable td {
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* ---- DANH SÁCH FILE PDF ---- */
+.fileItem {
+    display: flex;
+    align-items: center;
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.fileIcon {
+    background: #0ea5e9;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 10px 8px;
+    border-radius: 8px;
+    margin-right: 12px;
+}
+
+.fileInfo p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.fileInfo span {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.downloadBtn {
+    margin-left: auto;
+    background: #e5e7eb;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.inlineInput {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 14px;
+    width: 120px;
+    outline: none;
+}
+
+.inlineInput:focus {
+    border-color: #3b82f6;
+}
+
+.saveBtn {
+    background: #0ea5e9;
+    width: 40px;
+    height: 30px;
+    color: white;
+    border: none;
+    padding: 4px 4px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.cancelBtn {
+    background: #ef4444;
+    width: 40px;
+    height: 30px;
+    color: white;
+    border: none;
+    padding: 4px 4px;
+    border-radius: 7px;
+    cursor: pointer;
+}

@@ -11,22 +11,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Header = ({ urlImage, notificationCount = 3 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-  const navigate = useNavigate(); //  Khởi tạo điều hướng
+
+  const navigate = useNavigate(); //  tạo điều hướng
 
   // --- HÀM XỬ LÝ CHỨC NĂNG ---
 
   const handleGoToChangePassword = () => {
-    setShowDropdown(false); // Đóng menu 
+
+    setShowDropdown(false); // Đóng menu lại cho chuyên nghiệp
     navigate("/doctor/doi-mat-khau");
   };
 
   const handleLogout = () => {
     setShowDropdown(false);
 
+    // 1. Xóa Token/Session ở đây (sau này code)
+    // localStorage.removeItem("token"); 
+
     alert("Đang đăng xuất..."); // Thông báo tạm thời
     navigate("/login"); // 
   };
   // 1.  tra cứu tiêu đề dựa trên path
+
   const pageTitles = {
     "/doctor": "Bảng điều khiển",
     "/doctor/Patients": "Quản lý bệnh nhân",
@@ -36,13 +42,9 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
   };
 
   // 2. Lấy tiêu đề tương ứng, nếu không thấy thì để mặc định là "Doctor Online"
-  const getCurrentTitle = (currentPath) => {
-    if (currentPath.startsWith("/doctor/patients/Detail")) {
-      return "Thông tin và lịch sử khám bệnh";
-    }
-    return pageTitles[currentPath] || "Doctor Online Conenct";
-  };
-  const currentTitle = getCurrentTitle(location.pathname);
+
+  const currentTitle = pageTitles[location.pathname] || "Doctor Online Connect";
+
   return (
     <header className="header-container">
       <div className="header-left">
