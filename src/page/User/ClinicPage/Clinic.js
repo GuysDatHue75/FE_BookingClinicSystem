@@ -1,51 +1,91 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import "./Clinic.css";
 import Header from "../../../layouts/LayoutsUser/Header/Header";
-import clinicData from "../../../data/clinic.json";
 import ClinicCpn from "../../../components/ClinicComponent/ClinicCpn";
 import Filter from "../../../components/FIlterComponent/Filter";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../../components/LoadingComponent/Loading";
 import { State } from "../../../state/context";
 import Footer from "../../../components/FooterComponent/Footer";
+import TotalPage from "../../../components/TotalPagaComponent/TotalPage";
+import apiClient from "../../../api/api";
 const Clinic = () => {
   const navigate = useNavigate();
-  const PER_PAGE = 15;
+  const totalItemInPage = 10;
   const { page: pageParam } = useParams();
-  const [specialty, setSpecialty] = useState("");
+  const [clinicToShow, setClinicToShow] = useState([]);
+  const [idSpecialtyFilter, setIdSpecialtyFilter] = useState("");
+  const [totalPage, setTotalPage] = useState();
+
+  const city = localStorage.getItem('city');
   const { setLoading, loading } = useContext(State);
-  const specialtyData = useMemo(() => {
-    const specialtyDataTMP = clinicData.flatMap((i) => i.specialty || []);
-    return [...new Set(specialtyDataTMP.map((s) => s.trim()))];
-  }, []);
+  const currentPage = useMemo(() =>
+    parseInt(pageParam) || 1,
+    [pageParam])
+  const fetchClinicsData = async () => {
+    setLoading(true);
+    try {
+      let url = "";
+      if (idSpecialtyFilter) {
+        url = `api/v1/specialty/clinics?tp=${city}&id=${idSpecialtyFilter}&page=${currentPage - 1}&size=${totalItemInPage}`
+      } else {
+        url = `/api/v1/clinics/city/${city}?page=${currentPage - 1}&size=${totalItemInPage}`
+      }
 
-  const totalPages = Math.max(1, Math.ceil(specialtyData.length / PER_PAGE));
-  const FilterClinic = useMemo(() => {
-    if (!specialty) return clinicData;
-    return clinicData.filter((item) =>
-      item.specialty.some((s) => s === specialty)
-    );
-  }, [clinicData, specialty]);
-  const currentPage = useMemo(() => {
-    const n = parseInt(pageParam || "1");
-    return Math.min(Math.max(n, 1), totalPages);
-  }, [pageParam, totalPages]);
+      const response = await apiClient.get(url)
+      const total = response.data.totalPages;
 
-  const clinicToShow = useMemo(() => {
-    const start = (currentPage - 1) * PER_PAGE;
-    const end = start + PER_PAGE;
-    return FilterClinic.slice(start, end);
-  }, [FilterClinic, totalPages]);
+      if (total > 0 && currentPage > total) {
+        navigate(`/phong-kham/page/${total}`);
+        return;
+      }
+      setClinicToShow(response.data.content);
+      setTotalPage(total);
+    } catch (error) {
+      setClinicToShow([]);
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+  useEffect(() => {
+    fetchClinicsData();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage, city, idSpecialtyFilter]);
 
   const handleFilterDocterSpecialty = (value) => {
-    setSpecialty(value);
-    setLoading(true);
+    setIdSpecialtyFilter(value);
     navigate("/phong-kham/page/1");
-    setTimeout(() => setLoading(false), 800);
   };
-  useEffect(() => {
-    window.scrollTo({ top: true, behavior: "instant" });
-  }, []);
+
+  const handlePage = (p) => {
+    navigate(`/phong-kham/page/${p}`)
+  }
+
+  const specialtyData = useMemo(() => {
+    if (!clinicToShow || clinicToShow.length === 0) return [];
+
+    const map = new Map();
+
+    clinicToShow.forEach((clinic) => {
+      if (Array.isArray(clinic.specicaltys)) {
+        clinic.specicaltys.forEach((s) => {
+          const id = s.maChuyenKhoa;
+          const name = s.tenChuyenKhoa;
+          if (id && name && !map.has(id)) {
+            map.set(id, {
+              idspecital: id,
+              name: name
+            });
+          }
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [clinicToShow]);
+
   return (
     <>
       <Header />
@@ -62,6 +102,13 @@ const Clinic = () => {
           </div>
         )}
         {loading && <Loading />}
+        <div className="indexPage">
+          <TotalPage
+            totalPages={totalPage}
+            currentPage={currentPage}
+            handlePage={handlePage}
+          />
+        </div>
       </div>
       {!loading && <Footer />}
     </>

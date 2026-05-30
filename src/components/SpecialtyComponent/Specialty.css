@@ -34,7 +34,7 @@
     height: 50px;
     margin: 15px 0;
 }
-.quanlity-specialty-top,.quanlity-specialty-bot{
+.quanlity-specialty-bot{
     color: #28c76f;
 }
 @media (max-width: 1000px) {

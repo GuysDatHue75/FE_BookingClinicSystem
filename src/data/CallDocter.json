@@ -1,5 +1,6 @@
 [
     {
+        "id":"BN4523f17c",
         "name": "Nguyễn Trọng Tấn",
         "hour": "14h30",
         "image": "https://tamanhhospital.vn/wp-content/uploads/2021/03/bac-si-cam-ngoc-phuong.png",
@@ -7,6 +8,7 @@
         "activiti": true
     },
     {
+        "id":"BN4523f17c",
         "name": "PSG. Tôn Nữ Minh Tâm",
         "hour": "16h30",
         "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
@@ -14,6 +16,7 @@
         "activiti": false
     },
     {
+        "id":"BN4523f17c",
         "name": "Nguyễn Trọng Tấn",
         "hour": "17h00",
         "image": "https://tamanhhospital.vn/wp-content/uploads/2021/03/bac-si-cam-ngoc-phuong.png",
@@ -21,59 +24,11 @@
         "activiti": true
     },
     {
+        "id":"BN4523f17c",
         "name": "PSG. Tôn Nữ Minh Tâm",
         "hour": "16h30",
         "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
         "clinic": "Phòng khám Hi Vọng",
         "activiti": true
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": false
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": false
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": true
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": false
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": true
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": true
-    },
-    {
-        "name": "PSG. Tôn Nữ Minh Tâm",
-        "hour": "16h30",
-        "image": "https://tamanhhospital.vn/wp-content/uploads/2024/10/nguyen-lan-anh.png",
-        "clinic": "Phòng khám Hi Vọng",
-        "activiti": false
     }
 ]

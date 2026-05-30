@@ -1,7 +1,7 @@
 .appointment-container {
   width: 100%;
   max-width: 1370px;
-
+  
   margin-top: 100px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -23,8 +23,52 @@
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
+}
+.appointment-table > thead{
+  border: 1px solid #2469df;
+}
+.appointment-table th:nth-child(1),
+.appointment-table td:nth-child(1) {
+  width: 60px;
+  text-align: center;
 }
 
+.appointment-table th:nth-child(2),
+.appointment-table td:nth-child(2) {
+  width: 260px;
+}
+
+.appointment-table th:nth-child(3),
+.appointment-table td:nth-child(3) {
+  width: 220px;
+}
+
+.appointment-table th:nth-child(4),
+.appointment-table td:nth-child(4) {
+  width: 180px;
+}
+
+.appointment-table th:nth-child(5),
+.appointment-table td:nth-child(5) {
+  width: 160px;
+}
+
+.appointment-table th:nth-child(6),
+.appointment-table td:nth-child(6) {
+  width: 110px;
+}
+
+.appointment-table th:nth-child(7),
+.appointment-table td:nth-child(7) {
+  width: 120px;
+  text-align: center;
+}
+.appointment-table th:nth-child(8),
+.appointment-table td:nth-child(8) {
+  width: 100px;
+  text-align: center;
+}
 .appointment-table th,
 .appointment-table td {
   padding: 12px 15px;
@@ -62,7 +106,10 @@
   background: #fff4d4;
   color: #b26a00;
 }
-
+.status.closeAppt{
+  background: #fff4d4;
+  color: #ff4d4d;
+}
 .cancel-btn {
   background: #ff4d4d;
   color: white;
@@ -75,6 +122,16 @@
 
 .cancel-btn:hover {
   background: #e60000;
+}
+.appointment-table th,
+.appointment-table td {
+  padding: 12px;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  vertical-align: top;
 }
 
 @media (max-width: 768px) {

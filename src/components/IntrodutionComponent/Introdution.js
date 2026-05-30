@@ -12,17 +12,18 @@ const Introdution = () => {
   const imgBody = useRef();
   const titleRef = useRef();
   const bookRef = useRef();
+  const animation  = localStorage.getItem('animation' || false);
   const { loading, resetPage } = useContext(State);
-  useEffect(() => {
+  useEffect(() => {    
     const sr = ScrollReveal({
       origin: "top",
       distance: "300px",
       duration: "2500",
     });
-    sr.reveal(imgDocterBody?.current, { origin: "left", delay: 400 });
-    sr.reveal(imgBody?.current, { origin: "top" });
-    sr.reveal(titleRef?.current, { delay: 600 });
-    sr.reveal(bookRef?.current, { origin: "right", delay: 700 });
+    !animation && sr.reveal(imgDocterBody?.current, { origin: "left", delay: 400 });
+    !animation && sr.reveal(imgBody?.current, { origin: "top" });
+    !animation && sr.reveal(titleRef?.current, { delay: 600 });
+    !animation && sr.reveal(bookRef?.current, { origin: "right", delay: 700 });
   }, []);
   return (
     <>
@@ -46,9 +47,9 @@ const Introdution = () => {
               <h1 className="titile-home" ref={titleRef}>
                 Hệ thống tư vấn và đặt lịch khám Online
               </h1>
-              <div ref={bookRef}>
-                <BookingHome />
-                <Advise />
+              <div ref={bookRef} style={{marginTop:'20px'}}>
+                <BookingHome path={"/phong-kham"}/>
+                <Advise path={"/tu-van"}/>
               </div>
             </div>
           </div>

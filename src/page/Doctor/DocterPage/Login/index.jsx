@@ -39,15 +39,18 @@ const Login = () => {
         setRole(response.data.taiKhoan.vaiTro);
       }
       const roleApi = response.data.taiKhoan.vaiTro;
-      if (roleApi === "BN") {
+
+      if (roleApi === "BenhNhan") {
         if (response.data.taiKhoan.lanDauDangNhap === 1) {
           navigate("/chon-tinhthanh");
         } else {
           navigate("/trang-chu");
         }
-      } else if (roleApi === "BS") {
+
+      } else if (roleApi === "BacSi") {
+        localStorage.setItem("idDoctor", response.data.maBacSi);
         navigate("/doctor")
-      } else if (roleApi === "ADPK") {
+      } else if (roleApi === "PhongKham") {
         navigate("/clinic")
       } else {
         navigate("/admin")

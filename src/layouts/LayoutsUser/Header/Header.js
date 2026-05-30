@@ -9,16 +9,17 @@ import Recomment from "../../../components/RecomentComponent/Recomment";
 import IsLoginSucessfull from "../../../components/IsLoginComponent/IsLoginSucessfull";
 import SideBar from "../../../components/SlideBarMobile/SideBar";
 import Opacity from "../../../components/OpacityComponent/Opacity";
+import apiClient from "../../../api/api";
 const Header = () => {
   const [data, setData] = useState([]);
   const { setLoading, setResetPage, setValueText, valueText } =
     useContext(State);
+  const role = localStorage.getItem("role");
   const textSearch = useRef();
   const Search = useRef();
   const navigate = useNavigate();
   const [checkTextSearch, setCheckTextSearch] = useState(false);
   const [text, setText] = useState("");
-  const [login, setLogin] = useState(true);
   const [mobile, setMobile] = useState(false);
   const mobileRef = useRef();
   const handelMenuMobi = () => {
@@ -35,6 +36,7 @@ const Header = () => {
           return;
         }
         const result = await reponse.json();
+        
         setData(result.data);
       } catch (error) {
         console.error("Lỗi khi fetch dữ liệu:", error);
@@ -43,14 +45,17 @@ const Header = () => {
     FetchData();
   }, []);
 
-  const changerLocation = () => {
+  const changerLocation = (e) => {
     setLoading(true);
+    localStorage.setItem("city",e.target.value);
     setResetPage(false);
     setTimeout(() => {
       setLoading(false);
       setResetPage(true);
     }, 500);
+    navigate("/trang-chu");
   };
+  
 
   const handlerEnterSearch = () => {
     Search.current.focus();
@@ -145,11 +150,11 @@ const Header = () => {
                   <i class="fa-solid fa-magnifying-glass"></i>
                   <select
                     className="Option-Address"
-                    onChange={() => changerLocation()}
+                    onChange={(e) => changerLocation(e)}
                   >
-                    <option>Thừa Thiên Huế</option>
+                    <option>{localStorage.getItem('city') || '""'}</option>
                     {data.map((item) => (
-                      <option key={item.id}>{item.full_name}</option>
+                      <option key={item.id} value={item.name}>{item.name}</option>
                     ))}
                   </select>
                   {valueText.length > 0 && <Recomment />}
@@ -157,7 +162,7 @@ const Header = () => {
               </div>
 
               <div className="System-Option-Header">
-                {!login ? (
+                {role == "TD" ? (
                   <>
                     <Button login={true} />
                     <Button login={false} />

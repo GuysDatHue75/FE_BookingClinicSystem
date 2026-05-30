@@ -1,44 +1,43 @@
-import "./Button.css";
+import styles from "./Button.module.css";
 import { Link, useNavigate } from "react-router-dom";
-const Button = ({ login, booking, title, path, nameDocter, idDocter }) => {
+const Button = ({ login, booking, title, path, idDocter }) => {
   const navigate = useNavigate();
   const handelBooking = () => {
-    localStorage.setItem("nameDocterBooking", JSON.stringify(nameDocter));
+    localStorage.setItem("idDocter",idDocter);
     navigate(path);
   };
-  const handelViewDetailDocter = () => {
-    localStorage.setItem("idDocter", JSON.stringify(idDocter));
-    navigate(path);
-  };
+  // const handelViewDetailDocter = () => {
+  //   localStorage.setItem("idDocter", JSON.stringify(idDocter));
+  //   navigate(path);
+  // };
   return !booking ? (
-    <button className="cpm-Button">{login ? "Đăng nhập" : "Đăng ký"}</button>
+    <Link to={login ? "/login" : "/register"} className={styles.cpmButton}>{login ? "Đăng nhập" : "Đăng ký"}</Link>
   ) : (
     <button
-      className={title ? "btn-booking-docter" : "btn-viewMore"}
-      onClick={title ? handelBooking : handelViewDetailDocter}
+      className={title ? `${styles.btnBookingDocter}` : `${styles.btnViewMore}`}
+      onClick={handelBooking}
     >
       {title ? "Đặt lịch khám" : "Xem chi tiết"}
     </button>
   );
 };
+
 export const ViewMore = ({ path }) => (
-  <Link to={path} className="cpm-viewMore">
+  <Link to={path} className={styles.cpmViewMore}>
     Xem thêm
   </Link>
 );
-export const BookingHome = () => (
-  <button className="booking-home">Đặt lịch ngay</button>
+export const BookingHome = ({path}) => (
+  <Link className={styles.bookingHome} to={path}>Đặt lịch ngay</Link>
 );
 
 export const Advise = ({ path }) => (
-  <button className="advise-home">
-    <Link to={path}>Tư vấn ngay</Link>
-  </button>
+    <Link className={styles.adviseHome} to={path}>Tư vấn ngay</Link>
 );
 
 export const Exit = ({ name, className, clickExit, handelShowMessage }) => (
   <button
-    className={className}
+    className={styles[className]}
     onClick={name === "Thoát" ? clickExit : handelShowMessage}
   >
     {name}

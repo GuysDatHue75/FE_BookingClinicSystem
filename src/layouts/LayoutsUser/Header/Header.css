@@ -1,25 +1,30 @@
 .main-home {
   position: relative;
   overflow-x: hidden;
-  z-index: 999999;
+  z-index: 99999;
   height: max-content;
 }
+
 .custom-container {
   font-family: "Inter";
   position: fixed;
   top: 0;
   z-index: 99999;
 }
+
 .bcg-Header {
   height: 100px;
 }
+
 .imageHeader {
   width: 100vw;
   height: 90px;
 }
+
 .logo-header {
   cursor: pointer;
 }
+
 .menuHeader {
   position: relative;
   display: flex;
@@ -27,25 +32,31 @@
   max-width: 1600px;
   transform: translateY(-85px);
 }
+
 .Option-Header {
   display: flex;
   list-style: none;
   padding-left: 0;
 }
-.Option-Header > li {
+
+.Option-Header>li {
   padding: 0 10px;
   cursor: pointer;
   font-size: 15px;
+  color: #fff;
 }
-.Option-Header > li:hover {
+
+.Option-Header>li:hover {
   color: #ffff;
 }
+
 .Search-Header {
   position: relative;
   height: max-content;
   margin-top: 6px;
   z-index: 99999999999999;
 }
+
 .custom-Search-Header-text {
   height: 35px;
   border-radius: 10px;
@@ -56,6 +67,7 @@
   width: 73%;
   margin-left: 10px;
 }
+
 .custom-text-Input,
 .fa-magnifying-glass {
   position: absolute;
@@ -64,17 +76,18 @@
   color: #6c757d;
   font-size: 15px;
 }
+
 .fa-magnifying-glass {
   right: 28%;
   cursor: pointer;
   margin-top: 2px;
 }
+
 .Option-Address {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding: 8px;
-  height: 35px;
+  height: 36px;
   border-radius: 10px;
   border: none;
   appearance: none;
@@ -85,11 +98,14 @@
   background-position: right 10px center;
   margin-left: 5px;
   outline: none;
+  width: 24% ;
   cursor: pointer;
 }
+
 select.Option-Address::-webkit-scrollbar {
   display: none;
 }
+
 .fa-bars {
   font-size: 16px;
   color: #fff;
@@ -101,60 +117,80 @@ select.Option-Address::-webkit-scrollbar {
   .Option-Header {
     display: none;
   }
+
   .logo-header {
     width: 80px;
   }
+
   .fa-bars {
     display: block;
     font-size: 20px;
     margin-left: 30px;
   }
+
   .menuHeader {
     margin-top: 10px;
   }
+
   .Search-Header-text,
   .custom-text-Input,
   .fa-magnifying-glass {
     display: none;
   }
+
+  .Option-Address {
+    width: 100% !important;
+  }
 }
+
 @media (min-width: 501px) and (max-width: 840px) {
   .menuHeader {
     padding: 0 20px;
   }
+
   .Option-Header,
   .custom-text-Input,
   .custom-Search-Header-text,
   .fa-magnifying-glass {
     display: none;
   }
+
   .fa-bars {
     display: block;
     font-size: 20px;
     margin-left: 30px;
   }
+
   .Search-Header-text {
     width: 100%;
     margin-left: 0px;
   }
+
   .Option-Address {
     width: 100%;
     margin-left: 0px;
     margin-top: 6px;
   }
+
   .System-Option-Header {
     width: 100px;
   }
+
   .Search-Header {
     margin: 0 30px;
   }
 }
+
 @media (max-width: 1050px) {
+
   .Option-Header,
   .custom-Search-Header-text,
   .fa-magnifying-glass,
   .custom-text-Input {
-    display: none;
+    display: none !important;
+  }
+  .Option-Address {
+    width: 180px !important;
   }
   .fa-bars {
     display: block;
@@ -162,35 +198,42 @@ select.Option-Address::-webkit-scrollbar {
     margin-left: 30px;
   }
 }
+
 @media (min-width: 841px) and (max-width: 1023px) {
   .menuHeader {
     padding: 0 20px;
   }
+
   .logo-header {
     width: 100px;
   }
-  .Option-Header > li {
+
+  .Option-Header>li {
     width: max-content;
   }
+
   .System-Option-Header {
     display: flex;
     flex-direction: column;
     row-gap: 5px;
   }
+
   .custom-text-Input {
     display: none;
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1280px) {
-  .Option-Header > li {
+  .Option-Header>li {
     width: max-content;
   }
+
   .System-Option-Header {
     display: flex;
     flex-direction: column;
     row-gap: 5px;
   }
+
   .menuHeader {
     padding: 0 20px;
   }

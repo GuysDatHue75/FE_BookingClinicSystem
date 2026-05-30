@@ -1,49 +1,42 @@
 import { useEffect, useState } from "react";
 import Header from "../../../layouts/LayoutsUser/Header/Header";
 import { useParams } from "react-router-dom";
-import clinicData from "../../../data/clinic.json";
-import FeedBackData from "../../../data/feedBack.json";
 import "./Detail.css";
 import Footer from "../../../components/FooterComponent/Footer";
 import { DocterAll } from "../../../components/DocterComponent/CarDocter";
 import FeedBack from "../../../components/FeddBackComponent/FeedBack";
-import adchievementsData from "../../../data/adchievements.json";
 import Adchiements from "../../../components/AdchievementPage/Adchiements";
 import DetaiClinicCpn from "../../../components/DetailClinicComponent/DetaiClinicCpn";
+import apiClient from "../../../api/api";
+import DocterSlider from "./DocterSlider";
 const Detail = () => {
-  const { slug: slugDetail } = useParams();
+  const { id: idDetail } = useParams();
   const [clinicDetailShow, setClinicDetailShow] = useState({});
   const [dataDocterDetail, setDataDocterDetail] = useState([]);
   const [dataAdchievement, setDataAdchievement] = useState([]);
   const [feedBackList, setFeedBackList] = useState([]);
-  const [nameClinic, setNameClinic] = useState("");
+
 
   useEffect(() => {
-    setClinicDetailShow(() =>
-      clinicData.find((clinic) => clinic.slug === slugDetail)
-    );
-  }, [slugDetail]);
+    const getData = async () => {
+      const dataClincs = await apiClient.get(`/api/v1/clinics/${idDetail}`);
+      const dataDoctors = await apiClient.get(`/api/v1/clinic/doctors?id=${idDetail}`);
+      const dataFeedbacks = await apiClient.get(`/api/v1/clinic/feedbacks?id=${idDetail}`);
+      const dataNews = await apiClient.get(`/api/v1/clinic/t-3news?id=${idDetail}`);
+      setClinicDetailShow(dataClincs.data);
+      setDataDocterDetail(dataDoctors.data);
+      setFeedBackList(dataFeedbacks.data);
+      
+      setDataAdchievement(dataNews.data);
+    }
+    getData();
+  }, [idDetail]);
 
-  useEffect(() => {
-    const dataDocterList = clinicData.find(
-      (clinic) => clinic.slug === slugDetail
-    );
-    setNameClinic(dataDocterList.name);
-    setDataDocterDetail(dataDocterList.docter);
-  }, [slugDetail]);
-
-  useEffect(() => {
-    const dataFeedBackFilter = FeedBackData.filter(
-      (feedBack) => feedBack.clinic === nameClinic
-    );
-    setFeedBackList(dataFeedBackFilter);
-  }, [slugDetail, nameClinic]);
-
-  useEffect(() => {
-    setDataAdchievement(() =>
-      adchievementsData.filter((adchiement) => adchiement.clinic === nameClinic)
-    );
-  }, [slugDetail, nameClinic]);
+  // useEffect(() => {
+  //   setDataAdchievement(() =>
+  //     adchievementsData.filter((adchiement) => adchiement.clinic === nameClinic)
+  //   );
+  // }, [slugDetail, nameClinic]);
 
   useEffect(() => {
     window.scrollTo({
@@ -59,16 +52,14 @@ const Detail = () => {
         <DetaiClinicCpn clinicDetailShow={clinicDetailShow} />
         <h2 className="title-detail">Danh sách bác sĩ</h2>
         <div className="wrapper-docter-detail">
-          {dataDocterDetail.map((docter, index) => (
-            <DocterAll
-              doctor={docter}
-              key={index}
-              path={`/${clinicDetailShow.slug}/dat-lich-kham`}
-            />
-          ))}
+          {dataDocterDetail.length > 0  ? 
+          <>
+            <DocterSlider dataDocterDetail={dataDocterDetail} />
+          </> : <p>Phòng khám chưa đăng ký bác sĩ</p>}
+          
         </div>
         <div>
-          <h2 className="title-detail">Thành tựu đạt được</h2>
+          <h2 className="title-detail">Tin tức nổi bât</h2>
           <Adchiements dataAdchievement={dataAdchievement} />
         </div>
         <FeedBack dataFeedBack={feedBackList} />
@@ -77,5 +68,4 @@ const Detail = () => {
     </div>
   );
 };
-
 export default Detail;

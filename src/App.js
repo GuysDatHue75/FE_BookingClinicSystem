@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useContext, useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
@@ -69,67 +69,108 @@ import UserProfile from "./page/profile/Userprofile";
 import Statistical from "./page/statistical/Statistical";
 import SidebarAdmin from "./layouts/Sidebar/Sidebar.jsx";
 import Registration from "./page/Doctor/DocterPage/Regester/Registration.js";
-
+import AuthGuard from "./components/AuthGuardComponent/AuthGuard.jsx";
+import LoginSuccess from "./page/User/LoginCuccessForGG/LoginCuccess.jsx";
+import RegionSelection from "./page/User/RegionSelection/RegionSelection.jsx";
+import AIChatBox from "./ai/AIChatBox.jsx";
+import NotificationDetail from "./page/User/Notification/Notification.jsx";
+import ChangePass from "./page/User/ChangePass/ChangePass.jsx";
+import NewsDetail from "./page/User/NewsDetail/NewsDetail.jsx";
+import Newss from "./page/User/NewsPage/Newss.jsx";
+import BookingGuide from "./page/User/BookingGuide/BookingGuide.jsx";
 function App() {
-  const { valueText, roleLocal } = useContext(State);
-  const [role, setRole] = useState(roleLocal);
+  const { valueText, roleLocal, loading } = useContext(State);
+  const [role, setRole] = useState('');
+  const location = useLocation()
+  const storedRole = localStorage.getItem("role");
+  
   useEffect(() => {
-    const savedRole = roleLocal || JSON.parse(localStorage.getItem("role"));
-    if (!savedRole) {
-      localStorage.setItem("role", JSON.stringify("doctor"));
-      setRole(JSON.parse(localStorage.getItem("role")));
+    if (storedRole) {
+      setRole(storedRole);
+      return;
     }
-    setRole(savedRole);
-    if (savedRole === "user") {
+    if (location.pathname === "/login-success") {
+      return;
+    }
+
+    localStorage.setItem("role", "TD");
+    setRole("TD");
+
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (role === "BenhNhan" || role === "TD") {
       import("./userOnly.css");
     }
-  }, [roleLocal, role]);
+  }, [role]);
+  const hideChatBoxPaths = [
+    "/login",
+    "/register",
+    "/forgotPassword",
+    "/login-success",
+    "/"
+  ];
 
-  if (!role) return null;
+  const shouldHideChat = hideChatBoxPaths.includes(location.pathname);
+
   return (
     <>
       <CommonProvider>
         <PatientProvider>
           {valueText.length > 0 && <Opacity />}
+          {!shouldHideChat && storedRole === "BenhNhan" && <AIChatBox />}
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/register" element={<Registration />} />
-
+            <Route path="/login-success" element={<LoginSuccess />} />
             {/* User */}
-            {role === "user" && (
+            {(role == "BenhNhan" || role == "TD") && (
               <>
+
                 <Route path="/trang-chu" element={<Home />} />
                 <Route path="/bac-si" element={<Docter />} />
                 <Route path="/bac-si/page/:page" element={<Docter />} />
                 <Route path="/phong-kham" element={<Clinic />} />
                 <Route path="/phong-kham/page/:page" element={<Clinic />} />
-                <Route path="/tu-van" element={<Question />} />
-                <Route path="/tu-van/page/:page" element={<Question />} />
+                <Route path="/tu-van" element={<AuthGuard role={role}><Question /></AuthGuard>} />
+                <Route path="/tu-van/page/:page" element={<AuthGuard role={role}><Question /></AuthGuard>} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/chinh-sach-bao-mat" element={<Security />} />
                 <Route path="/confirm" element={<Confirm />} />
-                <Route path="/dang-ky-phong-kham" element={<CreateClinic />} />
+                <Route path="/dang-ky-phong-kham" element={<AuthGuard role={role}><CreateClinic /></AuthGuard>} />
+                <Route path="/:id/dat-lich-kham" element={<AuthGuard role={role}><Booking /></AuthGuard>} />
+                <Route path="/lich-su-kham-benh" element={<HistoryBooking />} />
+                <Route path="/trang-ca-nhan" element={<AuthGuard role={role}><Profiles /></AuthGuard>} />
+                <Route path="/xem-lich-kham" element={<AuthGuard role={role}><AppointmentList /> </AuthGuard>} />
+                <Route path="/thong-bao/:id" element={<AuthGuard role={role}><NotificationDetail /> </AuthGuard>} />
+                <Route path="/kham-lam-san" element={<AuthGuard role={role}><CallDocter /></AuthGuard>} />
+                <Route path="/doi-mat-khau" element={<AuthGuard role={role}><ChangePass /></AuthGuard>} />
+                <Route path="/chon-tinhthanh" element={<RegionSelection />} />
+                <Route path="/tin-tuc/xem-chi-tiet/:id" element={<NewsDetail />} />
                 <Route
-                  path="/chi-tiet-phong-kham/:slug"
+                  path="/chi-tiet-phong-kham/:id"
                   element={<DetailClinic />}
                 />
-                <Route path="/:slug/dat-lich-kham" element={<Booking />} />
-                <Route path="/lich-su-kham-benh" element={<HistoryBooking />} />
-                <Route path="/trang-ca-nhan" element={<Profiles />} />
-                <Route path="/xem-lich-kham" element={<AppointmentList />} />
-                <Route path="/tim-kiem" element={<SearchClinic />} />
-                <Route path="/kham-lam-san" element={<CallDocter />} />
+                <Route path="/tim-kiem-chuyen-khoa" element={<SearchClinic />} />
+                <Route path="/tim-kiem-chuyen-khoa/page/:page" element={<SearchClinic />} />
+                <Route path="/huong-dan-he-thong" element={<BookingGuide />} />
+                <Route path="/tin-tuc" element={<Newss />} />
+                <Route path="/tin-tuc/:id" element={<Newss />} />
+                <Route path="/tin-tuc/:id/page/:page" element={<Newss />} />
+                <Route path="/tin-tuc/page/:page" element={<Newss />} />
+
+
                 <Route
-                  path="/xem-chi-tiet-bac-si/:slug"
+                  path="/xem-chi-tiet-bac-si/:id"
                   element={<DetailDocter />}
                 />
                 <Route path="/*" element={<NotFound />} />
               </>
             )}
             {/* Doctor */}
-            {role === "doctor" && (
+            {role === "BacSi" && (
               <>
                 <Route path="/doctor" element={<Layout />}>
                   <Route
@@ -177,7 +218,7 @@ function App() {
               </>
             )}
             {/* Admin system*/}
-            {role === "admin" && (
+            {role === "PhongKham" && (
               <>
                 <Route
                   path="/admin"
@@ -254,7 +295,7 @@ function App() {
               </>
             )}
             {/* clinic */}
-            {role === "clinic" && (
+            {role === "Admin" && (
               <>
                 <Route
                   path="/clinic"

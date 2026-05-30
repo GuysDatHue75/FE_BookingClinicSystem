@@ -1,35 +1,32 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import "./Question.css";
 import Header from "../../../layouts/LayoutsUser/Header/Header";
-import questionData from "../../../data/question.json";
 import Footer from "../../../components/FooterComponent/Footer";
 import TotalPage from "../../../components/TotalPagaComponent/TotalPage";
 import { useNavigate, useParams } from "react-router-dom";
-import Input from "../../../components/InputComponent/Input";
 import { SelectCpm } from "../../../components/FIlterComponent/Filter";
-import clinicData from "../../../data/clinic.json";
+import apiClient from "../../../api/api";
+import avtDoctor from "../../../assets/image/TeamDocter.png"
 const Question = () => {
   const { page: pageParam } = useParams();
   const inforDocterRef = useRef();
   const navigate = useNavigate();
+  const city = localStorage.getItem('city');
+  const idPatient = localStorage.getItem('idPatient')
   const [showAnswer, setShowAnswer] = useState(null);
-  const [checkMessageName, setCheckMessageName] = useState(false);
-  const [checkMessageAge, setCheckMessageAge] = useState(false);
-  const [checkMessagePhone, setCheckMessagePhone] = useState(false);
   const [checkQuestion, setCheckQuestion] = useState(false);
-  const [messageName, setMessageName] = useState();
-  const [messagePhone, setMessagePhone] = useState();
-  const [messageAge, setMessageAge] = useState();
+  const [checkClinic, setCheckClinic] = useState(false);
+  const [advisorys, setAdvisorys] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCrrentPage] = useState(1);
+  const [totalClinic, setTotalClinic] = useState();
+  const [idClinic, setIdClinic] = useState();
+  const [question, setQuestion] = useState();
 
-  const PER_PAGE = 8;
-  const totalPages = Math.max(1, Math.ceil(questionData.length / PER_PAGE));
-  const NameRef = useRef();
-  const AgeRef = useRef();
-  const PhoneRef = useRef();
-  const NameRefInput = useRef();
-  const AgeRefInput = useRef();
-  const PhoneRefInput = useRef();
+
   const QuestionRef = useRef();
+  const ClinicRef = useRef();
+
   const handelShowAnswer = (index) => {
     if (showAnswer === index) {
       setShowAnswer(null);
@@ -37,98 +34,88 @@ const Question = () => {
       setShowAnswer(index);
     }
   };
-  const currentPage = useMemo(() => {
-    const n = parseInt(pageParam || "1", 10);
-    return Math.min(Math.max(n, 1), totalPages);
-  }, [pageParam, totalPages]);
-
-  const handlePage = (p) => {
+  const handlePage = async (p) => {
     if (p !== currentPage) {
+      const response = await apiClient.get(`/api/v1/advisorys?page=${currentPage - 1}&size=5&city=${city}`);
+      setAdvisorys(response.data.content);
+      setCrrentPage(p);
       navigate(`/tu-van/page/${p}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+  useEffect(() => {
+    const p = parseInt(pageParam) || 1;
+    setCrrentPage(p);
+  }, [pageParam]);
 
-  const dataToShow = useMemo(() => {
-    const start = (currentPage - 1) * PER_PAGE;
-    const end = start + PER_PAGE;
-    return questionData.slice(start, end);
-  }, [questionData, currentPage]);
+  useEffect(() => {
+    const fetchAdvisorys = async () => {
+      const response = await apiClient.get(`/api/v1/advisorys?page=${currentPage - 1}&size=5&city=${city}`);
+      const clinics = await apiClient.get(`/api/v1/clinics/city/${city}?page=0&size=1000`)
+      
+      setTotalClinic(clinics.data.content);
+      const data = response.data;
+      if (data.totalPages > 0 && currentPage > data.totalPages) {
+        navigate(`/tu-van/page/${data.totalPages}`);
+        return;
+      }
+      setAdvisorys(data.content);
+      setTotalPages(data.totalPages);
+    };
 
-  const totalClinic = useMemo(() => {
-    const filterClinic = clinicData.map((clinicItem) => clinicItem.name);
-    return [...new Set(filterClinic.map((i) => i.trim()))];
-  }, [clinicData]);
+    fetchAdvisorys();
+  }, [currentPage, navigate]);
 
-  const handelTransitionText = (labelRef) => {
-    if (labelRef.current) {
-      labelRef.current.style.transition = "transform 0.3s ease";
-      labelRef.current.style.transform = "translateY(-100%)";
-    }
-  };
-
-  const handelBLurText = (refInput, labelRef) => {
-    if (refInput.current.value === "") {
-      labelRef.current.style.transition = "transform 0.3s ease";
-      labelRef.current.style.transform = "translateY(0%)";
-    }
-  };
   useEffect(() => {
     window.scrollTo({ top: true, behavior: "instant" });
   }, []);
 
-  const handelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault();
-    const valuePhone = PhoneRefInput.current.value;
-    const valueAge = AgeRefInput.current.value;
+    let isErr = false;
 
-    if (QuestionRef.current.value === "") {
+    if (!idClinic) {
+      setCheckClinic(true);
+      ClinicRef.current.style.border = "1px solid red";
+      isErr = true;
+    } else {
+      setCheckClinic(false);
+      ClinicRef.current.style.border = "1px solid #28c76f";
+    }
+
+    if (!QuestionRef.current.value.trim()) {
       setCheckQuestion(true);
       QuestionRef.current.style.border = "1px solid red";
+      isErr = true;
     } else {
       setCheckQuestion(false);
       QuestionRef.current.style.border = "1px solid #28c76f";
     }
 
-    if (NameRefInput.current.value === "") {
-      setMessageName("Vui lòng nhập thông tin!");
-      NameRefInput.current.style.border = "1px solid red";
-      setCheckMessageName(true);
-    } else {
-      setMessageName("");
-      NameRefInput.current.style.border = "1px solid #28c76f";
-      setCheckMessageName(false);
-    }
+    if (isErr) return;
 
-    if (!/^(0|\+84)[3|5|7|8|9]\d{8}$/.test(valuePhone)) {
-      if (valuePhone === "") {
-        setMessagePhone("Vui lòng nhập thông tin!");
-        setCheckMessagePhone(true);
-      } else {
-        setMessagePhone("Vui lòng nhập số điện thoại hợp lệ!");
-        setCheckMessagePhone(true);
-      }
-      PhoneRefInput.current.style.border = "1px solid red";
-    } else {
-      setMessageName("");
-      PhoneRefInput.current.style.border = "1px solid #28c76f";
-      setCheckMessagePhone(false);
-    }
+    try {
+      const body = {
+        patient: {
+          maBenhNhan: idPatient,
+        },
+        clinic: {
+          maPhongKham: idClinic,
+        },
+        cauHoi: QuestionRef.current.value.trim(),
+      };
 
-    if (/.*[a-zA-Z].*/.test(valueAge) || valueAge > 100 || valueAge <= 0) {
-      if (valueAge === "") {
-        setMessageAge("Vui lòng nhập thông tin!");
-        setCheckMessageAge(true);
-      } else {
-        AgeRefInput.current.style.border = "1px solid red";
-        setMessageAge("Vui lòng nhập tuổi hợp lệ!");
-        setCheckMessageAge(true);
+      const res = await apiClient.post(`/api/v1/advisory`, body);
+
+      if (res) {
+        alert("Gửi câu hỏi thành công.");
+        setQuestion("");
+        setIdClinic("");
+        ClinicRef.current.style.border = "1px solid #e5e7eb";
+        QuestionRef.current.style.border = "1px solid #e5e7eb";
       }
-      AgeRefInput.current.style.border = "1px solid red";
-    } else {
-      setMessageName("");
-      AgeRefInput.current.style.border = "1px solid #28c76f";
-      setCheckMessageAge(false);
+    } catch (error) {
+      alert("Gửi thất bại!");
     }
   };
   useEffect(() => {
@@ -141,12 +128,12 @@ const Question = () => {
     <>
       <Header />
       <div className="container-question">
-        {dataToShow.map((question, index) => (
-          <div className="item-question">
+        {advisorys?.map((item, index) => (
+          <div className="item-question" key={index}>
             <strong>
-              <i class="fa-regular fa-comment-dots"></i> {question.name}
+              <i class="fa-regular fa-comment-dots"></i> {item.patient.taiKhoan.hoVaTen}
             </strong>
-            <p className="content-question">{question.question}</p>
+            <p className="content-question">{item.cauHoi}</p>
             <button
               className="active-answer"
               onClick={() => handelShowAnswer(index)}
@@ -158,17 +145,17 @@ const Question = () => {
                 <div className="item-answer">
                   <img
                     className="img-answer"
-                    alt={question.docter}
-                    src={question.image}
+                    alt={item.doctor?.taiKhoan.hoVaTen}
+                    src={item.doctor?.taiKhoan.anhDaiDien || avtDoctor}
                   />
                   <div className="infor-docter-answer" ref={inforDocterRef}>
-                    <p className="name-docter-answer">{question.docter}</p>
+                    <p className="name-docter-answer">{item.doctor?.taiKhoan.hoVaTen}</p>
                     <p className="specityal-docter-answer">
-                      {question.specityal}
+                      {item.doctor?.specialty.tenChuyenKhoa}
                     </p>
                   </div>
                 </div>
-                <p className="docter-answer">{question.answer}</p>
+                <p className="docter-answer">{item.cauTraLoi}</p>
               </div>
             )}
           </div>
@@ -185,38 +172,16 @@ const Question = () => {
           className="wrappre-form-question"
           onSubmit={(e) => handelSubmit(e)}
         >
-          <Input
-            name={"Họ và tên"}
-            handelTransitionText={handelTransitionText}
-            labelRef={NameRef}
-            refInput={NameRefInput}
-            handelBLurText={handelBLurText}
-            message={messageName}
-            checkMessage={checkMessageName}
-          />
-          <SelectCpm data={["Nam", "Nữ", "Khác"]} />
-          <Input
-            name={"Tuổi"}
-            handelTransitionText={handelTransitionText}
-            labelRef={AgeRef}
-            refInput={AgeRefInput}
-            handelBLurText={handelBLurText}
-            message={messageAge}
-            checkMessage={checkMessageAge}
-          />
-          <Input
-            name={"Số điện thoại"}
-            handelTransitionText={handelTransitionText}
-            labelRef={PhoneRef}
-            refInput={PhoneRefInput}
-            handelBLurText={handelBLurText}
-            message={messagePhone}
-            checkMessage={checkMessagePhone}
-          />
-          <SelectCpm data={totalClinic} />
+          <SelectCpm ClinicRef={ClinicRef} data={totalClinic} value={idClinic} onChange={(e) => { setIdClinic(e.target.value); ClinicRef.current.style.border = "1px solid #28c76f"; setCheckClinic(false); }} />
+          {checkClinic && (
+            <div className="messageClinic">Vui lòng chọn 1 phòng khám nếu có!</div>
+          )}
           <textarea
             className="user-content-question"
+            value={question}
+            onChange={(e) => { setQuestion(e.target.value); QuestionRef.current.style.border = "1px solid #28c76f"; setCheckQuestion(false) }}
             ref={QuestionRef}
+            placeholder="Nhập câu hỏi ở đây..."
           ></textarea>
           {checkQuestion && (
             <div className="messageQuestion">Vui lòng nhập câu hỏi!</div>
