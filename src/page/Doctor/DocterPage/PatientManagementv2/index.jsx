@@ -1,229 +1,159 @@
-import React, { useEffect, useState } from "react";
-import AddPatientForm from "./AddPatientForm/AddPatientForm";
-import EditPatientForm from "./PatientEdit/index";
-import PatientDetailsModal from "./PatientDetail/index";
-import MedicalHistoryModal from "./MedicalHistory/index";
-import DeletePatientButton from "./DeletePatient/DeletePatientButton";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./PatientManagement.module.css";
-import dataUser from "../../../../data/AcceptMedicalAppointment.json";
+import axios from "axios";
+import ReusableTable from "../../../../components/DoctorTable/ReusableTable";
+import ConfirmModal from "../../../../components/ConfirmModal/ConfirmModal";
+import apiClient from "../../../../api/api";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 const PatientManagement = () => {
-  const [patients, setPatients] = useState(dataUser);
+  /*const [tenBien, hamDoiGiaTri] = useState(giaTriBanDau);*/
+  const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingPatient, setEditingPatient] = useState(null);
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [patientIdToDelete, setPatientIdToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const idDoctor = localStorage.getItem("idDoctor");
+  const idClinic = localStorage.getItem("idClinic");
+  const pageSize = 5;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const patientsPerPage = 5;
+  const fetchPatients = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
+      setPatients(response.data.content || []);
+      setTotalPages(response.data.totalPages || 0);
+      console.log(response.data.content);
+    } catch (error) {
+      console.error("Lỗi API:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, searchTerm, idDoctor, idClinic]);
 
   useEffect(() => {
-    window.scrollTo({
-      behavior: "instant",
-      top: "true",
-    });
-  }, []);
+    fetchPatients();
+  }, [fetchPatients]);
 
-  const filteredPatients = patients.filter(
-    (patient) =>
-      patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.phone.includes(searchTerm)
-  );
-
-  const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
-  const indexOfLastPatient = currentPage * patientsPerPage;
-  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-  const currentPatients = filteredPatients.slice(
-    indexOfFirstPatient,
-    indexOfLastPatient
-  );
-
-  const handleAddPatient = (newPatient) => {
-    const newId = `${String(patients.length + 1)}`;
-    const patientToAdd = {
-      ...newPatient,
-      id: newId,
-    };
-    setPatients([...patients, patientToAdd]);
-    setShowAddForm(false);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(0);
   };
+  const handleDeleteClick = (id) => {
+    setPatientIdToDelete(id);
+    setIsDeleteModalOpen(true);
+  }
+  const navigate = useNavigate();
 
-  const handleEditPatient = (updatedPatient) => {
-    const PatientEdit = {
-      ...updatedPatient,
-      patientName: updatedPatient.fullName || updatedPatient.patientName,
-    };
-
-    setPatients(
-      patients.map((patient) =>
-        patient.id === PatientEdit.id ? PatientEdit : patient
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await apiClient.delete(`/api/v1/patient/delete/${patientIdToDelete}`);
+      toast.success(response.data || "Xóa bệnh nhân thành công!");
+      setIsDeleteModalOpen(false);
+      fetchPatients();
+    } catch (error) {
+      toast.error(error.response?.data || "Lỗi khi xóa bệnh nhân");
+    }
+  }
+  // Cấu hình các cột hiển thị
+  const columns = [
+    { header: "Mã BN", render: (p) => p.maBenhNhan },
+    {
+      header: "Họ tên",
+      render: (p) => (
+        <div className={styles.patientNameCell}>
+          <img src={p.taiKhoan?.anh || 'default-avatar.png'} alt="avatar" />
+          <span>{p.taiKhoan?.hoVaTen || p.hoVaTen}</span>
+        </div>
       )
-    );
-    setEditingPatient(null);
-  };
+    },
+    { header: "Ngày Sinh", render: (p) => p.ngaySinh },
+    { header: "Giới tính", render: (p) => p.taiKhoan?.gioiTinh ? "Nam" : "Nữ" },
+    { header: "Số điện thoại", render: (p) => p.soDienThoai },
+    { header: "Địa chỉ", render: (p) => p.diaChi },
+    {
+      header: "Thao tác",
+      render: (p) => (
+        <div className={styles.actionGroup}>
+          <button className={styles.btnAction} title="Hồ sơ" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-file-invoice"></i></button>
+          <button className={styles.btnAction} title="Nhắn tin" onClick={() => navigate(`/doctor/chat`)}><i className="fa-solid fa-comment-dots"></i></button>
+          <button className={styles.btnAction} title="Sửa" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-pen-to-square"></i></button>
+          <button className={styles.btnAction} title="Xóa" onClick={() => handleDeleteClick(p.maBenhNhan)}>
+            <i className="fa-solid fa-trash"></i>
+          </button>
 
-  const handleDeletePatient = (id) => {
-    setPatients(patients.filter((patient) => patient.id !== id));
-  };
+        </div>
+      )
+    }
+  ];
 
-  const viewPatientDetails = (patient) => {
-    setSelectedPatient(patient);
-    setShowDetailModal(true);
-  };
+  // Giao diện Bộ lọc
+  const FilterUI = (
+    <div className={styles.filterContainer}>
+      {/* <div className={styles.filterLeft}>
+        <div className={styles.inputWrapper}>
+          <input type="date" className={styles.inputDate} />
+        </div>
+        <div className={styles.inputWrapper}>
+          <i className="fa-solid fa-filter"></i>
+          <select className={styles.selectAge}><option>Ngày sinh</option></select>
+        </div>
+      </div> */}
 
-  const viewMedicalHistory = (patient) => {
-    setSelectedPatient(patient);
-    setShowHistoryModal(true);
-  };
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quản lý Bệnh nhân</h1>
-      </div>
-
-      <div className={styles.controls}>
-        <div className={styles.searchContainer}>
+      <div className={styles.filterRight}>
+        <div className={styles.inputWrapper}>
+          <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
-            placeholder="Tìm kiếm theo mã, tên hoặc số điện thoại..."
+            placeholder="Search"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
+            onChange={handleSearchChange}
+            className={styles.searchBar}
           />
-          <span className={styles.searchIcon}>
-            <i className="fa-solid fa-magnifying-glass"></i>
-          </span>
         </div>
-
-        <button
-          className={styles.addButton}
-          onClick={() => setShowAddForm(true)}
-        >
-          + Thêm bệnh nhân
-        </button>
       </div>
-
-      {showAddForm && (
-        <AddPatientForm
-          onSave={handleAddPatient}
-          onCancel={() => setShowAddForm(false)}
-        />
-      )}
-
-      {editingPatient && (
-        <EditPatientForm
-          patient={editingPatient}
-          onSave={handleEditPatient}
-          onCancel={() => setEditingPatient(null)}
-        />
-      )}
-
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Mã BN</th>
-              <th>Họ tên</th>
-              <th>Giới tính</th>
-              <th>Số điện thoại</th>
-              <th>Ngày sinh</th>
-              <th>Tuổi</th>
-              <th>Địa chỉ</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentPatients.map((patient) => (
-              <tr key={patient.id}>
-                <td>
-                  <span className={styles.patientId}>{patient.id}</span>
-                </td>
-                <td>
-                  <div className={styles.patientName}>
-                    {patient.patientName || patient.fullName}
-                  </div>
-                </td>
-                <td>{patient.gender}</td>
-                <td>{patient.phone}</td>
-                <td>{patient.date}</td>
-                <td>{patient.age} tuổi</td>
-                <td>{patient.address}</td>
-                <td>
-                  <div className={styles.actions}>
-                    <button
-                      className={styles.viewButton}
-                      onClick={() => viewPatientDetails(patient)}
-                    >
-                      <i className="fa-solid fa-eye"></i>
-                    </button>
-                    <button
-                      className={styles.historyButton}
-                      onClick={() => viewMedicalHistory(patient)}
-                    >
-                      <i className="fa-solid fa-clock-rotate-left"></i>
-                    </button>
-                    <button
-                      className={styles.editButton}
-                      onClick={() => setEditingPatient(patient)}
-                    >
-                      <i className="fa-solid fa-pen"></i>
-                    </button>
-                    <DeletePatientButton
-                      patientId={patient.id}
-                      patientName={patient.fullName}
-                      onDelete={handleDeletePatient}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className={styles.pagination}>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => paginate(currentPage - 1)}
-        >
-          <i className="fa-solid fa-square-caret-left"></i>
-        </button>
-        {[...Array(totalPages)].map((_, idx) => (
-          <button
-            key={idx + 1}
-            className={currentPage === idx + 1 ? styles.activePage : ""}
-            onClick={() => paginate(idx + 1)}
-          >
-            {idx + 1}
-          </button>
-        ))}
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => paginate(currentPage + 1)}
-        >
-          <i className="fa-solid fa-square-caret-right"></i>
-        </button>
-      </div>
-
-      {showDetailModal && selectedPatient && (
-        <PatientDetailsModal
-          patient={selectedPatient}
-          onClose={() => setShowDetailModal(false)}
-        />
-      )}
-
-      {showHistoryModal && selectedPatient && (
-        <MedicalHistoryModal
-          patient={selectedPatient}
-          onClose={() => setShowHistoryModal(false)}
-        />
-      )}
     </div>
+  );
+
+  // Giao diện Phân tran
+  const PaginationUI = (
+    <div className={styles.paginationFlex}>
+      <span>Showing {patients.length} out of {totalPages * pageSize}</span>
+      <div className={styles.pageButtons}>
+        <button disabled={currentPage === 0} onClick={() => setCurrentPage(p => p - 1)}>
+          <i className="fa-solid fa-chevron-left"></i>
+        </button>
+        <span className={styles.pageCurrent}>{currentPage + 1}</span>
+
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Component Bảng của sếp */}
+      <ReusableTable
+        columns={columns}
+        data={patients}
+        loading={loading}
+        filterComponent={FilterUI}
+        pagination={PaginationUI}
+      />
+
+      {/* --- SẾP PHẢI NHÉT THÊM CỤC NÀY VÀO ĐÂY THÌ NÓ MỚI HIỆN POPUP ĐƯỢC --- */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Xác nhận xóa"
+        // Custom câu thông báo động theo mã bệnh nhân đang chọn
+        message={`Bạn có chắc chắn muốn xóa bệnh nhân mã ${patientIdToDelete}? Dữ liệu sẽ không thể khôi phục.`}
+      />
+    </>
   );
 };
 

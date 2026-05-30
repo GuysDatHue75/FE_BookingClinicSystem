@@ -69,15 +69,18 @@ import UserProfile from "./page/profile/Userprofile";
 import Statistical from "./page/statistical/Statistical";
 import SidebarAdmin from "./layouts/Sidebar/Sidebar.jsx";
 import Registration from "./page/Doctor/DocterPage/Regester/Registration.js";
+import FloatingChatBubble from "./components/FloatingChatBubble/FloatingChatBubble.jsx";
+import ChatPage from "./components/Chat/ChatPage.jsx";
+
 
 function App() {
   const { valueText, roleLocal } = useContext(State);
   const [role, setRole] = useState(roleLocal);
   useEffect(() => {
-    const savedRole = roleLocal || JSON.parse(localStorage.getItem("role"));
+    const savedRole = roleLocal || localStorage.getItem("role");
     if (!savedRole) {
       localStorage.setItem("role", JSON.stringify("doctor"));
-      setRole(JSON.parse(localStorage.getItem("role")));
+      setRole(localStorage.getItem("role"));
     }
     setRole(savedRole);
     if (savedRole === "user") {
@@ -98,7 +101,7 @@ function App() {
             <Route path="/register" element={<Registration />} />
 
             {/* User */}
-            {role === "user" && (
+            {role === "BenhNhan" && (
               <>
                 <Route path="/trang-chu" element={<Home />} />
                 <Route path="/bac-si" element={<Docter />} />
@@ -111,6 +114,7 @@ function App() {
                 <Route path="/chinh-sach-bao-mat" element={<Security />} />
                 <Route path="/confirm" element={<Confirm />} />
                 <Route path="/dang-ky-phong-kham" element={<CreateClinic />} />
+                <Route path="/patient/chat" element={<ChatPage />} />
                 <Route
                   path="/chi-tiet-phong-kham/:slug"
                   element={<DetailClinic />}
@@ -129,17 +133,19 @@ function App() {
               </>
             )}
             {/* Doctor */}
-            {role === "doctor" && (
+            {role === "BacSi" && (
               <>
                 <Route path="/doctor" element={<Layout />}>
                   <Route
                     path="/doctor/patients"
                     element={<PatientManagementv2 />}
                   />
+                  <Route path="/doctor/patient-detail/:id" element={<PatientDetail />}></Route>
                   <Route
                     path="/doctor/doi-mat-khau"
                     element={<Changepassword />}
                   />
+                  <Route path="/doctor/chat" element={<ChatPage />} />
                   <Route path="/doctor" element={<DoctorStatistics />} />
                   <Route
                     path="/doctor/schedule"
@@ -352,8 +358,9 @@ function App() {
                 <Route path="/*" element={<NotFound />} />
               </>
             )}
-          </Routes>
 
+          </Routes>
+          <FloatingChatBubble />
           <ToastContainer />
         </PatientProvider>
       </CommonProvider>

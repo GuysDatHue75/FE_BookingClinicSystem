@@ -1,9 +1,11 @@
+import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 
-const Sidebar = ({ role, menuItems, name, urlimage }) => {
+const Sidebar = ({ menuItems }) => {
   const location = useLocation();
 
+  // Logic kiểm tra xem menu con có đang được mở hay không
   const isMenuOpen = (item) => {
     if (item.subMenu) {
       return (
@@ -16,52 +18,52 @@ const Sidebar = ({ role, menuItems, name, urlimage }) => {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-header">
-        <img src="/logo.svg" alt="Logo" width={100} />
-        <div className="doctor-info">
-          <img src={urlimage} alt="avatar doctor" className="doctor-avt" />
-          <div className="doctor-name-role">
-            <div className="doctor-name">{role}</div>
-            <div className="doctor-role">{name}</div>
-          </div>
+      <div className="sidebar-logo">
+        <div className="logo-icon-wrapper">
+
+          <img src="/logo.svg" alt="Doctor Online Connect Logo" className="sidebar-logo-img" />
         </div>
+
       </div>
 
+      {/* KHU VỰC MENU CHÍNH */}
       <div className="sidebar-menu">
         {menuItems.map((item, idx) => (
-          <div key={idx}>
+          <div key={idx} className="menu-group">
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                isActive ? "menu-item active" : "menu-item"
+                isActive ? "menu-item active-item" : "menu-item"
               }
             >
-              <span className="menu-icon">{item.icon}</span>
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>{item.label}</span>
-                {item.index ? <span className="noti">{item.noti}</span> : <></>}
+              <div className="item-left">
+                <span className="menu-icon">
+                  {/* Bỏ {item.icon} vào trong thẻ img */}
+                  <img src={item.icon} alt={item.label} className="icon-img" />
+                </span>
+                <span className="menu-label">{item.label}</span>
               </div>
+
+              {/* Badge thông báo (nếu có) */}
+              {item.noti > 0 && <span className="noti-badge">{item.noti}</span>}
             </NavLink>
 
-            {item.subMenu &&
-              isMenuOpen(item) &&
-              item.subMenu.map((sub, subIdx) => (
-                <NavLink
-                  key={subIdx}
-                  to={sub.path}
-                  className={({ isActive }) =>
-                    isActive ? "sub-menu-item active" : "sub-menu-item"
-                  }
-                >
-                  {sub.label}
-                </NavLink>
-              ))}
+            {/* RENDER MENU CON (SUB-MENU) */}
+            {item.subMenu && isMenuOpen(item) && (
+              <div className="sub-menu-container">
+                {item.subMenu.map((sub, subIdx) => (
+                  <NavLink
+                    key={subIdx}
+                    to={sub.path}
+                    className={({ isActive }) =>
+                      isActive ? "sub-menu-item active-sub" : "sub-menu-item"
+                    }
+                  >
+                    {sub.label}
+                  </NavLink>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

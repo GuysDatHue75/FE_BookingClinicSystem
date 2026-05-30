@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 const NotFound = () => {
   const navigate = useNavigate();
   const handelRoutingNotfound = () => {
-    const role = JSON.parse(localStorage.getItem("role"));
-    if (role === "doctor") {
+    const role = localStorage.getItem("role");
+    if (role === "BacSi") {
       navigate("/doctor");
     } else if (role === "clinic") {
       navigate("/clinic");

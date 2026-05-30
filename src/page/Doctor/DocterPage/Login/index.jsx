@@ -23,30 +23,37 @@ const Login = () => {
       pass: password,
       otp: ""
     }
-    if (phone == "" || password == "") {
+    if (phone === "" || password === "") {
       setError("vui lòng nhập thông tin");
       return;
     }
     try {
+      console.log(phone, password);
 
       const response = await apiClient.post('/api/v1/login', body);
+      //  console.log(response.data.maBenhNhan);
+
       if (response.data.taiKhoan?.vaiTro) {
+        console.log(response.data.maBenhNhan);
         localStorage.setItem("role", response.data.taiKhoan.vaiTro);
         localStorage.setItem("user", JSON.stringify(response.data));
-        localStorage.setItem("idPatient", response.data.maBenhNhan);
-        localStorage.setItem("idAccount", response.data.taiKhoan.maTaiKhoan);
-        localStorage.setItem("city", response.data.queQuan);
+        localStorage.setItem("idDoctor", response.data.maBacSi || "");
+        localStorage.setItem("idClinic", response.data.phongKham?.maPhongKham || "");
+        localStorage.setItem("idPatient", response.data.maBenhNhan || "");
+        localStorage.setItem("idAccount", response.data.taiKhoan.maTaiKhoan || "");
+        localStorage.setItem("city", response.data.queQuan || "");
         setRole(response.data.taiKhoan.vaiTro);
       }
       const roleApi = response.data.taiKhoan.vaiTro;
-      if (roleApi === "BN") {
+      if (roleApi === "BenhNhan") {
         if (response.data.taiKhoan.lanDauDangNhap === 1) {
           navigate("/chon-tinhthanh");
         } else {
           navigate("/trang-chu");
         }
-      } else if (roleApi === "BS") {
+      } else if (roleApi === "BacSi") {
         navigate("/doctor")
+
       } else if (roleApi === "ADPK") {
         navigate("/clinic")
       } else {
