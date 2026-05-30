@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import ClinicRequestTable from "./ClinicRequestTable";
 import ClinicRequestDetails from "./ClinicBrowseDetail";
-import styles from "./ClinicBrowses.module.css";
+import styles from "./ClinicBrowse.module.css";
 // IMPORT SERVICE GỌI API VÀO ĐÂY
-import browseClinicService from "../../../services/BrowseClinicService"; 
+import browseClinicService from "../../../services/admin/BrowseClinicService"; 
 
 const ClinicRequestManagement = () => {
   // State quản lý dữ liệu từ API
@@ -29,11 +29,16 @@ const ClinicRequestManagement = () => {
       let response;
 
       // Logic rẽ nhánh API dựa trên filter và search
-      if (searchTerm.trim() !== "") {
+      if (searchTerm.trim() !== "" || filter === "Đã duyệt" || filter === "Đã từ chối") {
         // Gọi API Search (Nhớ cấu hình body request khớp với BrowseClinicSearchRequest)
-        const searchRequest = { keyword: searchTerm, status: filter };
-        response = await browseClinicService.searchClinics(searchRequest, pageIndex, size);
-      } else if (filter === "pending") {
+        const searchRequest = { 
+          keyword: searchTerm.trim(), 
+          trangThai: filter === "all" ? "" : filter,
+          page: pageIndex,
+          size: size
+        };
+        response = await browseClinicService.searchClinics(searchRequest);
+      } else if (filter === "Chờ duyệt") {
         response = await browseClinicService.getPendingClinics(pageIndex, size);
       } else {
         response = await browseClinicService.getAllClinics(pageIndex, size);
@@ -71,22 +76,41 @@ const ClinicRequestManagement = () => {
   // Hành động Duyệt
   const handleApprove = async (maPhongKham) => {
     if (!window.confirm("Xác nhận duyệt phòng khám này?")) return;
+    const payload = {
+        maPhongKham: maPhongKham,
+        isApproved: true, 
+        lyDoTuChoi: ""    
+    };
     try {
-      await browseClinicService.handleBrowseClinic(maPhongKham, { status: "APPROVED" });
+      await browseClinicService.handleBrowseClinic(maPhongKham, payload);
       fetchClinics(); // Load lại bảng sau khi duyệt thành công
+      alert("Đã phê duyệt phòng khám thành công!");
     } catch (error) {
       console.error("Lỗi duyệt phòng khám:", error);
+      alert("Lỗi hệ thống khi phê duyệt!");
     }
   };
 
   // Hành động Từ chối
   const handleReject = async (maPhongKham) => {
-    if (!window.confirm("Xác nhận từ chối phòng khám này?")) return;
+    const reason = window.prompt("Vui lòng nhập lý do từ chối phòng khám này (Bắt buộc):");
+    if (reason === null) return; 
+    if (reason.trim() === "") {
+        alert("Thao tác thất bại: Bạn bắt buộc phải nhập lý do từ chối!");
+        return;
+    }
     try {
-      await browseClinicService.handleBrowseClinic(maPhongKham, { status: "REJECTED" });
-      fetchClinics(); 
+      const payload = {
+        maPhongKham: maPhongKham,
+        isApproved: false, 
+        lyDoTuChoi: reason.trim() 
+      };
+      await browseClinicService.handleBrowseClinic(maPhongKham, payload);
+      fetchClinics();
+      alert("Đã từ chối phòng khám thành công!"); 
     } catch (error) {
       console.error("Lỗi từ chối phòng khám:", error);
+      alert("Lỗi hệ thống khi từ chối!");
     }
   };
 
@@ -133,9 +157,9 @@ const ClinicRequestManagement = () => {
             className={styles.filterSelect}
           >
             <option value="all">Tất cả</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="APPROVED">Đã duyệt</option> {/* Sửa lại theo chuẩn Enum Backend nếu cần */}
-            <option value="REJECTED">Đã từ chối</option>
+            <option value="Chờ duyệt">Chờ duyệt</option>
+            <option value="Đã duyệt">Đã duyệt</option> {/* Sửa lại theo chuẩn Enum Backend nếu cần */}
+            <option value="Đã từ chối">Đã từ chối</option>
           </select>
         </div>
       </div>
@@ -159,6 +183,8 @@ const ClinicRequestManagement = () => {
         <ClinicRequestDetails
           request={selectedRequest}
           onClose={() => setShowDetailModal(false)}
+          onApprove={handleApprove}
+          onReject={handleReject}
         />
       )}
     </div>

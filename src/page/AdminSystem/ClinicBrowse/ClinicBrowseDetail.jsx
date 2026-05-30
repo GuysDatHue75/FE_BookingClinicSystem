@@ -1,31 +1,39 @@
 import React from "react";
 import styles from "./ClinicBrowseDetail.module.css";
 
-const ClinicRequestDetails = ({ request, onClose }) => {
-  // Hàm format ngày giờ (Xử lý chuỗi LocalDateTime từ Java: "2026-05-20T10:30:00")
+// 💥 FIX 1: Nhận thêm 2 hàm onApprove và onReject từ component cha truyền vào
+const ClinicRequestDetails = ({ request, onClose, onApprove, onReject }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "Chưa cập nhật";
     const date = new Date(dateString);
     return date.toLocaleDateString("vi-VN");
   };
 
-  // Trạng thái từ DB thường lưu in hoa (PENDING, APPROVED, REJECTED)
+  // 💥 FIX 2: Đồng bộ hiển thị và màu sắc theo chuẩn Tiếng Việt
   const getStatusText = (status) => {
-    switch (status?.toUpperCase()) {
-      case "PENDING": return "Chờ duyệt";
-      case "APPROVED": return "Đã duyệt";
-      case "REJECTED": return "Đã từ chối";
-      default: return status || "Chưa rõ";
-    }
+    if (!status) return "Chưa rõ";
+    return status;
   };
 
   const getStatusClass = (status) => {
-    switch (status?.toUpperCase()) {
-      case "PENDING": return styles.statusPending;
-      case "APPROVED": return styles.statusApproved;
-      case "REJECTED": return styles.statusRejected;
+    switch (status) {
+      case "Chờ duyệt": return styles.statusPending;
+      case "Đã duyệt": return styles.statusApproved;
+      case "Đã từ chối": return styles.statusRejected;
       default: return "";
     }
+  };
+
+  // Hàm xử lý khi bấm Duyệt trong Modal
+  const handleApproveClick = () => {
+    onApprove(request.maPhongKham);
+    onClose(); // Bấm xong thì tự động đóng Modal (nút sẽ biến mất)
+  };
+
+  // Hàm xử lý khi bấm Từ chối trong Modal
+  const handleRejectClick = () => {
+    onReject(request.maPhongKham);
+    onClose(); // Bấm xong thì tự động đóng Modal
   };
 
   return (
@@ -56,10 +64,7 @@ const ClinicRequestDetails = ({ request, onClose }) => {
                   <span className={styles.infoLabel}>Loại hình:</span>
                   <span className={styles.infoValue}>{request.loaiHinhPhongKham}</span>
                 </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Mã chuyên khoa:</span>
-                  <span className={styles.infoValue}>{request.maChuyenKhoa || "N/A"}</span>
-                </div>
+                {/* Đã xóa maChuyenKhoa vì Backend không có trường này */}
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Số lượng bác sĩ:</span>
                   <span className={styles.infoValue}>{request.soLuongBacSi || 0}</span>
@@ -91,7 +96,6 @@ const ClinicRequestDetails = ({ request, onClose }) => {
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Giờ hoạt động:</span>
                   <span className={styles.infoValue}>
-                    {/* Kết hợp giờ bắt đầu và kết thúc */}
                     {request.gioBatDauLamViec ? request.gioBatDauLamViec.substring(0, 5) : "--:--"} - 
                     {request.gioKetThucLamViec ? request.gioKetThucLamViec.substring(0, 5) : "--:--"}
                   </span>
@@ -102,8 +106,9 @@ const ClinicRequestDetails = ({ request, onClose }) => {
                     {getStatusText(request.trangThai)}
                   </span>
                 </div>
-                {/* Chỉ hiển thị lý do từ chối nếu trạng thái là REJECTED */}
-                {request.trangThai?.toUpperCase() === 'REJECTED' && request.lyDoTuChoi && (
+                
+                {/* Chỉ hiển thị lý do từ chối nếu trạng thái là "Đã từ chối" */}
+                {request.trangThai === 'Đã từ chối' && request.lyDoTuChoi && (
                   <div className={styles.infoItem} style={{gridColumn: '1 / -1'}}>
                     <span className={styles.infoLabel} style={{color: 'red'}}>Lý do từ chối:</span>
                     <span className={styles.infoValue} style={{color: 'red', fontWeight: '500'}}>{request.lyDoTuChoi}</span>
@@ -116,13 +121,46 @@ const ClinicRequestDetails = ({ request, onClose }) => {
               </div>
             </div>
 
-            {/* THÔNG TIN GIẤY PHÉP */}
+            {/* THÔNG TIN GIẤY PHÉP VÀ HÌNH ẢNH */}
             <div className={styles.infoSection}>
-              <h3 className={styles.sectionTitle}>Thông tin giấy phép</h3>
+              <h3 className={styles.sectionTitle}>Thông tin giấy phép & Hình ảnh</h3>
               <div className={styles.infoGrid}>
+                
+                {/* 💥 BỔ SUNG: Ảnh phòng khám từ Backend */}
+                <div className={styles.infoItem} style={{gridColumn: '1 / -1', marginBottom: '15px'}}>
+                  <span className={styles.infoLabel}>Ảnh phòng khám:</span>
+                  <span className={styles.infoValue}>
+                    {request.anhPhongKham ? (
+                      <img 
+                        src={request.anhPhongKham} 
+                        alt="Ảnh phòng khám" 
+                        style={{ maxWidth: '250px', borderRadius: '8px', border: '1px solid #ddd' }} 
+                      />
+                    ) : (
+                      <span style={{color: '#95a5a6'}}>Chưa cập nhật ảnh</span>
+                    )}
+                  </span>
+                </div>
+
+                {/* 💥 FIX: Chuyển trường Giấy phép thành dạng Link mở file */}
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Số giấy phép:</span>
-                  <span className={styles.infoValue}>{request.giayPhep}</span>
+                  <span className={styles.infoLabel}>Giấy phép hoạt động:</span>
+                  <span className={styles.infoValue}>
+                    {request.giayPhep ? (
+                      <a
+                        href={request.giayPhep}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        /* Nếu bạn đã xóa class attachmentLink, có thể dùng style trực tiếp này */
+                        style={{ color: '#2980b9', textDecoration: 'none', fontWeight: 'bold' }} 
+                      >
+                        <i className="fa-solid fa-file-contract" style={{marginRight: '5px'}}></i>
+                        Xem giấy phép
+                      </a>
+                    ) : (
+                      <span style={{color: '#95a5a6'}}>Chưa có file giấy phép</span>
+                    )}
+                  </span>
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Ngày cấp:</span>
@@ -132,24 +170,7 @@ const ClinicRequestDetails = ({ request, onClose }) => {
                   <span className={styles.infoLabel}>Nơi cấp:</span>
                   <span className={styles.infoValue}>{request.noiCap}</span>
                 </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Tệp đính kèm:</span>
-                  <span className={styles.infoValue}>
-                    {request.tepDinhKem ? (
-                      <a
-                        href={request.tepDinhKem}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.attachmentLink}
-                      >
-                        <i className="fa-solid fa-file-pdf" style={{marginRight: '5px'}}></i>
-                        Xem tệp đính kèm
-                      </a>
-                    ) : (
-                      <span style={{color: '#95a5a6'}}>Không có tệp đính kèm</span>
-                    )}
-                  </span>
-                </div>
+                {/* Đã xóa tepDinhKem vì Backend không có trường này */}
               </div>
             </div>
 
@@ -176,8 +197,31 @@ const ClinicRequestDetails = ({ request, onClose }) => {
 
           </div>
         </div>
+        
+        {/* 💥 FIX 3: Thêm nút Duyệt và Từ chối vào Footer của Modal */}
         <div className={styles.modalFooter}>
-          <button className={styles.closeModalButton} onClick={onClose}>
+          
+          {/* Nút Action chỉ hiện khi trạng thái là "Chờ duyệt" */}
+          {request.trangThai === "Chờ duyệt" && (
+            <div style={{ display: 'flex', gap: '10px', marginRight: 'auto' }}>
+              <button 
+                className={styles.approveButton} 
+                onClick={handleApproveClick}
+                style={{ padding: '8px 16px', backgroundColor: '#2ecc71', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                <i className="fa-solid fa-check" style={{marginRight: '5px'}}></i> Duyệt hồ sơ
+              </button>
+              <button 
+                className={styles.rejectButton} 
+                onClick={handleRejectClick}
+                style={{ padding: '8px 16px', backgroundColor: '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                <i className="fa-solid fa-xmark" style={{marginRight: '5px'}}></i> Từ chối
+              </button>
+            </div>
+          )}
+
+          <button className={styles.closeModalButton} onClick={onClose} style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}>
             Đóng
           </button>
         </div>

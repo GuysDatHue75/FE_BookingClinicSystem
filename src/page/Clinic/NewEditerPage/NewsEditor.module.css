@@ -51,6 +51,48 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
+.searchContainer {
+  position: relative;
+  width: 100%;
+}
+.searchInput {
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+.searchIcon {
+  position: absolute;
+  left: 3%;
+  top: 30%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.select {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  background-color: #fff;
+  color: #475569;
+}
 
 .sidebarTitle {
   font-size: 1.1rem;
@@ -82,7 +124,6 @@
 .titleInput,
 .summaryInput,
 .contentInput,
-.select,
 .tagInput {
   width: 95%;
   padding: 0.75rem;
@@ -90,6 +131,7 @@
   border-radius: 4px;
   font-family: inherit;
   transition: border-color 0.2s;
+  
 }
 
 .titleInput:focus,

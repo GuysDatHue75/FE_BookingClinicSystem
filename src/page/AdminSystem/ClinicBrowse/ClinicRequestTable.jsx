@@ -17,20 +17,15 @@ const ClinicRequestTable = ({
   };
 
   const getStatusText = (status) => {
-    // Ép kiểu về lowercase để so sánh chuẩn xác với DB
-    switch (status?.toLowerCase()) {
-      case "pending": return "Chờ duyệt";
-      case "approved": return "Đã duyệt";
-      case "rejected": return "Đã từ chối";
-      default: return status;
-    }
+    if (!status) return "Chưa rõ";
+    return status; 
   };
 
   const getStatusClass = (status) => {
-    switch (status?.toLowerCase()) {
-      case "pending": return styles.statusPending;
-      case "approved": return styles.statusApproved;
-      case "rejected": return styles.statusRejected;
+    switch (status) {
+      case "Chờ duyệt": return styles.statusPending;
+      case "Đã duyệt": return styles.statusApproved;
+      case "Đã từ chối": return styles.statusRejected;
       default: return "";
     }
   };
@@ -49,7 +44,7 @@ const ClinicRequestTable = ({
               <th>Loại hình phòng khám</th>
               <th>Địa chỉ</th>
               <th>Tỉnh,TP</th>
-              <th>Số lượng BS</th>
+              <th>SL_BS</th>
               <th>Trạng thái</th>
               <th>Ngày đăng ký</th>
               <th>Mã Gói</th>
@@ -94,7 +89,7 @@ const ClinicRequestTable = ({
                       </button>
                       
                       {/* Chỉ hiện nút duyệt/từ chối khi trạng thái là pending */}
-                      {request.status?.toLowerCase() === "pending" && (
+                      {request.trangThai === "Chờ duyệt" && (
                         <>
                           <button
                             className={styles.approveButton}
@@ -116,7 +111,7 @@ const ClinicRequestTable = ({
               )})
             ) : (
               <tr>
-                <td colSpan="7" className={styles.noData}>
+                <td colSpan="" className={styles.noData}>
                   Không có yêu cầu đăng ký nào
                 </td>
               </tr>

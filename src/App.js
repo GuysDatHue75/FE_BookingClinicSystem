@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { useContext, useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import { useAuth } from "./context/AuthContext";
 
 // User
 import Home from "./page/User/HomePage/Home";
@@ -48,40 +49,40 @@ import { PatientProvider } from "./context/patientContext";
 
 // Clinic
 import { CommonProvider } from "./components/CommonContext";
-import SidebarClinic from "./layouts/LayoutClinic/SidebarClinic";
-import CreateDoctor from "./page/Clinic/CreateDoctorPage/CreateDoctor";
-import MNDoctorAll from "./page/Clinic/DoctorAllPage/MNDoctorAll";
-import DoctorView from "./page/Clinic/DoctorViewPage/DoctorView.js";
-import NotificationEditor from "./page/Clinic/NotificationPage/NotificationEditer.js";
-import NewsEditor from "./page/Clinic/NewEditerPage/NewsEditor.js";
-import UpdateClinic from "./page/Clinic/UpdateClinicPage/UpdateClinic.js";
+import LayoutClinic from "./layouts/LayoutClinic/Layout/LayoutClinic.jsx";
+import MNDoctorAll from "./page/Clinic/DoctorAllPage/MNDoctorAll.jsx";
+import MNSchedules from "./page/Clinic/ClinicSchedule/ClinicScheduleManager.jsx";
+import NotificationClinic from "./page/Clinic/NotificationPage/NotificationManager.jsx";
+import NewsManager from "./page/Clinic/NewEditerPage/NewsManager.jsx";
+import UpdateClinic from "./page/Clinic/UpdateClinicPage/UpdateClinic.jsx";
 import Statistics from "./page/Clinic/StatisticalPage/Statistical.js";
 import Changepassword from "./page/Changepassword/Changepassword.jsx";
-import MNSpecialty from "./page/Clinic/MNSpecialtyPage/MNSpecialty.js";
-import ClinicView from "./page/Clinic/ProfileClinicPage/ClinicView.js";
+import MNSpecialty from "./page/Clinic/MNSpecialtyPage/MNSpecialty.jsx";
+import ClinicView from "./page/Clinic/ProfileClinicPage/ClinicView.jsx";
 
 // admin system
-import Clinicbrowses from "./page/Clinicbrowse/Clinicbrowses";
-import Doctorbrowses from "./page/Doctorbrowse/Doctorbrowses";
-import Clinicmanagers from "./page/Clinicmanager/Clinicmanagers";
-import Createpackage from "./page/package/createpackage/Createpackage";
-import UserProfile from "./page/profile/Userprofile";
-import Statistical from "./page/statistical/Statistical";
-import SidebarAdmin from "./layouts/Sidebar/Sidebar.jsx";
-import Registration from "./page/Doctor/DocterPage/Regester/Registration.js";
-import AuthGuard from "./components/AuthGuardComponent/AuthGuard.jsx";
-import LoginSuccess from "./page/User/LoginCuccessForGG/LoginCuccess.jsx";
-import RegionSelection from "./page/User/RegionSelection/RegionSelection.jsx";
-import AIChatBox from "./ai/AIChatBox.jsx";
-import NotificationDetail from "./page/User/Notification/Notification.jsx";
-import ChangePass from "./page/User/ChangePass/ChangePass.jsx";
-import NewsDetail from "./page/User/NewsDetail/NewsDetail.jsx";
-import Newss from "./page/User/NewsPage/Newss.jsx";
+import ClinicRequestManagement from "./page/AdminSystem/ClinicBrowse/ClinicRequestManagement.jsx";
+import ClinicManagers from "./page/AdminSystem/ClinicSystem/ClinicManagers.jsx";
+import NotificationManager from "./page/AdminSystem/notification/NotificationManager.jsx";
+import PackageManager from "./page/AdminSystem/package/PackageManager.jsx";
+import OrganizationProfile from "./page/AdminSystem/profile/OrganizationProfile.jsx";
+import Statistical from "./page/AdminSystem/statistical/Statistical.jsx";
+import LayoutAdmin from "./layouts/LayoutSystem/Layout/Layout.jsx";
+// import AuthGuard from "./components/AuthGuardComponent/AuthGuard.jsx";
+// import LoginSuccess from "./page/User/LoginCuccessForGG/LoginCuccess.jsx";
+// import RegionSelection from "./page/User/RegionSelection/RegionSelection.jsx";
+// import AIChatBox from "./ai/AIChatBox.jsx";
+// import NotificationDetail from "./page/User/Notification/Notification.jsx";
+// import ChangePass from "./page/User/ChangePass/ChangePass.jsx";
+// import NewsDetail from "./page/User/NewsDetail/NewsDetail.jsx";
+// import Newss from "./page/User/NewsPage/Newss.jsx";
 function App() {
   const { valueText, roleLocal, loading } = useContext(State);
   const [role, setRole] = useState('');
   const location = useLocation()
   const storedRole = localStorage.getItem("role");
+  const { user, loading: authLoading } = useAuth();
+  const currentRole = user?.rawRole || localStorage.getItem("role") || "TD";
   
   useEffect(() => {
     if (storedRole) {
@@ -91,17 +92,19 @@ function App() {
     if (location.pathname === "/login-success") {
       return;
     }
-
     localStorage.setItem("role", "TD");
     setRole("TD");
 
   }, [location.pathname]);
 
   useEffect(() => {
-    if (role === "BenhNhan" || role === "TD") {
+    // if (role === "BenhNhan" || role === "TD") {
+    //   import("./userOnly.css");
+    // }
+    if (currentRole === "BenhNhan" || currentRole === "TD") {
       import("./userOnly.css");
     }
-  }, [role]);
+  }, [currentRole]);
   const hideChatBoxPaths = [
     "/login",
     "/register",
@@ -112,20 +115,24 @@ function App() {
 
   const shouldHideChat = hideChatBoxPaths.includes(location.pathname);
 
+  if (authLoading) {
+    return <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Đang tải hệ thống...</div>;
+  }
+
   return (
     <>
       <CommonProvider>
         <PatientProvider>
           {valueText.length > 0 && <Opacity />}
-          {!shouldHideChat && storedRole === "BenhNhan" && <AIChatBox />}
+          {/* {!shouldHideChat && storedRole === "BenhNhan" && <AIChatBox />} */}
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
-            <Route path="/register" element={<Registration />} />
-            <Route path="/login-success" element={<LoginSuccess />} />
+            {/* <Route path="/register" element={<Registration />} /> */}
+            {/* <Route path="/login-success" element={<LoginSuccess />} /> */}
             {/* User */}
-            {(role == "BenhNhan" || role == "TD") && (
+            {/* {(role == "BenhNhan" || role == "TD") && (
               <>
 
                 <Route path="/trang-chu" element={<Home />} />
@@ -166,9 +173,9 @@ function App() {
                 />
                 <Route path="/*" element={<NotFound />} />
               </>
-            )}
+            )} */}
             {/* Doctor */}
-            {role === "BacSi" && (
+            {/* {role === "BacSi" && (
               <>
                 <Route path="/doctor" element={<Layout />}>
                   <Route
@@ -210,184 +217,38 @@ function App() {
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
-            )}
+            )} */}
             {/* Admin system*/}
-            {role === "PhongKham" && (
+            {currentRole === "Admin" && (
               <>
-                <Route
-                  path="/admin"
-                  element={
-                    <SidebarAdmin>
-                      <Statistical />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <SidebarAdmin>
-                      <UserProfile />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/duyet-phong-kham"
-                  element={
-                    <SidebarAdmin>
-                      <Clinicbrowses />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/duyet-bac-si"
-                  element={
-                    <SidebarAdmin>
-                      <Doctorbrowses />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/quan-ly-phong-kham"
-                  element={
-                    <SidebarAdmin>
-                      <Clinicmanagers />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/viet-thong-bao"
-                  element={
-                    <SidebarAdmin>
-                      <NotificationEditor />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/quan-ly-goi/tao-goi"
-                  element={
-                    <SidebarAdmin>
-                      <Createpackage />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/thong-ke-bao-cao"
-                  element={
-                    <SidebarAdmin>
-                      <Statistical />
-                    </SidebarAdmin>
-                  }
-                />
-                <Route
-                  path="/doi-mat-khau"
-                  element={
-                    <SidebarAdmin>
-                      <Changepassword />
-                    </SidebarAdmin>
-                  }
-                />
+                <Route path="/admin" element={<LayoutAdmin />}>
+                    <Route index element={<Statistical />} />
+                    <Route path="profile" element={<OrganizationProfile />} />
+                    <Route path="duyet-phong-kham" element={<ClinicRequestManagement />} />
+                    <Route path="quan-ly-phong-kham" element={<ClinicManagers />}/>
+                    <Route path="quan-ly-thong-bao" element={<NotificationManager />}/>
+                    <Route path="quan-ly-goi-dang-ky" element={<PackageManager />}/>
+                <Route path="thong-ke-bao-cao/" element={<Statistical />}/>
+                <Route path="doi-mat-khau" element={<Changepassword />}/>
+                </Route>
+                <Route path="/*" element={<NotFound />} />
               </>
             )}
             {/* clinic */}
-            {role === "Admin" && (
+            {currentRole === "PhongKham" && (
               <>
-                <Route
-                  path="/clinic"
-                  element={
-                    <SidebarClinic>
-                      <Statistics />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/createDoctor"
-                  element={
-                    <SidebarClinic>
-                      <CreateDoctor />
-                    </SidebarClinic>
-                  }
-                />
-
-                <Route
-                  path="/clinic/doctorAll"
-                  element={
-                    <SidebarClinic>
-                      <MNDoctorAll />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/doctorView/:slug"
-                  element={
-                    <SidebarClinic>
-                      <DoctorView />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/createDoctor"
-                  element={
-                    <SidebarClinic>
-                      <CreateDoctor />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/notification"
-                  element={
-                    <SidebarClinic>
-                      <NotificationEditor />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/NewsEditor"
-                  element={
-                    <SidebarClinic>
-                      <NewsEditor />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/updateClinic"
-                  element={
-                    <SidebarClinic>
-                      <UpdateClinic />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/statistical"
-                  element={
-                    <SidebarClinic>
-                      <Revenue />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/doi-mat-khau"
-                  element={
-                    <SidebarClinic>
-                      <Changepassword />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/specialty"
-                  element={
-                    <SidebarClinic>
-                      <MNSpecialty />
-                    </SidebarClinic>
-                  }
-                />
-                <Route
-                  path="/clinic/profile"
-                  element={
-                    <SidebarClinic>
-                      <ClinicView />
-                    </SidebarClinic>
-                  }
-                />
+                <Route path="/clinic" element={<LayoutClinic />}>
+                    <Route index element={<Statistics />} />
+                    <Route path="thong-tin-phong-kham" element={<ClinicView />}/>
+                    <Route path="quan-ly-bac-si" element={<MNDoctorAll />}/>
+                    <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />}/>
+                    <Route path="lich-lam-viec" element={<MNSchedules />}/>
+                    {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
+                    <Route path="quan-ly-thong-bao" element={<NotificationClinic />}/>
+                    <Route path="quan-ly-tin-tuc" element={<NewsManager />}/>
+                    <Route path="statistical" element={<Revenue />}/>
+                    <Route path="doi-mat-khau" element={<Changepassword />}/>
+                </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
             )}

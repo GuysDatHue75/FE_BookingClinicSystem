@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import "./HeaderSystem.module.css";
+import styles from "./HeaderSystem.module.css";
 
 // 1. IMPORT CÁC FILE SVG VÀO ĐÂY:
 import caiDatIcon from "../../../assets/svg/CaiDat.svg";
 import thongBaoIcon from "../../../assets/svg/Chuong.svg";
 import Avatar from "../../../assets/image/avt.jpg";
+import menuIcon from "../../../assets/svg/menu.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-
 
 const Header = ({ urlImage, notificationCount = 3, user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-  const navigate = useNavigate(); // 💥 Khởi tạo điều hướng
+  const navigate = useNavigate(); // Khởi tạo điều hướng
 
   // --- HÀM XỬ LÝ CHỨC NĂNG ---
-
   const handleGoToChangePassword = () => {
     setShowDropdown(false); // Đóng menu lại cho chuyên nghiệp
     navigate("/admin/doi-mat-khau");
@@ -22,73 +21,82 @@ const Header = ({ urlImage, notificationCount = 3, user }) => {
 
   const handleLogout = () => {
     setShowDropdown(false);
-    // 1. Xóa Token/Session ở đây (sau này code)
-    // localStorage.removeItem("token"); 
-
-    alert("Đang đăng xuất..."); // Thông báo tạm thời
-    navigate("/login"); // 
+    // Xóa dữ liệu phiên đăng nhập
+    localStorage.clear();
+    navigate("/login");
   };
+
   // 1. Tạo một cái "Từ điển" để tra cứu tiêu đề dựa trên path
   const pageTitles = {
-    "/doctor": "Bảng điều khiển",
-    "/doctor/Patients": "Quản lý bệnh nhân",
-    "/doctor/settings": "Cài đặt hệ thống",
-    "/doctor/profile": "Hồ sơ cá nhân",
-
+    "/admin": "Thống kê & Báo cáo hệ thống",
+    "/admin/duyet-phong-kham": "Phê duyệt tài khoản phòng khám",
+    "/admin/viet-thong-bao": "Quản lý & Soạn thảo thông báo",
+    "/admin/doi-mat-khau": "Thay đổi mật khẩu tài khoản",
   };
 
-  // 2. Lấy tiêu đề tương ứng, nếu không thấy thì để mặc định là "Doctor Online"
+  // 2. Lấy tiêu đề tương ứng, nếu không thấy thì để mặc định
   const currentTitle = pageTitles[location.pathname] || "Doctor Online Connect";
+
   return (
-    <header className="header-container">
-      <div className="header-left">
-        <h2 className="page-title">{currentTitle}</h2>
+    /* FIX: Module hóa toàn bộ className bằng cú pháp tương thích dấu gạch ngang */
+    <header className={styles['header-container']}>
+      <div className={styles['header-left']}>
+        <button className={styles['header-btn']} title="Menu">
+          <img src={menuIcon} alt="Menu" className={styles['header-icon-img']} />
+        </button>
+        {/* Tiêu đề trang động nếu bạn có dùng hiển thị trên giao diện */}
+        {/* <h1 className={styles['page-title']}>{currentTitle}</h1> */}
       </div>
 
-      <div className="header-right">
-
-        {/* 1. Icon Cài đặt: Dùng thẻ img gọi thẳng biến caiDatIcon */}
-        <button className="header-btn" title="Cài đặt">
-          <img src={caiDatIcon} alt="Cài đặt" className="header-icon-img" />
+      <div className={styles['header-right']}>
+        {/* 1. Icon Cài đặt */}
+        <button className={styles['header-btn']} title="Cài đặt">
+          <img src={caiDatIcon} alt="Cài đặt" className={styles['header-icon-img']} />
         </button>
 
-        {/* 2. Icon Thông báo: Gọi thẳng biến thongBaoIcon */}
-        <button className="header-btn notification-btn" title="Thông báo">
-          <img src={thongBaoIcon} alt="Thông báo" className="header-icon-img" />
+        {/* 2. Icon Thông báo: Kết hợp class thường và class notification bằng Template String */}
+        <button 
+          className={`${styles['header-btn']} ${styles['notification-btn']}`} 
+          title="Thông báo"
+        >
+          <img src={thongBaoIcon} alt="Thông báo" className={styles['header-icon-img']} />
 
           {/* Chấm đỏ đếm thông báo */}
           {notificationCount > 0 && (
-            <span className="noti-badge-header">{notificationCount}</span>
+            <span className={styles['noti-badge-header']}>{notificationCount}</span>
           )}
         </button>
 
         {/* 3. Avatar Mini */}
-        <div className="avatar-wrapper"> {/* Phải dùng class avatar-wrapper để menu thả xuống đúng vị trí */}
+        <div className={styles['avatar-wrapper']}>
           <div
-            className="header-avatar-box"
+            className={styles['header-avatar-box']}
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            {/* Cho ảnh chui vào trong box này thì nó mới nằm đè lên nền xám được */}
             <img
-              src={Avatar}
-              alt="Avatar Bác sĩ"
-              className="avatar-img-round"
+              src={urlImage || Avatar} // Ưu tiên dùng avatar động từ API, nếu không có thì dùng ảnh mặc định
+              alt="Avatar"
+              className={styles['avatar-img-round']}
             />
           </div>
 
-          {/* Menu thả xuống phải nằm trong wrapper để position: absolute hoạt động chuẩn */}
+          {/* Menu thả xuống */}
           {showDropdown && (
-            <div className="avatar-dropdown">
-              <div className="dropdown-info">
-                <strong>{user?.fullName || "Bác sĩ vô danh"} </strong>
-                <span>{user?.chucVu || "Chức vụ"}</span>
+            <div className={styles['avatar-dropdown']}>
+              <div className={styles['dropdown-info']}>
+                <strong>{user?.fullName || "Quản trị viên"}</strong>
+                <span>{user?.account?.vaiTro || "Admin"}</span>
               </div>
               <hr />
-              <button className="dropdown-item" onClick={handleGoToChangePassword}>
+              <button className={styles['dropdown-item']} onClick={handleGoToChangePassword}>
                 <i className="fa-solid fa-key"></i> Đổi mật khẩu
               </button>
 
-              <button className="dropdown-item logout" onClick={handleLogout}>
+              {/* Class logout đặc biệt kết hợp class dropdown-item chung */}
+              <button 
+                className={`${styles['dropdown-item']} ${styles.logout}`} 
+                onClick={handleLogout}
+              >
                 <i className="fa-solid fa-right-from-bracket"></i> Đăng xuất
               </button>
             </div>

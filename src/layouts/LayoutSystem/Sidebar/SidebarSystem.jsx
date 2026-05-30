@@ -17,46 +17,54 @@ const Sidebar = ({ menuItems }) => {
   };
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">
-        <div className="logo-icon-wrapper">
-
-          <img src="/logo.svg" alt="Doctor Online Connect Logo" className="sidebar-logo-img" />
+    <aside className={styles.sidebar}>
+      {/* FIX: Chuyển sang dạng ['kebab-case'] */}
+      <div className={styles['sidebar-logo']}>
+        <div className={styles['logo-icon-wrapper']}>
+          <img 
+            src="/logo.svg" 
+            alt="Doctor Online Connect Logo" 
+            className={styles['sidebar-logo-img']} 
+          />
         </div>
-
       </div>
 
       {/* KHU VỰC MENU CHÍNH */}
-      <div className="sidebar-menu">
+      <div className={styles['sidebar-menu']}>
         {menuItems.map((item, idx) => (
-          <div key={idx} className="menu-group">
+          <div key={idx} className={styles['menu-group']}>
             <NavLink
               to={item.path}
+              /* FIX: Kết hợp class động bằng Template String (` `) */
               className={({ isActive }) =>
-                isActive ? "menu-item active-item" : "menu-item"
+                isActive 
+                  ? `${styles['menu-item']} ${styles['active-item']}` 
+                  : styles['menu-item']
               }
             >
-              <div className="item-left">
-                <span className="menu-icon">
-                  {/* Bỏ {item.icon} vào trong thẻ img */}
-                  <img src={item.icon} alt={item.label} className="icon-img" />
+              <div className={styles['item-left']}>
+                <span className={styles['menu-icon']}>
+                  <img src={item.icon} alt={item.label} className={styles['icon-img']} />
                 </span>
-                <span className="menu-label">{item.label}</span>
+                <span className={styles['menu-label']}>{item.label}</span>
               </div>
 
               {/* Badge thông báo (nếu có) */}
-              {item.noti > 0 && <span className="noti-badge">{item.noti}</span>}
+              {item.noti > 0 && <span className={styles['noti-badge']}>{item.noti}</span>}
             </NavLink>
 
             {/* RENDER MENU CON (SUB-MENU) */}
             {item.subMenu && isMenuOpen(item) && (
-              <div className="sub-menu-container">
+              <div className={styles['sub-menu-container']}>
                 {item.subMenu.map((sub, subIdx) => (
                   <NavLink
                     key={subIdx}
                     to={sub.path}
+                    /* FIX: Module hóa class Active cho menu con */
                     className={({ isActive }) =>
-                      isActive ? "sub-menu-item active-sub" : "sub-menu-item"
+                      isActive 
+                        ? `${styles['sub-menu-item']} ${styles['active-sub']}` 
+                        : styles['sub-menu-item']
                     }
                   >
                     {sub.label}

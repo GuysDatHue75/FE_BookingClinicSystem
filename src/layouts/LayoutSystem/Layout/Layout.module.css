@@ -4,24 +4,25 @@
   --footer-height: 40px;
 }
 
-.layout-wrapper {
+.layoutWrapper {
   display: flex;
   min-height: 100vh;
   background-color: #ffffff;
 }
 
-.layout-content {
+.layoutContent {
   margin-left: var(--sidebar-width);
   flex-grow: 1;
   width: calc(100% - var(--sidebar-width));
+  width: calc(100% -230px);
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
-.layout-main {
+.layoutMain {
   flex-grow: 1;
-  padding: 24px;
+  padding: 10px;
   margin-top: var(--header-height);
   margin-bottom: var(--footer-height);
   /* Trừ đi header và footer để phần content ôm trọn màn hình */

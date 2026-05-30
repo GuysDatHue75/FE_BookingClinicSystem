@@ -1,0 +1,247 @@
+/* ClinicScheduleManager.module.css */
+
+.container {
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f766e; /* text-teal-700 */
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Các nút bấm cơ bản */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.btnDefault {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+.btnDefault:hover {
+    background-color: #f3f4f6;
+}
+
+.btnPrimary {
+    background-color: #0d9488; /* bg-teal-600 */
+    color: #ffffff;
+}
+.btnPrimary:hover {
+    background-color: #0f766e;
+}
+
+.btnEdit {
+    background-color: #2563eb; /* bg-blue-600 */
+    color: #ffffff;
+}
+.btnEdit:hover {
+    background-color: #1d4ed8;
+}
+
+.btnCancel {
+    background-color: #9ca3af; /* bg-gray-400 */
+    color: #ffffff;
+}
+.btnCancel:hover {
+    background-color: #6b7280;
+}
+
+.btnSave {
+    background-color: #16a34a; /* bg-green-600 */
+    color: #ffffff;
+}
+.btnSave:hover {
+    background-color: #15803d;
+}
+
+/* Loading & Pagination */
+.loading {
+    text-align: center;
+    padding: 2.5rem 0;
+    color: #0d9488;
+    font-weight: 500;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+    gap: 1rem;
+}
+
+.btnPage {
+    padding: 0.25rem 0.75rem;
+    background-color: #e5e7eb;
+    color: #374151;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btnPage:hover:not(:disabled) {
+    background-color: #d1d5db;
+}
+.btnPage:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pageText {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Lưới lịch trình (Grid) */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(160px, 1fr));
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.dayColumn {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.dayHeader {
+    background-color: #f0fdfa; /* bg-teal-50 */
+    color: #115e59; /* text-teal-800 */
+    text-align: center;
+    padding: 1rem 0.75rem;
+    font-size: 1.05rem;
+    /* padding: 0.75rem; */
+    font-weight: 700;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dayBody {
+    padding: 1rem 0.75rem;
+    min-height: 450px;
+    /* padding: 0.75rem; */
+}
+
+.shiftBlock {
+    margin-bottom: 1.5rem; /* Tăng khoảng cách giữa các ca */
+    min-height: 100px; /* Cố định độ cao tối thiểu kể cả khi không có data */
+    display: flex;
+    flex-direction: column;
+    /* margin-bottom: 1rem; */
+}
+.shiftBlock:last-child {
+    margin-bottom: 0;
+}
+
+.shiftTitle {
+    font-size: 0.8rem;
+    /* font-size: 0.75rem; */
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #f3f4f6; /* Làm vạch kẻ đậm hơn */
+    padding-bottom: 0.5rem;
+    /* margin-bottom: 0.5rem; */
+    /* border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.25rem; */
+}
+
+/* Danh sách bác sĩ */
+.doctorList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.doctorLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.doctorCheckbox {
+    height: 1rem;
+    width: 1rem;
+    accent-color: #0d9488;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+.doctorCheckbox:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.doctorName {
+    color: #6b7280;
+    transition: color 0.2s;
+}
+.doctorLabel:hover .doctorName {
+    color: #0f766e;
+}
+
+.doctorNameChecked {
+    color: #111827;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.doctorLabel:hover .doctorNameChecked {
+    color: #0f766e;
+}
+
+.emptyData {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-style: italic;
+    margin-top: 0.5rem;
+    /* font-size: 0.75rem;
+    color: #9ca3af; */
+}
+.scheduledDoctor {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+    padding: 0.35rem 0.5rem;
+    background-color: #f0fdfa; /* Nền xanh mint nhạt */
+    border-left: 3px solid #0d9488; /* Vạch nhấn bên trái */
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+}

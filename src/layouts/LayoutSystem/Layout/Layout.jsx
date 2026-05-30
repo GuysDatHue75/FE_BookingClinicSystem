@@ -1,26 +1,27 @@
 import React, { useContext } from "react";
 import { Outlet } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthContext";
+import AuthContext from "../../../context/AuthContext";
 import Sidebar from "../Sidebar/SidebarSystem";
 import menuItems from "../Sidebar/SidebarMenuSystem";
 import Header from "../Header/HeaderSystem";
 import Footer from "../Footer/FooterSystem";
+import styles from "./Layout.module.css";
 
 const Layout = () => {
     const {user} = useContext(AuthContext);
     return (
-        <div className="layout-wrapper">
-            {/* <Header urlImage={user?.avatar || ""} user={user} /> */}
+        <div className={styles.layoutWrapper}>
+            <Header urlImage={user?.avatar || ""} user={user} />
             <Sidebar
-                role={user?.roleName || "Khách"}
-                name={user?.fullName || "Người dùng"}
+                role={user?.roleName || "Admin"}
+                name={user?.fullName || "Quản trị viên"}
                 menuItems={menuItems}
                 urlImage={user?.avatar || ""}
             />
-            <div className="layout-content">
-                <Header urlImage={user?.avatar || ""} user={user} />
+            <div className= {styles.layoutContent}>
+                {/* <Header urlImage={user?.avatar || ""} user={user} /> */}
                 
-                <main className="layout-main">
+                <main className={styles.layoutMain}>
                     <Outlet />
                 </main>
 
