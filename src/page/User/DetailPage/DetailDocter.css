@@ -21,8 +21,15 @@
     font-weight: 600;
     font-size: 20px;
     color: #1250DC;
+    margin: 0;
+   
 }
-
+.booking-now-dl{
+    position: fixed;
+    right: 4%;
+    bottom: 15%;
+    z-index: 99999;
+}
 @media (max-width:900px) {
     .wrapper-backgroung-docterDetail {
         flex-direction: column;

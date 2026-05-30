@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 const Specialty = () => {
   const { setSearchSpecialty } = useContext(State);
   const navigate = useNavigate();
-  const handelSearchSpecialty = (nameSpecialty) => {
+  const handelSearchSpecialty = (nameSpecialty ,idSp) => {
     setSearchSpecialty(nameSpecialty);
-    navigate(`/tim-kiem`);
+    localStorage.setItem('IDSP',idSp);
+    localStorage.setItem('NAMESP',nameSpecialty)
+    navigate(`/tim-kiem-chuyen-khoa`);
   };
   return (
     <div className="container-specialty">
@@ -19,7 +21,7 @@ const Specialty = () => {
             <div
               className="item-specialty-top"
               key={index}
-              onClick={() => handelSearchSpecialty(itemTop.name)}
+              onClick={() => handelSearchSpecialty(itemTop.name, itemTop.idSp)}
             >
               <img
                 className="image-specialty"
@@ -28,9 +30,6 @@ const Specialty = () => {
               />
               <div className="content-specialty-top">
                 <p className="name-specialty-top">{itemTop.name}</p>
-                <p className="quanlity-specialty-top">
-                  Có {itemTop.clinic} phòng khám
-                </p>
               </div>
             </div>
           ))}
@@ -40,7 +39,7 @@ const Specialty = () => {
             <div
               className="item-specialty-bot"
               key={index}
-              onClick={() => handelSearchSpecialty(itemBot.name)}
+              onClick={() => handelSearchSpecialty(itemBot.name, itemBot.idSp)}
             >
               <img
                 className="image-specialty"
@@ -49,9 +48,6 @@ const Specialty = () => {
               />
               <div className="content-specialty-bot">
                 <p className="name-specialty-bot">{itemBot.name}</p>
-                <p className="quanlity-specialty-bot">
-                  Có {itemBot.clinic} phòng khám
-                </p>
               </div>
             </div>
           ))}

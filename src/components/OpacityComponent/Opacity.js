@@ -2,7 +2,7 @@ import { useContext, useEffect, useCallback } from "react";
 import "./Opacity.css";
 import { State } from "../../state/context";
 
-const Opacity = ({ mobileRef, setMobile }) => {
+const Opacity = ({ mobileRef, setMobile, booking }) => {
   const { valueText, setValueText } = useContext(State);
 
   const handleClickOpacity = useCallback(() => {
@@ -21,7 +21,7 @@ const Opacity = ({ mobileRef, setMobile }) => {
     };
   }, [valueText]);
 
-  return <div className="container-opacity" onClick={handleClickOpacity}></div>;
+  return <div className={`${booking ? "container-opacity-booking" : "container-opacity"}`} onClick={handleClickOpacity}></div>;
 };
 
 export default Opacity;

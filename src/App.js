@@ -77,6 +77,7 @@ import NotificationDetail from "./page/User/Notification/Notification.jsx";
 import ChangePass from "./page/User/ChangePass/ChangePass.jsx";
 import NewsDetail from "./page/User/NewsDetail/NewsDetail.jsx";
 import Newss from "./page/User/NewsPage/Newss.jsx";
+import BookingGuide from "./page/User/BookingGuide/BookingGuide.jsx";
 function App() {
   const { valueText, roleLocal, loading } = useContext(State);
   const [role, setRole] = useState('');
@@ -154,6 +155,7 @@ function App() {
                 />
                 <Route path="/tim-kiem-chuyen-khoa" element={<SearchClinic />} />
                 <Route path="/tim-kiem-chuyen-khoa/page/:page" element={<SearchClinic />} />
+                <Route path="/huong-dan-he-thong" element={<BookingGuide />} />
                 <Route path="/tin-tuc" element={<Newss />} />
                 <Route path="/tin-tuc/:id" element={<Newss />} />
                 <Route path="/tin-tuc/:id/page/:page" element={<Newss />} />

@@ -1,0 +1,87 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 80px);
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  margin: 0;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+}
+
+.captchaBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.captchaImg {
+  height: 50px;
+  border-radius: 5px;
+  margin: 0;
+}
+
+.reloadBtn {
+  margin-left: 10px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.submitBtn:hover {
+  background: #5a67d8;
+}
+
+.submitBtn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.message {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}

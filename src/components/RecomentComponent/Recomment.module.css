@@ -1,0 +1,68 @@
+.contentRecomment {
+  position: absolute;
+  top: 110%;
+  left: 1.5%;
+  width: 98%;
+  max-height: 420px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  padding: 8px 0;
+  
+  margin: 0 !important; 
+  display: block; 
+  z-index: 99999999;
+}
+
+.titleRecomment {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  padding: 8px 16px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  margin: 0 !important;
+  text-align: left;
+}
+
+.wrapperContentRecomment {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  margin: 0 !important; 
+  width: 100%; 
+}
+
+.imgaeRecomment {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+  
+  margin: 0 !important; 
+}
+
+.name, .sub {
+  margin: 0 !important;
+  text-align: left;
+}
+.sub{
+  color: #999;
+}
+.wrapperContentRecomment div {
+    margin: 0 !important;
+    text-align: left;
+}
+.noResult{
+  text-align: center;
+  padding: 10px;
+  color: #999;
+
+}

@@ -1,13 +1,12 @@
 .item-clinic {
-    display: flex;
-    width: 380px;
+    width: 300px;
+    height: 340px;
     column-gap: 7px;
     cursor: pointer;
     box-shadow: #3c40434d 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     padding: 15px;
     border-radius: 10px;
-    flex-grow: 1;
-    flex-basis: 200;
+    margin: 0;
 }
 
 .item-clinic:hover {
@@ -33,7 +32,12 @@
 
 .name-clinic {
     font-weight: 600;
-    height: 35px;
+    height: 25px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .name-docter {
@@ -48,6 +52,12 @@
 .location-clinic {
     color: #6C757D;
     margin-top: 3px;
+    min-height: 40px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .fa-location-dot,
@@ -57,11 +67,12 @@
 
 .openClock-clinic {
     margin: 10px 0;
+    height: 20px;
 }
 
 .image-clinic {
     border-radius: 10px;
-    width: 160px;
+    width: 100%;
     height: 130px;
     object-fit: cover;
 }
@@ -70,6 +81,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    margin: 5px;
     background-color: #28c76f;
 }
 
@@ -77,6 +89,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    margin: 5px;
     background-color: #EA5455;
 }
 
@@ -87,4 +100,8 @@
     display: flex;
     align-items: center;
 
+}
+
+.star-clinic {
+    height: 25px;
 }
