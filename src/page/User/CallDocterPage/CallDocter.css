@@ -4,6 +4,7 @@
     margin-top: 80px;
     display: flex;
     padding: 20px;
+    height: 84vh;
 }
 
 .wrapper-calldocter {
@@ -12,8 +13,9 @@
     padding: 20px;
     row-gap: 5px;
     display: flex;
+    /* width: 100%; */
     flex-direction: column;
-    max-height: 600px;
+    height: 70vh;
     overflow-y: auto;
     margin: 0;
     flex-basis: 27%;
@@ -24,12 +26,20 @@
     display: none;
 }
 
+.title-callDocter {
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    color: #2469df;
+}
+
 .image-calldocter {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 50%;
     margin: 0;
+    border: 1px solid #2469df;
 }
 
 .name-hour-calldocter {
@@ -68,9 +78,8 @@
 }
 
 .item-calldocter:hover {
-    background-color: rgb(248, 242, 242);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-
 }
 
 .infor-calldocter,
@@ -79,15 +88,42 @@
     margin: 0;
 }
 
+.name-calldocter {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.infor-calldocter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: left;
+}
+.popupStyle > p{
+    color: black;
+    margin-left: 10px;
+}
+.clinic-calldocter {
+    margin: 0;
+    width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .hour-calldocter {
     color: gray;
     font-weight: 500;
     float: inline-end;
+    font-size: 13px;
 }
 
 .name-calldocter {
     font-weight: 600;
     margin-bottom: 5px;
+    margin: 0;
 }
 
 .wrapper-action-calldocter {
@@ -128,6 +164,12 @@
         row-gap: 20px;
     }
 
+    .title-callDocter {
+        border-bottom: none;
+        border-right: 1px solid #eee;
+        padding-left: 5px;
+    }
+
     .wrapper-calldocter {
         flex-basis: 100%;
         flex-direction: row;
@@ -143,7 +185,8 @@
     .screen-calldocter {
         height: 500px;
     }
-    .item-calldocter{
+
+    .item-calldocter {
         border-right: 1px solid rgb(232, 230, 230);
         padding-right: 10px;
     }
@@ -156,7 +199,8 @@
         row-gap: 10px;
         justify-content: center;
     }
-    .item-calldocter{
+
+    .item-calldocter {
         border-right: 1px solid rgb(232, 230, 230);
         padding-right: 10px;
     }

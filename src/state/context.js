@@ -10,6 +10,10 @@ const Context = ({ children }) => {
   const [valueText, setValueText] = useState("");
   const [searchSpecialty, setSearchSpecialty] = useState("");
   const [roleLocal, setRole] = useState("");
+  const [notifications, setNotifications] = useState();
+  const [feedBack, setFeedBack] = useState(false);
+  const [countCalender, setCountCalendar] = useState();
+  const [totalNotification, setTotalNotification] = useState(0);
   const [profileClinic, setProfileClinic] = useState({
     id: "CLN-001",
     name: "Phòng khám Đa khoa Hòa Bình",
@@ -68,6 +72,13 @@ const Context = ({ children }) => {
         setProfileClinic,
         bookingDone,
         setBookingDone,
+        notifications,
+        setNotifications,
+        feedBack,
+        setFeedBack,
+        totalNotification,
+        setTotalNotification,
+        countCalender, setCountCalendar
       }}
     >
       {children}

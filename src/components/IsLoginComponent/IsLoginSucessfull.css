@@ -2,7 +2,20 @@
     display: flex;
     align-items: center;
     column-gap: 20px;
-    
+    position: relative;
+}
+.count-calendar{
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7px;
+    right: 42%;
+    top: 15px;
+    background-color:#EA5455;
+    position: absolute;
 }
 .wrapper-notification-islogin{
     position: relative;
@@ -19,11 +32,12 @@
     position: absolute;
     top: -20%;
     right: -20%;
+    color: #fff;
 }
 
 .calenda-islogin,.fa-bell,.image-islogin{
     text-decoration: none;
-    color: black;
+    color: #fff;
     cursor: pointer;
 }
 .calenda-islogin:hover{
@@ -44,7 +58,6 @@
 }
 .option-islogin{
     width: 250px;
-    height: 250px;
     background-color: #ffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

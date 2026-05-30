@@ -22,8 +22,9 @@
     height: 70px;
     padding: 0 10px;
     cursor: pointer;
+    margin: 0;
 }
-.wrapper-notification:hover{
+.itemNotifications:hover{
     background-color: #ededed;
 }
 .title-notification{
@@ -44,13 +45,48 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;    
+    font-size: 13px;
 }
 .fa-xmark{
-    font-size: 20px;
+    font-size: 15px;
     color: #A8A8A8;
+    position: absolute;
+    right: 7%;
+    cursor: pointer;
 }
 .fa-xmark:hover{
     color: black;
+}
+.ntf-nonNoti{
+    display: flex;
+    align-items: center;
+    height: 80%;
+    color: #A8A8A8;
+    justify-content: center;
+
+}
+.itemNotifications{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+    text-decoration: none;
+    color: black;
+}
+.red-notifications{
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #1250DC;
+    position: absolute;
+    right: 7%;
+    top:25%;
+}
+.read-content-notification{
+    font-weight: 600;
 }
 @keyframes translateDown {
     from {

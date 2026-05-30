@@ -1,0 +1,81 @@
+.doctor-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slider-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 6px;
+  
+}
+
+.item-docterAll {
+  display: flex;
+  gap: 15px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 10px rgba(0,0,0,0.08); */
+  transition: 0.3s;
+}
+
+
+
+.name-docter {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.specialty-docter {
+  font-size: 14px;
+  color: #007bff;
+  margin-bottom: 5px;
+}
+
+.booking-docter {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-slide {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  border: none;
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.btn-slide.left {
+  left: 10px;
+}
+
+.btn-slide.right {
+  right: 10px;
+}
+
+.btn-slide:hover {
+  background: #007bff;
+  color: #fff;
+}

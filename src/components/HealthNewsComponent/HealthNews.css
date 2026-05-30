@@ -1,48 +1,91 @@
-
-.wrapper-news{
-    display: flex;
-    column-gap: 10px;
-    padding: 0 20px;
-}
-.content-news-right{
-    width: 100%;
-}
-.item-news-right{
-    display: flex;
-    column-gap: 8px;
-    padding-bottom: 8px;
-    cursor: pointer;
-}
-.image-news-right{
-    width: 200px;
-}
-.image-news-left{
-    width: 100%;
-}
-.image-news-left{
-    cursor: pointer;
-}
-.fa-calendar{
-    font-size: 13px;
-}
-.author-news-right{
-    font-weight: 600;
-}
-.title-news-right,.date-news-right{
-    color: #6C757D;
-    margin-top: 3px;
+.container-news {
+  width: 100%;
+  /* padding: 20px 40px; */
+  /* background: #f5f7fa; */
 }
 
-@media (max-width:1400px) {
-    .wrapper-news{
-        flex-direction: column;
-        row-gap: 10px;
-        font-size: 14px;
-    }
+.title-news {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+  padding: 20px 0 0 0;
 }
-@media (max-width:800px) {
-    .image-news-right{
-        width: 130px;
-        object-fit: cover;
-    }
+
+.wrapper-news {
+  width: 100%;
+}
+
+.news-right {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.item-news-right {
+  display: block;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 430px;
+  text-decoration: none;
+  color: #000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.item-news-right:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.image-news-right {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.content-news-right {
+  padding: 15px;
+}
+
+.author-news-right {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.title-news-right {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: #222;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.date-news-right {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.content-news-right p:last-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: #007bff;
+}
+
+@media (max-width: 1024px) {
+  .news-right {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .news-right {
+    grid-template-columns: 1fr;
+  }
 }

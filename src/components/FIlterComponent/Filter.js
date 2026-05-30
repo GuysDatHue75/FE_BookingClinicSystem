@@ -8,8 +8,8 @@ const Filter = ({ specialtyData, handleFilterDocterSpecialty }) => {
     >
       <option value="">Chuyên khoa</option>
       {specialtyData?.map((specialty, index) => (
-        <option key={index} value={specialty}>
-          {specialty}
+        <option key={index} value={specialty.idspecital}>
+          {specialty.name}
         </option>
       ))}
     </select>
@@ -31,16 +31,33 @@ export const FilterAll = ({ handleFilterDocterHocHam, data }) => {
   );
 };
 
-export const SelectCpm = ({ data }) => {
+export const SelectCpm = ({ClinicRef, data = [], value, onChange,className  }) => {
+  const isEmpty = data.length === 0;
+
   return (
-    <select defaultValue="" className="user-filter-specialty">
-      {data.map((i, index) => (
-        <option value={i} key={index}>
-          {i}
+    <select
+      ref={ClinicRef}
+      value={value}
+      onChange={onChange}
+      defaultValue=""
+      className={`user-filter-specialty ${className || ""}`}
+    >
+      <option value="" disabled>
+        Vui lòng chọn phòng khám
+      </option>
+
+      {isEmpty ? (
+        <option value="" disabled>
+          Hiện chưa có phòng khám nào.
         </option>
-      ))}
+      ) : (
+        data.map((clinic, index) => (
+          <option value={clinic.maPhongKham} key={index}>
+            {clinic.tenPhongKham}
+          </option>
+        ))
+      )}
     </select>
   );
 };
-
 export default Filter;

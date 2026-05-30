@@ -1,0 +1,116 @@
+.containerNews {
+  width: 100%;
+  max-width: 1400px ;
+  padding: 20px 40px;
+  margin-top: 90px;
+}
+
+.titleNews {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.wrapperNews {
+  width: 100%;
+}
+
+.newsRight {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;    
+}
+
+.itemNewsRight {
+  display: block;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #000;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.itemNewsRight:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.imageNewsRight {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.contentNewsRight {
+  padding: 15px;
+}
+
+.authorNewsRight {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.titleNewsRight {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: #222;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dateNewsRight {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.contentNewsRight p:last-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: #007bff;
+}
+@media screen and (max-width: 1200px) {
+  .newsRight {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .containerNews {
+    padding: 20px;
+  }
+
+  .newsRight {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .containerNews {
+    padding: 15px;
+  }
+
+  .titleNews {
+    font-size: 22px;
+  }
+
+  .newsRight {
+    grid-template-columns: 1fr;
+  }
+
+  .imageNewsRight {
+    height: 220px;
+  }
+
+  .titleNewsRight {
+    font-size: 16px;
+  }
+}

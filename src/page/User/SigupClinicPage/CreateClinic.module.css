@@ -10,7 +10,7 @@
 }
 
 .cliniContainer {
-    width: 100%;
+  width: 100%;
   max-width: 1340px;
   margin-top: 100px;
   padding: 25px;
@@ -33,72 +33,86 @@
 }
 
 .formGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(6 1fr);
+  grid-template-rows: repeat(6, 1fr);
 }
-.formGroup > input,textarea,label{
-    margin: 0;
+
+.formGroup>input,
+textarea,
+label {
+  margin: 0;
 }
-.formGroup > label{
-    margin-bottom: 5px;
+
+.formGroup>label {
+  margin-bottom: 5px;
 }
+
 .formGroup {
   display: flex;
   flex-direction: column;
 }
+
 .div1 {
-    width:100%;
-    grid-column: span 2 / span 2;
+  width: 100%;
+  grid-column: span 2 / span 2;
 }
 
 .div2 {
-    width:100%;
-    grid-column: span 2 / span 2;
-    grid-column-start: 3;
+  width: 100%;
+  grid-column: span 2 / span 2;
+  grid-column-start: 3;
 }
 
 .div3 {
-    width:100%;
-    grid-row-start: 2;
+  width: 100%;
+  grid-row-start: 2;
 }
 
 .div4 {
-    width:100%;
-    grid-row-start: 2;
+  width: 100%;
+  grid-row-start: 2;
 }
 
 .div5 {
-    width:100%;
-    grid-column: span 2 / span 2;
-    grid-row-start: 2;
+  width: 100%;
+  grid-column: span 2 / span 2;
+  grid-row-start: 2;
 }
 
 .div6 {
-    width:100%;
-    grid-row-start: 3;
+  width: 100%;
+  grid-row-start: 3;
 }
 
 .div7 {
-    width:100%;
-    grid-row-start: 3;
+  width: 100%;
+  grid-row-start: 3;
 }
 
 .div8 {
-    width:100%;
-    grid-row-start: 3;
+  width: 100%;
+  grid-row-start: 3;
 }
 
 .div9 {
-    width:100%;
-    grid-row-start: 3;
+  width: 100%;
+  grid-row-start: 4;
 }
 
 .div10 {
-    width:100%;
-    grid-column: span 4 / span 4;
+  width: 100%;
+  grid-column: span 4 / span 4;
 }
+.div15,.div13{
+  width: 100%;
+  grid-row-start: 4;
+}
+.div11,.div12,.div14{
+  width: 100%;
+  grid-row-start:5;
+}
+
 .formGroup label {
   font-weight: 500;
   font-size: 14px;
@@ -121,12 +135,19 @@ textarea:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(36, 105, 223, 0.1);
 }
+
 .planContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
-
+.plus{
+  color: var(--success) !important;
+  height: 100px;
+}
+.VIP{
+  color: var(--warning) !important;
+}
 .plan {
   flex: 1;
   min-width: 280px;
@@ -141,9 +162,11 @@ textarea:focus {
   justify-content: space-around;
   color: #2ecc71;
 }
-.plan > ul{
-    margin: 0;
+
+.plan>ul {
+  margin: 0;
 }
+
 .plan:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
@@ -184,13 +207,16 @@ textarea:focus {
   left: 0;
   top: 2px;
 }
-.formGroup > label > span{
+
+.formGroup>label>span {
   margin: 0;
 }
-.formGroup > label{
+
+.formGroup>label {
   display: flex;
-  
+
 }
+
 .btn {
   width: 100%;
   padding: 10px;
@@ -239,42 +265,57 @@ textarea:focus {
 .btnSubmit:hover {
   background: #1e56b3;
 }
-@media (max-width: 600px) {
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
+.errorText {
+  color: #d9534f;
+  font-size: 12px;
+  margin-top: 4px;
+  font-style: italic;
+  margin: 0;
+  margin-top: 3px;
+}
 
-  .div1,
-  .div2,
-  .div3,
-  .div4,
-  .div5,
-  .div6,
-  .div7,
-  .div8,
-  .div9,
-  .div10 {
-    grid-column: span 1 !important;
-    grid-row: auto !important;
-  }
+.inputError {
+  border: 1px solid #d9534f !important;
+  background-color: #fff9f9;
+}
+
+.selected {
+  border: 2px solid #28a745 !important; 
+  background-color: #f0fff4; 
+  transform: translateY(-5px); 
+  transition: all 0.3s ease;
+}
+.btnSelected {
+  background-color: #28a745 !important;
+  color: white;
 }
 
 @media (max-width: 1100px) and (min-width: 601px) {
   .formGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;
   }
 
-  .div1,
-  .div2,
-  .div3,
-  .div4,
-  .div5,
-  .div6,
-  .div7,
-  .div8,
-  .div9,
-  .div10 {
+  .div1, .div2, .div3, .div4, .div5, .div6, .div7, .div8, .div9, .div10, .div11, .div12, .div13, .div14, .div15 {
     grid-column: span 2 / span 2 !important;
+    grid-row: auto !important; 
+    grid-column-start: auto !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .formGrid {
+    grid-template-columns: 1fr; 
+    gap: 10px;
+  }
+
+  .div1, .div2, .div3, .div4, .div5, .div6, .div7, .div8, .div9, .div10, .div11, .div12, .div13, .div14, .div15 {
+    grid-column: span 1 !important; 
     grid-row: auto !important;
+    grid-column-start: auto !important;
+  }
+
+  input, textarea {
+    font-size: 16px; 
   }
 }

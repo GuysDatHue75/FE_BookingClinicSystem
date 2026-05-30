@@ -1,3 +1,10 @@
+.container-adchiement {
+    display: flex;
+    justify-content: center;
+    align-items: self-start;
+    flex-direction: column;
+}
+
 .wrapprer-adchiement {
     display: flex;
     column-gap: 20px;
@@ -5,8 +12,9 @@
 }
 
 .image-adchiement {
-    width: 430px;
-    object-fit: contain;
+    height: 150px;
+    width: 250px;
+    object-fit: cover;
     margin: 0;
 }
 
@@ -17,6 +25,22 @@
 
 .des-adchiement {
     margin-bottom: 20px;
+    margin-top: -10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.btn-detailNews{
+    background-color:#2469df ;
+    color: #fff;
+    padding: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: 7px;
+}
+.btn-detailNews:hover{
+    background-color: #215cc2;
 }
 
 @media (max-width:1180px) {

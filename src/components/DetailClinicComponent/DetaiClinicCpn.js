@@ -1,26 +1,29 @@
 import { Advise, BookingHome } from "../ButtonComponent/Button";
+import avtErr from "../../assets/image/Clinic.png";
+import "./DetailClinicCpn.css";
 const DetaiClinicCpn = ({ clinicDetailShow }) => {
   return (
     <div className="wrapper-detail">
-      <img src={clinicDetailShow.image} className="image-detail" />
+      <img src={clinicDetailShow?.anhPhongKham || avtErr} className="image-detail" />
       <div className="infor-detail">
-        <p className="name-detail">{clinicDetailShow.name}</p>
+        <p className="name-detail">{clinicDetailShow.tenPhongKham}</p>
         <p>
-          <i class="fa-solid fa-location-dot"></i> {clinicDetailShow.address}
+          <i class="fa-solid fa-location-dot"></i> {clinicDetailShow.diaChi}
         </p>
         <p>
           <i class="fa-regular fa-clock"></i> Giờ mở cửa:{" "}
-          {clinicDetailShow.openClock}
+          {clinicDetailShow.gioBatDauLamViec + "h" + " - " + clinicDetailShow.gioKetThucLamViec + "h"}
         </p>
-        <p>{clinicDetailShow.description}</p>
-        <p>Ngày thành lập: {clinicDetailShow.DateStart}</p>
-        <p>Liên hệ tư vấn: {clinicDetailShow.Phone}</p>
+
+        <p>{clinicDetailShow.moTa}</p>
+        <p>Ngày thành lập: {clinicDetailShow.ngayThanhLap}</p>
+        <p>Liên hệ tư vấn: {clinicDetailShow.soDienThoai}</p>
         <p>
           Các loại chuyên khoa:{" "}
-          {clinicDetailShow.specialty?.map((i, index) =>
-            index != clinicDetailShow.specialty.length - 1 ? i + "," : i + "."
+          {clinicDetailShow.specicaltys?.map((i, index) =>
+            index != clinicDetailShow.specicaltys.length - 1 ? i.tenChuyenKhoa + "," : i.tenChuyenKhoa + "."
           )}
-          <p>Chủ cơ sở: {clinicDetailShow.facilityOwner}</p>
+          <p>Chủ cơ sở: {clinicDetailShow.nguoiDaiDien}</p>
           <div>
             <Advise path={"/tu-van"} />
           </div>
