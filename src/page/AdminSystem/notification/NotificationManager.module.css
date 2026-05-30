@@ -1,0 +1,290 @@
+/* NotificationManager.module.css */
+
+.container {
+  /* padding: 24px; */
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-top: 0;
+  /* margin-bottom: 24px; */
+}
+
+.controlsPanel {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row; /* Ép nằm ngang */
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap; /* Tự động xuống hàng nếu màn hình quá nhỏ */
+}
+
+.searchRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.searchContainer {
+  position: relative;
+  flex: 1; /* Tự động co giãn chiếm phần trống */
+  min-width: 250px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10%;
+  top: 30%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filterLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  white-space: nowrap;
+  
+}
+
+.filterSelect, .filterDate {
+  padding: 8px;
+  border: 1px solid #dcdde1;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+.filterDate {
+  width: 110px;
+}
+
+.createBtn {
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.createBtn:hover {
+  background-color: #2563eb;
+}
+
+/* TABLE STYLES (Matching Image) */
+.tableContainer {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Quan trọng để bo góc header */
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* Header màu xanh dương bám theo thiết kế của bạn */
+.table th {
+  background-color: #3b82f6; 
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: none;
+}
+
+.table td {
+  border-bottom: 1px solid #f1f2f6;
+  color: #4b5563;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnView { background-color: #3b82f6; }
+.btnEdit { background-color: #2ecc71; }
+.btnDelete { background-color: #e74c3c; }
+
+/* MODAL STYLES */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  padding: 0 20px;
+  border-bottom: 1px solid #f1f2f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalContent {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.formInput, .formTextarea, .formSelect {
+  padding: 10px;
+  border: 1px solid #dcdde1;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modalFooter {
+  padding: 0px 20px;
+  border-top: 1px solid #f1f2f6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btnCancel {
+  padding: 10px 20px;
+  border: 1px solid #dcdde1;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnSubmit {
+  padding: 10px 20px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- BỔ SUNG CSS CHO TAG INPUT (DANH SÁCH NGƯỜI NHẬN) --- */
+.tagInputContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #dcdde1;
+  border-radius: 6px;
+  min-height: 42px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.tagRemove {
+  color: #7f8c8d;
+  margin-right: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tagRemove:hover {
+  color: #e74c3c;
+}
+
+.tagInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 150px;
+  font-size: 14px;
+  padding: 4px;
+}

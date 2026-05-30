@@ -1,0 +1,84 @@
+.footer-container {
+    height: 40px;
+    background-color: #ffffff;
+    border-top: 1px solid #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 230px;
+    /* Khớp với chiều rộng Sidebar */
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 999;
+    font-size: 11px;
+    color: #818789;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.version-tag {
+    background-color: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Hiệu ứng chấm xanh nhấp nháy cho status */
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    /* Màu xanh lá */
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+
+    70% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+}
+
+.footer-divider {
+    width: 1px;
+    height: 16px;
+    background-color: #e2e8f0;
+}
+
+.footer-time {
+    font-variant-numeric: tabular-nums;
+    /* Giúp số đồng hồ không bị nhảy giật */
+    font-weight: 500;
+}

@@ -1,0 +1,293 @@
+/* ClinicManager.module.css */
+
+.container {
+  /* padding: 24px; */
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-top: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column; /* Xếp dọc trên màn hình nhỏ */
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Khi màn hình đủ to (Laptop/PC), tự động xếp ngang */
+@media (min-width: 1024px) {
+  .controls {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.searchContainer {
+  position: relative;
+  width: 100%;
+  max-width: 450px; /* Giới hạn độ dài ô search để không đẩy bộ lọc */
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 5%;
+  top: 30%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+}
+
+ .filterGroup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap; /* Nếu hết chỗ sẽ tự rớt dòng chứ không đè nhau */
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .filterGroup {
+    width: auto;
+    justify-content: flex-end;
+  }
+}
+
+.filterSelect {
+  padding: 10px 15px;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.tableContainer {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.table th, .table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #f1f2f6;
+  font-size: 14px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.clinicId {
+  font-weight: 600;
+  color: #3498db;
+}
+
+.clinicName {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.viewButton, .deleteButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.2s;
+}
+
+.viewButton { background-color: #3498db; }
+.deleteButton { background-color: #e74c3c; }
+
+.viewButton:hover, .deleteButton:hover { opacity: 0.8; }
+
+.noData {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 30px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid #dcdde1;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.pagination button:disabled {
+  background: #f1f2f6;
+  cursor: not-allowed;
+  color: #b2bec3;
+}
+
+.activePage {
+  background-color: #3498db !important;
+  color: #fff !important;
+  border-color: #3498db !important;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modalHeader {
+  padding: 20px;
+  border-bottom: 1px solid #f1f2f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #7f8c8d;
+  line-height: 1;
+}
+
+.modalContent {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.infoSection {
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #3498db;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  font-size: 13px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.infoValue {
+  font-size: 15px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.modalFooter {
+  padding: 16px 20px;
+  border-top: 1px solid #f1f2f6;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  background-color: #f8f9fa;
+}
+
+.closeModalButton {
+  padding: 10px 20px;
+  border: 1px solid #dcdde1;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.deleteModalButton {
+  padding: 10px 20px;
+  border: none;
+  background: #e74c3c;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}

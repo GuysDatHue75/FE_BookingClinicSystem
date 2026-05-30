@@ -58,6 +58,7 @@
   flex-direction: column;
   gap: 6px;
   min-height: 72px;
+  min-width: 100px;
 }
 .wide {
   grid-column: span 2;

@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../../../../context/AuthContext";
 import { State } from "../../../../state/context";
-
 import iconLogin from "../../../../assets/image/login.png";
 import iconLogo from "../../../../assets/image/logo.png";
 import bcg from "../../../../assets/image/backgroundBody.webp";
-import apiClient from '../../../../api/api'
+// import apiClient from '../../../../api/api'
+// import apiClient from "../../../../utils/axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); //
   const { setRole } = useContext(State);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -24,51 +25,88 @@ const Login = () => {
       otp: ""
     }
 
-    if (phone === "" || password === "") {
+    // if (phone === "" || password === "") {
+    //   setError("vui lòng nhập thông tin");
+    //   return;
+    // }
+    // try {
+
+    //   console.log(phone, password);
+
+    //   const response = await apiClient.post('/api/v1/login', body);
+    //   //  console.log(response.data.maBenhNhan);
+
+    //   if (response.data.taiKhoan?.vaiTro) {
+    //     localStorage.setItem("role", response.data.taiKhoan.vaiTro);
+    //     localStorage.setItem("user", JSON.stringify(response.data));
+    //     localStorage.setItem("idDoctor", response.data.maBacSi || "");
+    //     localStorage.setItem("idClinic", response.data.phongKham?.maPhongKham || "");
+    //     localStorage.setItem("idPatient", response.data.maBenhNhan || "");
+    //     localStorage.setItem("idAccount", response.data.taiKhoan.maTaiKhoan || "");
+    //     localStorage.setItem("city", response.data.queQuan || "");
+    //     setRole(response.data.taiKhoan.vaiTro);
+    //   }
+    //   const roleApi = response.data.taiKhoan.vaiTro;
+    //   console.log(roleApi);
+    //   if (roleApi === "BenhNhan") {
+    //     if (response.data.taiKhoan.lanDauDangNhap === 1) {
+    //       navigate("/chon-tinhthanh");
+    //     } else {
+    //       navigate("/trang-chu");
+    //     }
+    //   } else if (roleApi === "BacSi") {
+    //     navigate("/doctor")
+
+    //   } else if (roleApi === "ADPK") {
+    //     navigate("/clinic")
+    //   } else {
+    //     navigate("/admin")
+    //   }
+    // } catch (err) {
+    //   const message = err.response?.data;
+    //   if (err.response?.status === 401) {
+    //     setError(message || "Sai mật khẩu");
+    //   } else if (err.response?.status === 404) {
+    //     setError(message || "Tài khoản không tồn tại");
+    //   } else { setError("Đã có lỗi xảy ra"); }
+    // }
+
+    if (phone == "" || password == "") {
       setError("vui lòng nhập thông tin");
       return;
     }
-    try {
 
-      console.log(phone, password);
-
-      const response = await apiClient.post('/api/v1/login', body);
-      //  console.log(response.data.maBenhNhan);
-
-      if (response.data.taiKhoan?.vaiTro) {
-        localStorage.setItem("role", response.data.taiKhoan.vaiTro);
-        localStorage.setItem("user", JSON.stringify(response.data));
-        localStorage.setItem("idDoctor", response.data.maBacSi || "");
-        localStorage.setItem("idClinic", response.data.phongKham?.maPhongKham || "");
-        localStorage.setItem("idPatient", response.data.maBenhNhan || "");
-        localStorage.setItem("idAccount", response.data.taiKhoan.maTaiKhoan || "");
-        localStorage.setItem("city", response.data.queQuan || "");
-        setRole(response.data.taiKhoan.vaiTro);
-      }
-      const roleApi = response.data.taiKhoan.vaiTro;
-      console.log(roleApi);
+    const result = await login(phone, password);
+    if(result.success){
+      const userData = result.user;
+      const roleApi = userData.rawRole || userData.account?.vaiTro || userData.taiKhoan?.vaiTro;
+      setRole(roleApi);
       if (roleApi === "BenhNhan") {
-        if (response.data.taiKhoan.lanDauDangNhap === 1) {
+        if (userData.taiKhoan?.lanDauDangNhap === 1 || userData.account?.lanDauDangNhap === 1) {
           navigate("/chon-tinhthanh");
         } else {
           navigate("/trang-chu");
         }
       } else if (roleApi === "BacSi") {
         navigate("/doctor")
-
-      } else if (roleApi === "ADPK") {
+      } else if (roleApi === "PhongKham") {
         navigate("/clinic")
-      } else {
+      } else if (roleApi === "Admin") {
         navigate("/admin")
+      } else {
+        setError("Vai trò không hợp lệ");
       }
-    } catch (err) {
-      const message = err.response?.data;
-      if (err.response?.status === 401) {
-        setError(message || "Sai mật khẩu");
-      } else if (err.response?.status === 404) {
-        setError(message || "Tài khoản không tồn tại");
-      } else { setError("Đã có lỗi xảy ra"); }
+    } else {
+        setError(result.message || "Đăng nhập thất bại");
     }
+    // } catch (err) {
+    //   const message = err.response?.data || err.response;
+    //   if (err.response?.status === 401) {
+    //     setError(message || "Sai mật khẩu");
+    //   } else if (err.response?.status === 404) {
+    //     setError(message || "Tài khoản không tồn tại");
+    //   } else { setError("Đã có lỗi xảy ra"); }
+    // }
   }
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
