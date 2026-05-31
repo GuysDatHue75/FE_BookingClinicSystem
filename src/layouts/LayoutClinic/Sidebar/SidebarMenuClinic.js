@@ -23,7 +23,7 @@ const menusItems = [
   {
     icon: thongkeIcon,
     label: "Thống kê - báo cáo",
-    path: "thong-ke-bao-cao/",
+    path: "thong-ke-bao-cao",
     subMenu: [
       { label: "Phòng khám", path: "phong-kham" },
       { label: "Người dùng toàn hệ thống", path: "nguoi-dung" },

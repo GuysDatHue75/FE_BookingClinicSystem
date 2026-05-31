@@ -55,7 +55,8 @@ import MNSchedules from "./page/Clinic/ClinicSchedule/ClinicScheduleManager.jsx"
 import NotificationClinic from "./page/Clinic/NotificationPage/NotificationManager.jsx";
 import NewsManager from "./page/Clinic/NewEditerPage/NewsManager.jsx";
 import UpdateClinic from "./page/Clinic/UpdateClinicPage/UpdateClinic.jsx";
-import Statistics from "./page/Clinic/StatisticalPage/Statistical.js";
+import StatisticalClinic from "./page/Clinic/StatisticalPage/Statistical.js";
+import DashBoard from "./page/Clinic/DashBoard/Dashboard.jsx";
 import Changepassword from "./page/Changepassword/Changepassword.jsx";
 import MNSpecialty from "./page/Clinic/MNSpecialtyPage/MNSpecialty.jsx";
 import ClinicView from "./page/Clinic/ProfileClinicPage/ClinicView.jsx";
@@ -224,7 +225,7 @@ function App() {
             {currentRole === "PhongKham" && (
               <>
                 <Route path="/clinic" element={<LayoutClinic />}>
-                    <Route index element={<Statistics />} />
+                    <Route index element={<StatisticalClinic />} />
                     <Route path="thong-tin-phong-kham" element={<ClinicView />}/>
                     <Route path="quan-ly-bac-si" element={<MNDoctorAll />}/>
                     <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />}/>
@@ -232,7 +233,7 @@ function App() {
                     {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
                     <Route path="quan-ly-thong-bao" element={<NotificationClinic />}/>
                     <Route path="quan-ly-tin-tuc" element={<NewsManager />}/>
-                    <Route path="statistical" element={<Revenue />}/>
+                    <Route path="thong-ke-bao-cao" element={<StatisticalClinic />}/>
                     <Route path="doi-mat-khau" element={<Changepassword />}/>
                 </Route>
                 <Route path="/*" element={<NotFound />} />

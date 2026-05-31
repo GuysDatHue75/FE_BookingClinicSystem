@@ -17,7 +17,11 @@ const doctorService = {
 
     // Tạo mới bác sĩ
     createDoctor: (maPhongKham, request) => 
-        axiosClient.post(`${BASE_URL}/create/${maPhongKham}`, request),
+        axiosClient.post(`${BASE_URL}/create/${maPhongKham}`, request, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }),
 
     // Xóa bác sĩ
     deleteDoctor: (maBacSi) => 
