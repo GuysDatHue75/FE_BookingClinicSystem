@@ -64,27 +64,27 @@ const UpdateClinic = ({ onClose }) => {
 
     setSubmitting(true);
     try {
-      const formData = new FormData();
+      // const formData = new FormData();
 
       // 1. Đẩy các trường văn bản (text) vào formData
-      Object.keys(clinic).forEach((key) => {
-        // Bỏ qua 2 trường file vì sẽ xử lý riêng ở dưới
-        if (key === 'anhPhongKham' || key === 'giayPhep') return;
+      // Object.keys(clinic).forEach((key) => {
+      //   // Bỏ qua 2 trường file vì sẽ xử lý riêng ở dưới
+      //   if (key === 'anhPhongKham' || key === 'giayPhep') return;
 
-        const value = clinic[key];
-        // Chỉ đẩy data nếu có giá trị
-        if (value !== null && value !== undefined) {
-          formData.append(key, value);
-        }
-      });
-      if (clinic.anhPhongKham instanceof File) {
-        formData.append("anhPhongKham", clinic.anhPhongKham);
-      }
+      //   const value = clinic[key];
+      //   // Chỉ đẩy data nếu có giá trị
+      //   if (value !== null && value !== undefined) {
+      //     formData.append(key, value);
+      //   }
+      // });
+      // if (clinic.anhPhongKham instanceof File) {
+      //   formData.append("anhPhongKham", clinic.anhPhongKham);
+      // }
       
-      if (clinic.giayPhep instanceof File) {
-        formData.append("giayPhep", clinic.giayPhep);
-      }
-      await clinicsService.updateClinic(clinic.maPhongKham, formData); // Nhớ đổi Header content-type bên Axios
+      // if (clinic.giayPhep instanceof File) {
+      //   formData.append("giayPhep", clinic.giayPhep);
+      // }
+      await clinicsService.updateClinic(clinic.maPhongKham, clinic); // Nhớ đổi Header content-type bên Axios
       
       // // Tạm thời giữ nguyên lệnh gọi API hiện tại của bạn:
       // await clinicsService.updateClinic(clinic.maPhongKham, clinic);

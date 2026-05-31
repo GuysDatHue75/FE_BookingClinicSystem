@@ -6,9 +6,13 @@ const notificationService = {
 
     searchNotification: (searchRequest) => axiosClient.post(`${Base_url}/search`, searchRequest),
 
-    createNotification: (request) => axiosClient.post(`${Base_url}/create`, request),
+    createNotification: (request) => axiosClient.post(`${Base_url}/create`, request, {
+        headers: { "Content-Type": "multipart/form-data" }
+    }),
 
-    updateNotification: (request) => axiosClient.put(`${Base_url}/update/${request.maThongBao}`, request),
+    updateNotification: (request) => axiosClient.put(`${Base_url}/update/${request.get("maThongBao")}`, request, {
+        headers: { "Content-Type": "multipart/form-data" }
+    }),
     
     deleteNotification: (maThongBao) => axiosClient.delete(`${Base_url}/delete/${maThongBao}`),
 

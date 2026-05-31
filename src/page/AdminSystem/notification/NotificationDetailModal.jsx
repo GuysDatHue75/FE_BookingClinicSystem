@@ -9,6 +9,22 @@ const NotificationDetailModal = ({ data, onClose }) => {
     return new Date(dateString).toLocaleString("vi-VN");
   };
 
+  const IMAGE_BASE_URL = "http://localhost:8080";
+  const getMediaUrl = (media) => {
+    if (!media) return null;
+    if (typeof media === "string") {
+      if (media.startsWith("http") || media.startsWith("data:image")) {
+        return media;
+      }
+      return media.startsWith("/") 
+        ? `${IMAGE_BASE_URL}${media}` 
+        : `${IMAGE_BASE_URL}/${media}`;
+    }
+    return null;
+  };
+  const anhThongBaoUrl = getMediaUrl(data.anhThongBao);
+  const filesUrl = getMediaUrl(data.files);
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal} style={{ maxWidth: '800px' }}>
@@ -90,37 +106,34 @@ const NotificationDetailModal = ({ data, onClose }) => {
           </div>
 
           {/* Đính kèm (Ảnh / File) */}
-          {(data.anhThongBao || data.files) && (
+          {(anhThongBaoUrl || filesUrl) && (
              <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
-                {data.anhThongBao && (
+                {anhThongBaoUrl && (
                   <div className={styles.formGroup}>
                     <label>Ảnh đính kèm:</label>
                     <img 
-                      src={data.anhThongBao} 
+                      src={anhThongBaoUrl} 
                       alt="Ảnh đính kèm" 
                       style={{ maxWidth: '300px', borderRadius: '8px', border: '1px solid #ddd' }} 
                     />
                   </div>
                 )}
 
-                {data.files && (
+                {/* ĐÃ FIX: Mở PDF sang tab mới để xem trước thay vì ép tải xuống */}
+                {filesUrl && (
                   <div className={styles.formGroup}>
-                    <label>Tài liệu (PDF):</label>
+                    <label>Tài liệu đính kèm:</label>
                     <a 
-                      href={data.files} 
-                      download={`TaiLieu_${data.maThongBao}.pdf`}
+                      href={filesUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
                       style={{ 
-                        display: 'inline-block', 
-                        padding: '10px 15px', 
-                        backgroundColor: '#e74c3c', 
-                        color: 'white', 
-                        textDecoration: 'none', 
-                        borderRadius: '6px',
-                        fontWeight: 'bold'
+                        display: 'inline-block', padding: '10px 15px', 
+                        backgroundColor: '#e74c3c', color: 'white', 
+                        textDecoration: 'none', borderRadius: '6px', fontWeight: 'bold' 
                       }}
                     >
-                      <i className="fa-solid fa-file-pdf" style={{ marginRight: '8px' }}></i>
-                      Tải xuống File PDF
+                      <i className="fa-solid fa-file-pdf" style={{ marginRight: '8px' }}></i> Xem / Tải PDF
                     </a>
                   </div>
                 )}

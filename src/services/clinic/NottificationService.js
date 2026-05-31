@@ -25,11 +25,19 @@ const notificationService = {
 
     // Tạo thông báo mới (Gửi FormData)
     createNotification: (formData) => 
-        axiosClient.post(`${BASE_URL}/create`, formData),
+        axiosClient.post(`${BASE_URL}/create`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }),
 
     // Sửa thông báo (Gửi FormData)
     updateNotification: (maThongBao, formData) => 
-        axiosClient.put(`${BASE_URL}/update/${maThongBao}`, formData),
+        axiosClient.put(`${BASE_URL}/update/${maThongBao}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }),
 
     // Xóa thông báo
     deleteNotification: (maThongBao) => 
