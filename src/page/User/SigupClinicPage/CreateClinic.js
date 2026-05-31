@@ -50,7 +50,7 @@ const CreateClinic = () => {
     gioBatDauLamViec: "",
     gioKetThucLamViec: "",
     moTa: "",
-    trangThai: "ChoDuyet",
+    trangThai: "Chờ duyệt",
     maGoi: ""
   });
 
