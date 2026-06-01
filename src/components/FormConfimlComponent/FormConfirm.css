@@ -1,22 +1,25 @@
-.container-formConfirm{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    width: 500px;
-    border-radius: 10px;
-    background-color: #ffff;
-    z-index: 99999999;
-    width: 80%;
-    max-width: max-content;
-    padding: 40px;
+.container-formConfirm {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  border-radius: 10px;
+  background-color: #ffff;
+  z-index: 99999999;
+  width: 80%;
+  max-width: max-content;
+  padding: 40px;
 }
+
 .confirm-table-wrapper {
   overflow-x: auto;
 }
-.confirm-table-wrapper::-webkit-scrollbar{
-    display: none;
+
+.confirm-table-wrapper::-webkit-scrollbar {
+  display: none;
 }
+
 .confirm-title {
   font-size: 20px;
   text-align: center;
@@ -51,36 +54,78 @@
   background-color: #eaf6ff;
 }
 
-.cam-dat{
+.cam-dat {
   font-size: 15px;
   color: #EA5455;
   font-style: italic;
   text-align: center;
   margin-top: 10px;
 }
-.reason-booking{
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+
+.reason-booking {
+  margin-top: 20px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 8px;
 }
 
-.reason-booking label{
-    font-weight: 600;
-    color: #1250DC;
+.reason-booking label {
+  font-weight: 600;
+  color: #1250DC;
 }
 
-.reason-booking textarea{
-    width: 100%;
-    min-height: 120px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: vertical;
-    outline: none;
-    font-size: 15px;
+
+
+.reason-booking textarea:focus {
+  border-color: #1250DC;
 }
 
-.reason-booking textarea:focus{
-    border-color: #1250DC;
+.confirm-info-wrapper {
+  width: 1000px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  height: 500px;
+}
+
+.info-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.info-item>span {
+  margin: 0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  min-width: 180px;
+  font-weight: 600;
+  color: #333;
+}
+
+.reason-booking {
+  margin-top: 20px;
+}
+
+.reason-booking label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.reason-booking textarea {
+  width: 100%;
+  height: 50px !important;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  /* resize: vertical; */
 }

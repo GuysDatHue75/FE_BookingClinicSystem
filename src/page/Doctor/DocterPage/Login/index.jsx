@@ -71,11 +71,16 @@ const Login = () => {
           navigate("/trang-chu");
         }
       } else if (roleApi === "BacSi") {
+          localStorage.setItem("role", response.data.taiKhoan.vaiTro);
         navigate("/doctor") 
+        window.location.reload(); 
       } else if (roleApi === "PhongKham") {
+        localStorage.setItem("role", response.data.account?.vaiTro);
         navigate("/clinic")
+        window.location.reload();
       } else {
         navigate("/admin")
+        window.location.reload();
       }
     } catch (err) {
       const message = err.response?.data;

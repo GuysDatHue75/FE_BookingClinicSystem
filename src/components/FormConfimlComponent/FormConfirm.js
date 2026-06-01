@@ -41,37 +41,54 @@ const FormConfiml = ({
     <>
       <div className="container-formConfirm">
         <p className="confirm-title">Xác nhận đặt lịch khám</p>
-        <div className="confirm-table-wrapper">
-          <table className="confirm-table">
-            <thead>
-              <tr>
-                <th>Họ và tên</th>
-                <th>Ngày sinh</th>
-                <th>Số điện thoại</th>
-                <th>Tên phòng khám</th>
-                <th>Địa chỉ</th>
-                <th>Hình thức khám</th>
-                <th>Tên bác sĩ</th>
-                <th>Chuyên khoa</th>
-                <th>Thời gian khám bệnh</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{patient?.taiKhoan?.hoVaTen}</td>
-                <td>{patient?.ngaySinh}</td>
-                <td>{patient?.soDienThoai}</td>
-                <td>{clinic?.tenPhongKham}</td>
-                <td>{clinic?.diaChi}</td>
-                <td>{caseBooking}</td>
-                <td>{doctor?.taiKhoan?.hoVaTen}</td>
-                <td>{doctor?.specialty.tenChuyenKhoa}</td>
-                <td>
-                  {day}: {hour}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div className="confirm-info-wrapper">
+          <div className="info-item">
+            <span className="label">Họ và tên:</span>
+            <span>{patient?.taiKhoan?.hoVaTen}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Ngày sinh:</span>
+            <span>{patient?.ngaySinh}</span>
+          </div>
+          <div className="info-item">
+            <span className="label">Số điện thoại:</span>
+            <span>{patient?.soDienThoai}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Tên phòng khám:</span>
+            <span>{clinic?.tenPhongKham}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Địa chỉ:</span>
+            <span>{clinic?.diaChi}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Hình thức khám:</span>
+            <span>{caseBooking}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Tên bác sĩ:</span>
+            <span>{doctor?.taiKhoan?.hoVaTen}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Chuyên khoa:</span>
+            <span>{doctor?.specialty?.tenChuyenKhoa}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="label">Thời gian khám bệnh:</span>
+            <span>
+              {day}: {hour}
+            </span>
+          </div>
+
           <div className="reason-booking">
             <label>Lý do khám bệnh</label>
 

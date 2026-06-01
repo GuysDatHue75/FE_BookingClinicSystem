@@ -9,7 +9,6 @@ const LoginSuccess = () => {
     useEffect(() => {
         
         const role = searchParams.get('role');
-        console.log(role);  
         const idPatient = searchParams.get('idPatient');
         const idAccount = searchParams.get('idAccount')|| "";
 
@@ -20,7 +19,8 @@ const LoginSuccess = () => {
             localStorage.setItem('idAccount', idAccount);
             const fetchUser = async () => {
                 const res = await apiClient.get(`/api/v1/patient/${idPatient}`);
-                localStorage.setItem('city', res.data?.queQuan || "");                
+                localStorage.setItem('city', res.data?.queQuan || "");  
+                localStorage.setItem('user',JSON.stringify(res.data));
                 if (Number(res.data?.taiKhoan.lanDauDangNhap) === 1) {
                     localStorage.setItem('idAccount', idAccount);
                     navigate('/chon-tinhthanh');
