@@ -45,10 +45,10 @@ const Detail = () => {
     });
   }, []);
   return (
-    <div>
+    <div style={{overflow:"hidden"}}>
       <Header />
       <div className="container-detail">
-        <h2 className="title-detail">Chi tiết phòng khám</h2>
+        {/* <h2 className="title-detail">Chi tiết phòng khám</h2> */}
         <DetaiClinicCpn clinicDetailShow={clinicDetailShow} />
         <h2 className="title-detail">Danh sách bác sĩ</h2>
         <div className="wrapper-docter-detail">

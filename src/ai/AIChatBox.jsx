@@ -21,7 +21,6 @@ const AIChatBox = () => {
     const city = localStorage.getItem('city');
     const navigate = useNavigate();
 
-    // Tự động cuộn xuống khi có tin nhắn mới
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -47,18 +46,14 @@ const AIChatBox = () => {
 
             let { answer, kieuTraVe, entity, data } = response.data;
 
-            // KIỂM TRA LOGIC DANH SÁCH TRỐNG TẠI ĐÂY
             if (kieuTraVe === "clinic_search") {
                 if (!data || data.length === 0) {
-                    // Nếu là tìm bác sĩ mà không thấy
                     if (entity === 'doctor') {
                         answer = "Hiện tại tôi không tìm thấy bác sĩ nào phù hợp với yêu cầu của bạn. Bạn có muốn thử tìm kiếm với từ khóa khác không?";
                     }
-                    // Nếu là tìm phòng khám mà không thấy
                     else {
                         answer = "Rất tiếc, hiện chưa có phòng khám nào phù hợp với tìm kiếm của bạn tại khu vực này.";
                     }
-                    // Reset kieuTraVe về null để không render Grid trống
                     kieuTraVe = null;
                 }
             }
@@ -89,7 +84,7 @@ const AIChatBox = () => {
         <>
             {/* Nút bấm mở Chat */}
             <div className="chat-button" onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+                <i class="fa-brands fa-bots"></i>
             </div>
 
             {/* Cửa sổ Chat */}
