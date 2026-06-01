@@ -3,6 +3,7 @@ import styles from "./ChangePass.module.css";
 import { useEffect, useState } from "react";
 
 const ChangePass = () => {
+    const role = localStorage.getItem("role");
     const [form, setForm] = useState({
         idAccount: localStorage.getItem("idAccount"),
         oldPass: "",
@@ -89,8 +90,8 @@ const ChangePass = () => {
 
     return (
         <>
-            <Header />
-            <div className={styles.container}>
+            {role == "BenhNhan" && <Header />}
+            <div className={role == "BenhNhan" ? styles.container : styles.containerOther}>
                 <div className={styles.card}>
                     <h2 className={styles.title}>Đổi mật khẩu</h2>
 

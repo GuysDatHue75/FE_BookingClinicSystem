@@ -12,9 +12,8 @@
   z-index: 9999;
 }
 
-.modalContent {
+.modalContent,.modalContentSuccess {
   background-color: #ffeaea;
-  /* Màu nền hồng nhạt */
   border: 1px solid #d9534f;
   border-radius: 20px;
   padding: 30px 40px;
@@ -22,6 +21,10 @@
   max-width: 90%;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.modalContentSuccess{
+  background-color: #fff;
+  border: 1px solid #48BB78;
 }
 
 .title {
@@ -43,7 +46,7 @@
   gap: 15px;
 }
 
-.btnConfirm {
+.btnConfirm,.btnConfirmSuccess {
   background-color: #f18c86;
   color: #000;
   font-size: 16px;
@@ -53,6 +56,9 @@
   padding: 10px 25px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+.btnConfirmSuccess{
+  background-color: #48BB78;
 }
 
 .btnConfirm:hover {

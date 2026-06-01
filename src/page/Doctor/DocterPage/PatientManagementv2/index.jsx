@@ -18,12 +18,14 @@ const PatientManagement = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const idDoctor = localStorage.getItem("idDoctor");
-  const idClinic = localStorage.getItem("idClinic");
+  const idClinic = JSON.parse(localStorage.getItem("user")).phongKham.maPhongKham;
   const pageSize = 5;
 
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
+      // console.log(idDoctor, idClinic);
+      
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
       setTotalPages(response.data.totalPages || 0);

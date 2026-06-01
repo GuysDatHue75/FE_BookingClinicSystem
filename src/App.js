@@ -207,7 +207,7 @@ function App() {
                   <Route path="/doctor/patients" element={<PatientManagementv2 />} />
                   <Route path="/doctor/patient-detail/:id" element={<PatientDetail />}></Route>
                   <Route path="/doctor/Patients/Detail/:maBenhNhan" element={<PatientDetail />} />
-                  <Route path="/doctor/doi-mat-khau" element={<Changepassword />} />
+                  <Route path="/doctor/doi-mat-khau" element={<ChangePass />} />
                   <Route path="/doctor/chat" element={<ChatPage />} />
                   <Route path="/doctor" element={<DoctorStatistics />} />
                   <Route path="/doctor/schedule" element={<ScheduleAppointment />} />
@@ -237,7 +237,7 @@ function App() {
                   <Route path="quan-ly-thong-bao" element={<NotificationManager />} />
                   <Route path="quan-ly-goi-dang-ky" element={<PackageManager />} />
                   <Route path="thong-ke-bao-cao/" element={<Statistical />} />
-                  <Route path="doi-mat-khau" element={<Changepassword />} />
+                  <Route path="doi-mat-khau" element={<ChangePass />} />
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
@@ -255,7 +255,7 @@ function App() {
                   <Route path="quan-ly-thong-bao" element={<NotificationClinic />} />
                   <Route path="quan-ly-tin-tuc" element={<NewsManager />} />
                   <Route path="thong-ke-bao-cao" element={<StatisticalClinic />} />
-                  <Route path="doi-mat-khau" element={<Changepassword />} />
+                  <Route path="doi-mat-khau" element={<ChangePass />} />
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>

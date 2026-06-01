@@ -153,7 +153,7 @@ const ConfirmAppointmentPage = () => {
                         {item.hoVaTen}
                         {isPastDate && <span style={{ color: '#ef4444', fontSize: '12px', display: 'block' }}> (Đã quá hạn)</span>}
                       </td>
-                      <td>{item.gioiTinh ? 'Nam' : 'Nữ'}</td>
+                      <td>{item.gioiTinh ? 'Nam' : !item.gioiTinh ? "Nữ" : '-'}</td>
                       <td>{calculateAge(item.ngaySinh)}</td>
                       <td className={styles.phoneText}>{item.soDt}</td>
                       <td>

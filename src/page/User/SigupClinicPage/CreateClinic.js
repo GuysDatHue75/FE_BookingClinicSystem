@@ -4,7 +4,7 @@ import Footer from "../../../components/FooterComponent/Footer";
 import { useEffect, useState } from "react";
 import apiClient from "../../../api/api";
 import axios from "axios";
-import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal";
+import ConfirmModalUser from "../../../components/ConfirmModal/ConfirmModalUser";
 const CreateClinic = () => {
   const [packages, setPackages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -71,7 +71,7 @@ const CreateClinic = () => {
     gioBatDauLamViec: "",
     gioKetThucLamViec: "",
     moTa: "",
-    trangThai: "ChoDuyet",
+    trangThai: "chờ duyệt",
     maGoi: ""
   };
   const [formDataInit, setFormDataInit] = useState(initialFormData);
@@ -106,7 +106,7 @@ const CreateClinic = () => {
       };
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
@@ -143,7 +143,6 @@ const CreateClinic = () => {
           type: 'success',
           onConfirm: () => {
             closeModal();
-
             window.scrollTo({
               top: 0,
               behavior: "smooth"
@@ -264,7 +263,7 @@ const CreateClinic = () => {
           <button onClick={handleSubmit} className={styles.btnSubmit}>Gửi yêu cầu</button>
         </div>
       </div>
-      <ConfirmModal {...modalConfig} onCancel={closeModal} />
+      <ConfirmModalUser {...modalConfig} onCancel={closeModal} />
       <Footer />
     </>
   );

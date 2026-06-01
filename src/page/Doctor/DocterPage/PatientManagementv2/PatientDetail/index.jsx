@@ -18,6 +18,8 @@ const PatientDetail = () => {
       try {
         const response = await apiClient.get(`/api/v1/patient/get-detail/${id}`);
         setPatient(response.data);
+        console.log(response);
+        
       } catch (error) {
         console.error("Lỗi lấy dữ liệu api: ", error);
 

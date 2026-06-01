@@ -36,6 +36,8 @@ const DoctorQAPage = () => {
 
   // 3. Xử lý Gửi câu trả lời
   const handleSubmit = async (maTuVan) => {
+    console.log(maTuVan);
+    
     if (!answers[maTuVan] || answers[maTuVan].trim() === "") {
       alert("Vui lòng nhập câu trả lời trước khi gửi!");
       return;
