@@ -8,6 +8,20 @@ const ClinicRequestDetails = ({ request, onClose, onApprove, onReject }) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("vi-VN");
   };
+  
+  const IMAGE_BASE_URL = "http://localhost:8080";
+  const getMediaUrl = (media) => {
+    if (!media) return null;
+    if (typeof media === "string") {
+      if (media.startsWith("http") || media.startsWith("data:image")) {
+        return media;
+      }
+      return media.startsWith("/") 
+      ? `${IMAGE_BASE_URL}${media}` 
+      : `${IMAGE_BASE_URL}/${media}`;
+    }
+    return null;
+  };
 
   // 💥 FIX 2: Đồng bộ hiển thị và màu sắc theo chuẩn Tiếng Việt
   const getStatusText = (status) => {
@@ -132,7 +146,7 @@ const ClinicRequestDetails = ({ request, onClose, onApprove, onReject }) => {
                   <span className={styles.infoValue}>
                     {request.anhPhongKham ? (
                       <img 
-                        src={request.anhPhongKham} 
+                        src={getMediaUrl(request.anhPhongKham)} // Thêm getMediaUrl ở đây
                         alt="Ảnh phòng khám" 
                         style={{ maxWidth: '250px', borderRadius: '8px', border: '1px solid #ddd' }} 
                       />
@@ -148,14 +162,13 @@ const ClinicRequestDetails = ({ request, onClose, onApprove, onReject }) => {
                   <span className={styles.infoValue}>
                     {request.giayPhep ? (
                       <a
-                        href={request.giayPhep}
+                        href={getMediaUrl(request.giayPhep)} // Thêm getMediaUrl ở đây
                         target="_blank"
                         rel="noopener noreferrer"
-                        /* Nếu bạn đã xóa class attachmentLink, có thể dùng style trực tiếp này */
                         style={{ color: '#2980b9', textDecoration: 'none', fontWeight: 'bold' }} 
                       >
                         <i className="fa-solid fa-file-contract" style={{marginRight: '5px'}}></i>
-                        Xem giấy phép
+                          Xem giấy phép
                       </a>
                     ) : (
                       <span style={{color: '#95a5a6'}}>Chưa có file giấy phép</span>

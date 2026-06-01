@@ -1,0 +1,70 @@
+/* Dashboard.module.css */
+.dashboardWrapper {
+  padding: 24px;
+  background-color: #f4f7fb; /* Màu nền xám nhạt như thiết kế */
+  font-family: 'Inter', sans-serif;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr; /* Cột trái to, cột phải nhỏ */
+  gap: 24px;
+}
+
+.leftColumn, .rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f0f0f0;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+/* --- Hình 2: KPI Cards --- */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.kpiValue {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+/* --- Hình 3: Charts --- */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* --- Hình 5: Sidebar (Heatmap & Chatbox) --- */
+.heatmapGrid {
+  display: grid;
+  grid-template-columns: auto repeat(5, 1fr);
+  gap: 4px;
+  margin-top: 16px;
+}
+.heatmapCell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+.aiInsightBox {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}

@@ -81,7 +81,7 @@ const ClinicView = () => {
         <div className={styles.grid}>
           <Field label="Mã tài khoản" value={profileClinic.maTaiKhoan} />
           <Field label="Tên đăng nhập" value={profileClinic.soDt} />
-          <Field label="Mật khẩu" value={profileClinic.matKhau} />
+          {/* <Field label="Mật khẩu" value={profileClinic.matKhau} /> */}
           <Field label="Mã gói đăng ký" value={profileClinic.maGoi}/>
           <Field label="Tên gói đăng ký" value={profileClinic.tenGoi} />
         </div>

@@ -13,11 +13,19 @@ const newsService = {
 
     // Thêm mới
     createNews: (maPhongKham, formData) => 
-        axiosClient.post(`${BASE_URL}/create/${maPhongKham}`, formData),
+        axiosClient.post(`${BASE_URL}/create/${maPhongKham}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }),
 
     // Cập nhật
     updateNews: (maTinTuc, maPhongKham, formData) => 
-        axiosClient.put(`${BASE_URL}/update/${maTinTuc}/${maPhongKham}`, formData),
+        axiosClient.put(`${BASE_URL}/update/${maTinTuc}/${maPhongKham}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }),
 
     // Xóa
     deleteNews: (maPhongKham, maTinTuc) => 

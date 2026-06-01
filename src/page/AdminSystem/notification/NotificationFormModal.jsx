@@ -57,13 +57,13 @@ const NotificationFormModal = ({ initialData, onClose, onSuccess }) => {
   const handleFileChange = (e, fieldName) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      // const reader = new FileReader();
+      // reader.onloadend = () => {
         // reader.result là 1 chuỗi String (Base64) chứa nội dung file
-        setFormData((prev) => ({ ...prev, [fieldName]: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
+        setFormData((prev) => ({ ...prev, [fieldName]: file }));
+      }
+      // reader.readAsDataURL(file);
+    // }
   };
 
   const handleSubmit = async (e) => {
@@ -77,18 +77,24 @@ const NotificationFormModal = ({ initialData, onClose, onSuccess }) => {
     // const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     // const actualUserId = currentUser.maTaiKhoan || currentUser.id || "ADMIN_MAC_DINH";
 
-    const payload = {
-      maThongBao: isEditMode ? initialData.maThongBao : null,
-      maTaiKhoan: actualUserId,
-      tieuDe: formData.tieuDe,
-      noiDung: formData.noiDung,
-      loaiThongBao: formData.loaiThongBao,
-      doiTuongNhan: formData.doiTuongNhan,
-      danhSachNguoiNhan: danhSachNguoiNhan, // 💥 Truyền mảng danh sách người nhận vào đây
-      thoiGianGui: new Date().toISOString().substring(0, 19),
-      files: formData.files,             // 💥 Gửi chuỗi string file lên
-      anhThongBao: formData.anhThongBao  // 💥 Gửi chuỗi string ảnh lên
-    };
+    const payload = new FormData();
+    if (isEditMode) payload.append("maThongBao", initialData.maThongBao);
+    payload.append("maTaiKhoan", actualUserId);
+    payload.append("tieuDe", formData.tieuDe);
+    payload.append("noiDung", formData.noiDung);
+    payload.append("loaiThongBao", formData.loaiThongBao);
+    payload.append("doiTuongNhan", formData.doiTuongNhan);
+
+    danhSachNguoiNhan.forEach(tag => {
+      payload.append("danhSachNguoiNhan", tag);
+    });
+
+    if (formData.files instanceof File) {
+      payload.append("files", formData.files);
+    }
+    if (formData.anhThongBao instanceof File) {
+      payload.append("anhThongBao", formData.anhThongBao);
+    }
 
     try {
       if (isEditMode) {

@@ -61,7 +61,15 @@ const MNDoctorAll = () => {
       setLoading(true);
       const maPK = localStorage.getItem("idPhongKham");
       if (maPK) {
-        const res = await doctorService.searchDoctors(maPK, searchParams);
+        const payload = {
+          keyword: searchParams.keyword,
+          maChuyenKhoa: searchParams.maChuyenKhoa,
+          chucVu: searchParams.chucVu,
+          hocHam: searchParams.hocHam,
+          fromDate: searchParams.tuNgay ? `${searchParams.tuNgay}T00:00:00` : null, 
+          toDate: searchParams.denNgay ? `${searchParams.denNgay}T23:59:59` : null
+        };
+        const res = await doctorService.searchDoctors(maPK, payload);
         setDataDoctor(res || []);
       }
     } catch (error) {
