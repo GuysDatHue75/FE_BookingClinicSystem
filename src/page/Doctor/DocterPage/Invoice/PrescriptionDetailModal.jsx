@@ -7,14 +7,65 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
   const [formData, setFormData] = useState({ ...initialData });
   const [newDrug, setNewDrug] = useState({ tenThuoc: '', donVi: 'Viên', soLuong: 1, lieuDung: '', ghiChu: '' });
 
+  // Quản lý danh sách file ảnh upload và ảnh preview
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+
   useEffect(() => {
     setFormData({ ...initialData });
+    // Reset file khi modal thay đổi dữ liệu
+    setSelectedFiles([]);
+    setImagePreviews([]);
   }, [initialData]);
 
   // Xử lý thay đổi dữ liệu text thông thường
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 1. XỬ LÝ TỰ ĐỘNG LOAD THÔNG TIN THEO MÃ LỊCH KHÁM
+  const handleCheckAppointment = async () => {
+    if (!formData.maLichKham) {
+      return alert("Vui lòng nhập Mã lịch khám trước khi kiểm tra!");
+    }
+    try {
+      // Gọi đúng endpoint sếp vừa test thành công trên Postman
+      const res = await apiClient.get(`/api/v1/doctor-schedules/${formData.maLichKham}`);
+      const data = res.data;
+
+      // Đổ dữ liệu trả về vào form state
+      setFormData(prev => ({
+        ...prev,
+        tenBenhNhan: data.tenBenhNhan,
+        sdtBenhNhan: data.sdtBenhNhan,
+        tenBacSi: data.tenBacSi,
+        tenPhongKham: data.tenPhongKham
+      }));
+      alert("Đã đồng bộ thông tin lịch khám thành công!");
+    } catch (error) {
+      console.error(error);
+      alert("Không tìm thấy thông tin lịch khám: " + (error.response?.data || error.message));
+    }
+  };
+
+  // 2. XỬ LÝ CHỌN FILE ẢNH (SIÊU ÂM, X-QUANG...)
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    // Lưu file vào state để gửi lên server
+    setSelectedFiles(prev => [...prev, ...files]);
+
+    // Tạo đường dẫn tạm thời (Blob URL) để hiển thị preview cho bác sĩ xem trước
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+  };
+
+  // Xóa ảnh đã chọn nếu chọn nhầm
+  const handleRemoveFile = (indexToRemove) => {
+    setSelectedFiles(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    setImagePreviews(prev => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   // Thêm thuốc mới vào danh sách mảng tạm thời
@@ -35,16 +86,35 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
     }));
   };
 
-  // Hàm thực thi bấm gửi API Lưu / Cập nhật lên Spring Boot
+  // 3. HÀM GỬI FORM DATA LÊN SERVER (MULTIPART/FORM-DATA)
   const handleSaveSubmit = async () => {
     try {
       if (currentMode === 'create') {
-        if (!formData.maLichKham) return alert("Vui lòng điền Mã lịch khám liên kết!");
-        // Gọi API POST tạo đơn thuốc mới
-        const res = await apiClient.post('/api/v1/prescription/create', formData);
-        alert(res.data);
+        if (!formData.maLichKham) return alert("Vui lòng điền và kiểm tra Mã lịch khám liên kết!");
+
+        // Bắt buộc dùng FormData vì có chứa danh sách File đính kèm
+        const formPayload = new FormData();
+
+        // Đóng gói dữ liệu chữ thành JSON String nạp vào phần "data" đúng như Backend chờ (@RequestPart("data"))
+        formPayload.append("data", JSON.stringify(formData));
+
+        // Nạp danh sách file ảnh vào phần "files" đúng như biến @RequestPart("files")
+        if (selectedFiles.length > 0) {
+          selectedFiles.forEach((file) => {
+            formPayload.append("files", file);
+          });
+        }
+
+        // Thực thi gọi API với header multipart/form-data
+        const res = await apiClient.post('/api/v1/prescription/create', formPayload, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        alert(res.data || "Tạo đơn thuốc thành công!");
       } else if (currentMode === 'edit') {
-        // Gọi API PUT cập nhật đơn thuốc dựa trên maSoDonThuoc
+        // Gọi API PUT cập nhật đơn thuốc dựa trên maSoDonThuoc (Gửi JSON thông thường nếu sửa không đổi ảnh)
         const res = await apiClient.put(`/api/v1/prescription/update/${formData.maSoDonThuoc}`, formData);
         alert("Cập nhật đơn thuốc thành công!");
       }
@@ -78,12 +148,30 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
         <div id="print-area" className={styles.formMainContainer}>
           <div className={styles.formHeaderRow}>
             <div className={styles.clinicDetails}>
-              <h3 className={styles.clinicName}>Hệ thống phòng khám Booking Clinic</h3>
-              <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#666' }}>Bác sĩ chỉ định: <strong>{formData.tenBacSi || localStorage.getItem('hoVaTen') || "Bác sĩ phụ trách"}</strong></p>
+              <h3 className={styles.clinicName}>{formData.tenPhongKham || "Hệ thống phòng khám Booking Clinic"}</h3>
+              <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#666' }}>
+                Bác sĩ chỉ định: <strong>{formData.tenBacSi || localStorage.getItem('hoVaTen') || "Bác sĩ phụ trách"}</strong>
+              </p>
+
+              {/* Ô NHẬP MÃ LỊCH KHÁM CÓ NÚT KIỂM TRA CHUYÊN NGHIỆP */}
               {currentMode === 'create' && (
-                <div className={styles.clinicInputGroup}>
-                  <label style={{ width: '90px' }}>Mã Lịch Khám:</label>
-                  <input type="text" name="maLichKham" value={formData.maLichKham || ""} onChange={handleInputChange} className={styles.formInput} placeholder="Nhập mã lịch khám để hoàn tất cuộc hẹn..." />
+                <div className={styles.clinicInputGroup} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <label style={{ width: '90px', flexShrink: 0 }}>Mã Lịch Khám:</label>
+                  <input
+                    type="text"
+                    name="maLichKham"
+                    value={formData.maLichKham || ""}
+                    onChange={handleInputChange}
+                    className={styles.formInput}
+                    placeholder="Nhập mã lịch khám..."
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCheckAppointment}
+                    style={{ padding: '6px 12px', backgroundColor: '#0066ff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
+                  >
+                    Kiểm tra
+                  </button>
                 </div>
               )}
             </div>
@@ -97,16 +185,32 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
             </div>
           </div>
 
-          {/* HỒ SƠ LÂM SÀNG BỆNH NHÂN */}
+          {/* HỒ SƠ LÂM SÀNG BỆNH NHÂN - KHÓA KHI TẠO ĐƠN THUỐC ĐỂ DÙNG DATA TỪ HỆ THỐNG */}
           <div className={styles.sectionDividerTitle}>Thông tin bệnh lý lâm sàng</div>
           <div className={styles.patientFormGrid}>
             <div className={styles.inputFieldBlock}>
               <label>Tên bệnh nhân</label>
-              <input type="text" name="tenBenhNhan" readOnly={currentMode === 'view'} value={formData.tenBenhNhan || ""} onChange={handleInputChange} className={styles.formInput} />
+              <input
+                type="text"
+                name="tenBenhNhan"
+                readOnly={currentMode === 'view' || currentMode === 'create'} // Khóa ô nhập liệu ở chế độ tạo/xem
+                value={formData.tenBenhNhan || ""}
+                onChange={handleInputChange}
+                className={styles.formInput}
+                style={(currentMode === 'create') ? { backgroundColor: '#f0f2f5', cursor: 'not-allowed' } : {}}
+              />
             </div>
             <div className={styles.inputFieldBlock}>
               <label>Số điện thoại</label>
-              <input type="text" name="sdtBenhNhan" readOnly={currentMode === 'view'} value={formData.sdtBenhNhan || ""} onChange={handleInputChange} className={styles.formInput} />
+              <input
+                type="text"
+                name="sdtBenhNhan"
+                readOnly={currentMode === 'view' || currentMode === 'create'} // Khóa ô nhập liệu ở chế độ tạo/xem
+                value={formData.sdtBenhNhan || ""}
+                onChange={handleInputChange}
+                className={styles.formInput}
+                style={(currentMode === 'create') ? { backgroundColor: '#f0f2f5', cursor: 'not-allowed' } : {}}
+              />
             </div>
             <div className={`${styles.inputFieldBlock} ${styles.fullWidthRow}`}>
               <label>Triệu chứng lâm sàng</label>
@@ -152,7 +256,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
                 </tr>
               ))}
 
-              {/* DÒNG NHẬP THUỐC MỚI (CHỈ XUẤT HIỆN KHI Ở CHẾ ĐỘ CREATE HOẶC EDIT) */}
+              {/* DÒNG NHẬP THUỐC MỚI */}
               {currentMode !== 'view' && (
                 <tr className="no-print" style={{ backgroundColor: '#fafafa' }}>
                   <td className={styles.textCenter}>+</td>
@@ -187,8 +291,42 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
             </div>
           </div>
 
+          {/* KHU VỰC UPLOAD HÌNH ẢNH LÂM SÀNG (SIÊU ÂM, X-QUANG) */}
+          {currentMode !== 'view' && (
+            <div className="no-print" style={{ marginTop: '25px', padding: '15px', border: '1px dashed #d9d9d9', borderRadius: '6px', backgroundColor: '#faf0f6' }}>
+              <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#722ed1' }}>
+                <i className="fa-solid fa-image"></i> Tải lên hình ảnh kết quả kết luận (Siêu âm, X-Quang, Xét nghiệm...)
+              </div>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ fontSize: '13px' }}
+              />
+
+              {/* Vùng hiển thị danh sách ảnh đang chọn để xem trước (Preview) */}
+              {imagePreviews.length > 0 && (
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '15px' }}>
+                  {imagePreviews.map((previewUrl, idx) => (
+                    <div key={idx} style={{ position: 'relative', width: '90px', height: '90px', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden' }}>
+                      <img src={previewUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(idx)}
+                        style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(255, 0, 0, 0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '18px', height: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* KHU VỰC THAO TÁC GỬI LÊN SERVER */}
-          <div className={`${styles.formBottomActions} no-print`}>
+          <div className={`${styles.formBottomActions} no-print`} style={{ marginTop: '25px' }}>
             {currentMode !== 'view' ? (
               <>
                 <button type="button" className={styles.btnExecutePrint} style={{ backgroundColor: '#52c41a' }} onClick={handleSaveSubmit}>Lưu thông tin</button>

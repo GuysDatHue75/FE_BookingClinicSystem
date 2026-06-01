@@ -1,210 +1,139 @@
-import React, { useContext, useState } from "react";
-import "./../Profile.css";
-import avatarDoctorProfile from "./../../../../../assets/image/user-avt.png";
+import React, { useContext, useState, useEffect } from "react";
+// Import CSS Module của riêng EditProfile
+import styles from "../Profile.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { State } from "../../../../../state/context";
+import apiClient from "../../../../../api/api";
 
 const EditProfile = () => {
-  const initialDoctorInfo = {
-    avatar: avatarDoctorProfile,
-    name: "TS. HOÀNG VIỆT THẮNG",
-    specialty: "CHUYÊN KHOA NỘI TIM MẠCH",
-    gender: "Nam",
-    birthday: "22/12/1985",
-    address: "Yên Thành, Nghệ An",
-    phone: "0831212345",
-    email: "ThangCon0808@gmail.com",
-    careerGoals: [
-      "Phấn đấu nâng cao kĩ năng, kiến thức chuyên môn",
-      "Tạo môi trường làm việc thoải mái, thân thiện với bệnh nhân và bác sĩ",
-      "Hết mình với công việc, đặt bệnh nhân lên hàng đầu",
-    ],
-    education: [
-      {
-        label: "Chức danh",
-        value: "Trưởng khoa nội - Bệnh viện Trung ương Huế",
-      },
-      { label: "Học vị", value: "Tiến sĩ Y học. BCNT chuyên ngành nội" },
-      { label: "Chứng chỉ", value: "Siêu âm, nội soi tim" },
-      { label: "Hội viên", value: "Hội tim mạch Việt Nam, Hội nội khoa Huế" },
-      { label: "Kinh nghiệm", value: "20 năm trong lĩnh vực Nội tim mạch" },
-    ],
-    activities: [
-      {
-        date: "2004 - 2011",
-        description: [
-          "Công tác tại bệnh viện Bạch Mai - Hà nội, chuyên khoa Tim Mạch",
-          "2010 Phó khoa Nội Tim mạch.",
-        ],
-        image:
-          "https://tse3.mm.bing.net/th/id/OIP.LCQTbFcaQv3zUK1FBdVzjwHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-      },
-      {
-        date: "2011 - 2019",
-        description: [
-          "Công tác tại bệnh viện Bạch Mai - Hà nội, chuyên khoa Tim Mạch",
-          "2010 Phó khoa Nội Tim mạch.",
-        ],
-        image:
-          "https://cdn-healthcare.hellohealthgroup.com/2022/08/1661238877_63047e5d649eb0.48767792.jpg",
-      },
-      {
-        date: "2019 - 2025",
-        description: [
-          "Công tác tại bệnh viện Bạch Mai - Hà nội, chuyên khoa Tim Mạch",
-          "2010 Phó khoa Nội Tim mạch.",
-        ],
-        image:
-          "https://tse4.mm.bing.net/th/id/OIP.8bF7-GjeEOEx1DfEV790VQHaGe?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-      },
-    ],
-  };
-
-  const [doctorInfo, setDoctorInfo] = useState(initialDoctorInfo);
+  const [doctorInfo, setDoctorInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [editingField, setEditingField] = useState(null);
   const { image, setImage } = useContext(State);
-  const handleChange = (e, index = null, type = null) => {
+
+  const maBacSi = localStorage.getItem("maBacSi") || "BS001";
+
+  useEffect(() => {
+    window.scrollTo({ behavior: "instant", top: 0 });
+    fetchDoctorProfile();
+  }, []);
+
+  const fetchDoctorProfile = async () => {
+    setLoading(true);
+    try {
+      const response = await apiClient.get(`/api/v1/doctor/profile/${maBacSi}`);
+      setDoctorInfo(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin hồ sơ bác sĩ:", error);
+      toast.error("Không thể tải thông tin hồ sơ!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    if (type === "careerGoals") {
-      const newGoals = [...doctorInfo.careerGoals];
-      newGoals[index] = value;
-      setDoctorInfo({ ...doctorInfo, careerGoals: newGoals });
-    } else if (type === "education") {
-      const newEdu = [...doctorInfo.education];
-      newEdu[index].value = value;
-      setDoctorInfo({ ...doctorInfo, education: newEdu });
-    } else if (type === "activities") {
-      const newAct = [...doctorInfo.activities];
-      newAct[index].description[0] = value;
-      setDoctorInfo({ ...doctorInfo, activities: newAct });
+    if (name === "gioiTinh") {
+      setDoctorInfo({ ...doctorInfo, [name]: value === "true" });
     } else {
       setDoctorInfo({ ...doctorInfo, [name]: value });
     }
   };
 
-  const handleUpdate = () => {
-    toast.success("Cập nhật thông tin thành công!", { position: "top-center" });
+  const handleUpdate = async () => {
+    try {
+      await apiClient.put(`/api/v1/doctor/profile/${maBacSi}`, doctorInfo);
+      toast.success("Cập nhật thông tin thành công!", { position: "top-center" });
+      setEditingField(null);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật:", error);
+      toast.error("Cập nhật thất bại. Vui lòng thử lại!");
+    }
   };
 
   const handleCancel = () => {
-    setDoctorInfo(initialDoctorInfo);
     setEditingField(null);
+    fetchDoctorProfile();
   };
 
-  // Chọn avatar mới
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setDoctorInfo((prev) => ({
-        ...prev, // giữ nguyên tất cả thông tin cũ
-        avatar: url, // chỉ cập nhật avatar
-      }));
+      setImage(url);
+      setDoctorInfo({ ...doctorInfo, anhDaiDien: url });
     }
   };
 
-  const handleActivityImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      const newAct = [...doctorInfo.activities];
-      newAct[index].image = url;
-      setDoctorInfo({ ...doctorInfo, activities: newAct });
-    }
-  };
+  if (loading || !doctorInfo) {
+    return <div style={{ textAlign: "center", padding: "50px" }}>Đang tải dữ liệu...</div>;
+  }
+
+  const avatarUrl = doctorInfo.anhDaiDien
+    ? doctorInfo.anhDaiDien.startsWith("http") || doctorInfo.anhDaiDien.startsWith("blob")
+      ? doctorInfo.anhDaiDien
+      : `http://localhost:8080/uploads/${doctorInfo.anhDaiDien}`
+    : image;
 
   return (
     <>
-      <div className="profile-container">
-        <div className="profile-left-column">
-          <div className="avatar-section" style={{ position: "relative" }}>
-            <img
-              src={doctorInfo.avatar}
-              alt="Avatar Bác sĩ"
-              className="doctor-avatar"
-            />
+      <div className={styles.profileContainer}>
+        {/* ================= CỘT TRÁI ================= */}
+        <div className={styles.profileLeftColumn}>
+          <div className={styles.avatarSection} style={{ position: "relative" }}>
+            <img src={avatarUrl} alt="Avatar Bác sĩ" className={styles.doctorAvatar} />
             <label
               htmlFor="avatar-upload"
               style={{
-                position: "absolute",
-                bottom: 15,
-                right: 15,
-                cursor: "pointer",
-                background: "#fff",
-                padding: "5px",
-                borderRadius: "50%",
+                position: "absolute", bottom: 15, right: 15, cursor: "pointer",
+                background: "#fff", padding: "5px", borderRadius: "50%",
               }}
             >
               <i className="fas fa-edit"></i>
             </label>
             <input
-              id="avatar-upload"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  const url = URL.createObjectURL(file);
-                  setImage(url);
-                  setDoctorInfo({ ...doctorInfo, avatar: url });
-                }
-              }}
+              id="avatar-upload" type="file" accept="image/*" style={{ display: "none" }}
+              onChange={handleAvatarChange}
             />
           </div>
 
-          <div className="info-section contact-info">
+          <div className={`${styles.infoSection} ${styles.contactInfo}`}>
             <h4>Thông Tin Liên Hệ</h4>
             <ul>
-              {["gender", "birthday", "address", "phone", "email"].map(
-                (field, idx) => (
-                  <li key={idx}>
-                    {editingField === field ? (
-                      <input
-                        type="text"
-                        name={field}
-                        value={doctorInfo[field]}
-                        onChange={handleChange}
-                        autoFocus
-                      />
-                    ) : (
-                      <>
-                        <span>{doctorInfo[field]}</span>
-                        <i
-                          className="fas fa-edit"
-                          style={{ cursor: "pointer", marginLeft: "5px" }}
-                          onClick={() => setEditingField(field)}
-                        ></i>
-                      </>
-                    )}
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+              <li>
+                <span>Giới tính: </span>
+                {editingField === "gioiTinh" ? (
+                  <select name="gioiTinh" value={doctorInfo.gioiTinh} onChange={handleChange} autoFocus>
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                  </select>
+                ) : (
+                  <>
+                    <strong>{doctorInfo.gioiTinh ? "Nam" : "Nữ"}</strong>
+                    <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setEditingField("gioiTinh")}></i>
+                  </>
+                )}
+              </li>
 
-          {/* Mục tiêu nghề nghiệp */}
-          <div className="info-section career-objective">
-            <h4>Mục Tiêu Nghề Nghiệp</h4>
-            <ul>
-              {doctorInfo.careerGoals.map((goal, idx) => (
+              {[
+                { key: "ngaySinh", label: "Ngày sinh", type: "date" },
+                { key: "cccd", label: "CCCD", type: "text" },
+                { key: "diaChi", label: "Địa chỉ", type: "text" },
+                { key: "soDienThoai", label: "Số ĐT", type: "text" },
+                { key: "email", label: "Email", type: "text" },
+              ].map((field, idx) => (
                 <li key={idx}>
-                  {editingField === `careerGoals-${idx}` ? (
+                  <span>{field.label}: </span>
+                  {editingField === field.key ? (
                     <input
-                      type="text"
-                      value={goal}
-                      onChange={(e) => handleChange(e, idx, "careerGoals")}
-                      autoFocus
+                      type={field.type} name={field.key} value={doctorInfo[field.key] || ""}
+                      onChange={handleChange} autoFocus style={{ width: "60%" }}
                     />
                   ) : (
                     <>
-                      {goal}
-                      <i
-                        className="fas fa-edit"
-                        style={{ cursor: "pointer", marginLeft: "5px" }}
-                        onClick={() => setEditingField(`careerGoals-${idx}`)}
-                      ></i>
+                      <strong>{doctorInfo[field.key] || "Chưa cập nhật"}</strong>
+                      <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setEditingField(field.key)}></i>
                     </>
                   )}
                 </li>
@@ -212,86 +141,55 @@ const EditProfile = () => {
             </ul>
           </div>
 
-          {/* Đánh giá */}
-          <div className="info-section rating-section">
-            <h4>Đánh Giá Công Tác khám </h4>
-            <div className="stars">
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-            </div>
+          <div className={`${styles.infoSection} ${styles.careerObjective}`}>
+            <h4>Mục Tiêu Nghề Nghiệp</h4>
+            {editingField === "mieuTa1" ? (
+              <textarea
+                name="mieuTa1" rows="4" style={{ width: "100%", padding: "5px" }}
+                value={doctorInfo.mieuTa1 || ""} onChange={handleChange} autoFocus
+              />
+            ) : (
+              <p style={{ position: "relative", whiteSpace: "pre-line" }}>
+                {doctorInfo.mieuTa1 || "Chưa có thông tin"}
+                <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px", position: "absolute", right: 0 }} onClick={() => setEditingField("mieuTa1")}></i>
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Cột phải */}
-        <div className="profile-right-column">
-          <div className="right-box">
-            <div className="right-header">
-              {["name", "specialty"].map((field, idx) =>
-                editingField === field ? (
-                  <input
-                    key={field}
-                    type="text"
-                    name={field}
-                    value={doctorInfo[field]}
-                    onChange={handleChange}
-                    autoFocus
-                    style={{
-                      fontSize: field === "name" ? "1.5rem" : "1rem",
-                      fontWeight: field === "name" ? "bold" : "normal",
-                      width: "100%",
-                    }}
-                  />
-                ) : (
-                  <div
-                    key={field}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                    }}
-                  >
-                    {field === "name" ? (
-                      <h2>{doctorInfo.name}</h2>
-                    ) : (
-                      <p>{doctorInfo.specialty}</p>
-                    )}
-                    <i
-                      className="fas fa-edit"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setEditingField(field)}
-                    ></i>
-                  </div>
-                )
+        {/* ================= CỘT PHẢI ================= */}
+        <div className={styles.profileRightColumn}>
+          <div className={styles.rightBox}>
+
+            <div className={styles.rightHeader}>
+              {editingField === "hoVaTen" ? (
+                <input type="text" name="hoVaTen" value={doctorInfo.hoVaTen || ""} onChange={handleChange} style={{ fontSize: "1.5rem", fontWeight: "bold", width: "100%" }} autoFocus />
+              ) : (
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <h2>{doctorInfo.hoVaTen ? doctorInfo.hoVaTen.toUpperCase() : "CHƯA CÓ TÊN"}</h2>
+                  <i className="fas fa-edit" style={{ cursor: "pointer" }} onClick={() => setEditingField("hoVaTen")}></i>
+                </div>
               )}
             </div>
 
-            {/* Học vấn */}
-            <div className="right-section education">
-              <h3>
-                <i className="fas fa-graduation-cap"></i> HỌC VẤN
-              </h3>
+            <div className={`${styles.rightSection} ${styles.education}`}>
+              <h3><i className="fas fa-graduation-cap"></i> HỌC VẤN & THÔNG TIN CHUYÊN MÔN</h3>
               <ul>
-                {(doctorInfo.education || []).map((item, idx) => (
-                  <li key={idx}>
-                    <span>{item.label}:</span>
-                    {editingField === `education-${idx}` ? (
-                      <input
-                        type="text"
-                        value={item.value}
-                        onChange={(e) => handleChange(e, idx, "education")}
-                        autoFocus
-                      />
+                {[
+                  { key: "chucVu", label: "Chức vụ" },
+                  { key: "hocHam", label: "Học hàm/vị" },
+                  { key: "bangCap", label: "Bằng cấp" },
+                  { key: "kinhNghiem", label: "Kinh nghiệm" },
+                  { key: "soGiayPhep", label: "Số giấy phép" },
+                ].map((item, idx) => (
+                  <li key={idx} style={{ marginBottom: "10px" }}>
+                    <span style={{ display: "inline-block", width: "120px", fontWeight: "bold" }}>{item.label}:</span>
+                    {editingField === item.key ? (
+                      <input type="text" name={item.key} value={doctorInfo[item.key] || ""} onChange={handleChange} autoFocus style={{ width: "60%" }} />
                     ) : (
                       <>
-                        <span>{item.value}</span>
-                        <i
-                          className="fas fa-edit"
-                          style={{ cursor: "pointer", marginLeft: "5px" }}
-                          onClick={() => setEditingField(`education-${idx}`)}
-                        ></i>
+                        <span>{doctorInfo[item.key] || "Chưa cập nhật"}</span>
+                        <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setEditingField(item.key)}></i>
                       </>
                     )}
                   </li>
@@ -299,114 +197,59 @@ const EditProfile = () => {
               </ul>
             </div>
 
-            {/* Hoạt động */}
-            <div className="right-section activities">
-              <h3>
-                <i className="fas fa-flag"></i> HOẠT ĐỘNG
-              </h3>
-              <div className="timeline-container">
-                {doctorInfo.activities.map((act, idx) => (
-                  <div className="timeline-item" key={idx}>
-                    <span className="timeline-date">{act.date}</span>
-                    <div className="timeline-content">
-                      <ul>
-                        {act.description.map((desc, i) => (
-                          <li key={i}>
-                            {editingField === `activities-${idx}-${i}` ? (
-                              <input
-                                type="text"
-                                value={desc}
-                                onChange={(e) =>
-                                  handleChange(e, idx, "activities")
-                                }
-                                autoFocus
-                              />
-                            ) : (
-                              <>
-                                {desc}
-                                <i
-                                  className="fas fa-edit"
-                                  style={{
-                                    cursor: "pointer",
-                                    marginLeft: "5px",
-                                  }}
-                                  onClick={() =>
-                                    setEditingField(`activities-${idx}-${i}`)
-                                  }
-                                ></i>
-                              </>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div style={{ position: "relative" }}>
-                        <img
-                          src={act.image}
-                          alt={`Hoạt động ${idx + 1}`}
-                          style={{
-                            width: "100%",
-                            maxHeight: "200px",
-                            objectFit: "cover",
-                          }}
-                        />
-                        <label
-                          htmlFor={`activity-upload-${idx}`}
-                          style={{
-                            position: "absolute",
-                            bottom: 5,
-                            right: 5,
-                            cursor: "pointer",
-                            background: "#fff",
-                            padding: "3px",
-                            borderRadius: "3px",
-                          }}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </label>
-                        <input
-                          id={`activity-upload-${idx}`}
-                          type="file"
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          onChange={(e) => handleActivityImageChange(e, idx)}
-                        />
-                      </div>
-                    </div>
+            <div className={`${styles.rightSection} ${styles.activities}`}>
+              <h3><i className="fas fa-flag"></i> HOẠT ĐỘNG & QUÁ TRÌNH CÔNG TÁC</h3>
+              <div className={styles.timelineContainer}>
+                <div className={styles.timelineItem}>
+                  <span className={styles.timelineDate}>Lịch sử hoạt động</span>
+                  <div className={styles.timelineContent}>
+                    {editingField === "hoatDong" ? (
+                      <textarea name="hoatDong" rows="4" style={{ width: "100%" }} value={doctorInfo.hoatDong || ""} onChange={handleChange} autoFocus />
+                    ) : (
+                      <p style={{ whiteSpace: "pre-line" }}>
+                        {doctorInfo.hoatDong || "Chưa có thông tin"}
+                        <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setEditingField("hoatDong")}></i>
+                      </p>
+                    )}
                   </div>
-                ))}
+                </div>
+
+                <div className={styles.timelineItem}>
+                  <span className={styles.timelineDate}>Thông tin bổ sung</span>
+                  <div className={styles.timelineContent}>
+                    {editingField === "mieuTa2" ? (
+                      <textarea name="mieuTa2" rows="3" style={{ width: "100%" }} value={doctorInfo.mieuTa2 || ""} onChange={handleChange} autoFocus />
+                    ) : (
+                      <p style={{ whiteSpace: "pre-line" }}>
+                        {doctorInfo.mieuTa2 || "Chưa có thông tin bổ sung"}
+                        <i className="fas fa-edit" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setEditingField("mieuTa2")}></i>
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* Nút Cập nhật / Hủy bỏ */}
-      <div
-        style={{
-          width: "90%",
-          maxWidth: "900px",
-          margin: "20px auto",
-          display: "flex",
-          justifyContent: "center",
-          gap: "20px",
-        }}
-      >
+      {/* ================= NÚT XÁC NHẬN ================= */}
+      {editingField !== null && (
+        <div style={{ width: "100%", textAlign: "center", margin: "20px 0", color: "red", fontWeight: "bold" }}>
+          * Đang ở chế độ chỉnh sửa. Vui lòng bấm Cập Nhật để lưu!
+        </div>
+      )}
+      <div style={{ width: "90%", maxWidth: "900px", margin: "20px auto", display: "flex", justifyContent: "center", gap: "20px" }}>
         <button
           onClick={handleUpdate}
-          style={{
-            backgroundColor: "#1B7EEE",
-            color: "#fff",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          style={{ backgroundColor: "#1B7EEE", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}
         >
           Cập nhật
         </button>
-        <button onClick={handleCancel}>Hủy bỏ</button>
+        <button onClick={handleCancel} style={{ padding: "10px 20px", cursor: "pointer", borderRadius: "5px", border: "1px solid #ccc" }}>
+          Hủy bỏ
+        </button>
       </div>
     </>
   );

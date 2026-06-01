@@ -34,7 +34,7 @@
 //   useEffect(() => {
 //     const loadUser = async () => {
 //       const storedUser = localStorage.getItem("user");
-      
+
 //       if (storedUser) {
 //         try {
 //           const userData = JSON.parse(storedUser);
@@ -182,7 +182,7 @@ const mapRoleToRoleName = (vaiTro) => {
     "PhongKham": "clinic",
     "Admin": "admin"
   };
-  return roleMap[vaiTro] || "admin"; 
+  return roleMap[vaiTro] || "admin";
 };
 
 // ĐÃ FIX: Hàm vũ khí "dọn rác" Base64. Quét sạch mọi chuỗi siêu dài trong Object
@@ -212,12 +212,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       const storedUser = localStorage.getItem("user");
-      
+
       if (storedUser) {
         try {
           const userData = JSON.parse(storedUser);
-          const accountInfo = userData.account || userData.taiKhoan || userData; 
-          if(accountInfo) {
+          const accountInfo = userData.account || userData.taiKhoan || userData;
+          if (accountInfo) {
             const transformedUser = {
               ...userData,
               roleName: mapRoleToRoleName(accountInfo.vaiTro),
@@ -252,14 +252,14 @@ export const AuthProvider = ({ children }) => {
       };
 
       const response = await apiClient.post('/api/v1/login', body);
-      const userData = response; 
-      const accountInfo = userData.account || userData.taiKhoan || userData; 
+      const userData = response;
+      const accountInfo = userData.account || userData.taiKhoan || userData;
 
       if (accountInfo?.vaiTro) {
         // 1. LƯU CÁC THÔNG TIN NHỎ, QUAN TRỌNG LÊN TRƯỚC (Để tránh bị skip nếu có lỗi)
         const token = userData.token || userData.accessToken;
         if (token) localStorage.setItem("token", token);
-        
+
         localStorage.setItem("role", accountInfo.vaiTro);
         localStorage.setItem("idPatient", userData.maBenhNhan || "");
         localStorage.setItem("idAccount", accountInfo.maTaiKhoan || "");
@@ -276,20 +276,20 @@ export const AuthProvider = ({ children }) => {
           try {
             const clinicId = userData.phongKham?.maPhongKham || userData.maPhongKham;
             if (clinicId) {
-                const fullClinicData = await clinicsService.getDetail(clinicId);
-                const safeClinicProfile = removeHeavyStrings(fullClinicData); // Dọn rác luôn profile
-                
-                setProfileClinic(safeClinicProfile);
-                localStorage.setItem("idPhongKham", clinicId);
-                localStorage.setItem("profileClinic", JSON.stringify(safeClinicProfile));
+              const fullClinicData = await clinicsService.getDetail(clinicId);
+              const safeClinicProfile = removeHeavyStrings(fullClinicData); // Dọn rác luôn profile
+
+              setProfileClinic(safeClinicProfile);
+              localStorage.setItem("idPhongKham", clinicId);
+              localStorage.setItem("profileClinic", JSON.stringify(safeClinicProfile));
             }
           } catch (e) {
-              console.error("Lỗi khi lấy thông tin chi tiết phòng khám:", e);
+            console.error("Lỗi khi lấy thông tin chi tiết phòng khám:", e);
           }
         }
 
         const transformedUser = {
-          ...safeUserData, 
+          ...safeUserData,
           roleName: mapRoleToRoleName(accountInfo.vaiTro),
           fullName: accountInfo.hoVaTen || userData.hoVaTen || "Người dùng",
           maTaiKhoan: accountInfo.maTaiKhoan,
@@ -344,4 +344,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthContext;
+export default AuthContext; 

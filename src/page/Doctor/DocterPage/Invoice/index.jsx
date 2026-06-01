@@ -13,7 +13,7 @@ const PrescriptionListPage = () => {
     const [modalConfig, setModalConfig] = useState({ isOpen: false, mode: 'view', data: null });
 
     // Lấy mã bác sĩ đang đăng nhập từ hệ thống
-    const currentDoctorId = localStorage.getItem('idDoctor') ;
+    const currentDoctorId = localStorage.getItem('idDoctor');
 
     const fetchPrescriptions = async () => {
         setLoading(true);

@@ -1,19 +1,25 @@
-.profile-container {
+.profileContainer {
   display: flex;
-  min-height: 100vh; 
+  min-height: 100vh;
   margin: 10px auto;
   border-radius: 5px;
-  overflow-y: auto; 
+  overflow-y: auto;
   position: relative;
 }
 
-.profile-right-column::-webkit-scrollbar {
+.profileRightColumn::-webkit-scrollbar {
   display: none;
 }
-.profile-right-column {
+
+.profileRightColumn {
   scrollbar-width: none;
+  background: #f0f2f5;
+  position: relative;
+  width: 70%;
+  padding: 120px 10px 10px 30px;
 }
-.profile-left-column {
+
+.profileLeftColumn {
   background-color: #1B7EEE;
   width: 35%;
   color: #080000;
@@ -28,16 +34,15 @@
   position: relative;
 }
 
-.avatar-section {
+.avatarSection {
   display: flex;
   justify-content: center;
   align-items: center;
   padding-top: 15px;
   padding-bottom: 15px;
-  
 }
 
-.doctor-avatar {
+.doctorAvatar {
   width: 200px;
   height: 200px;
   border-radius: 50%;
@@ -45,65 +50,57 @@
   object-fit: cover;
 }
 
-.info-section {
+.infoSection {
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   gap: 20px;
   border: 0.5px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2)
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.info-section h4 {
+.infoSection h4 {
   margin-top: 0;
   margin-bottom: 10px;
   color: #0a0000;
 }
 
-.contact-info ul,
-.career-objective ul {
+.contactInfo ul,
+.careerObjective ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.contact-info li {
+.contactInfo li {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.contact-info li i {
+.contactInfo li i {
   color: #080000;
   width: 20px;
   text-align: center;
 }
 
-.career-objective ul {
+.careerObjective ul {
   list-style: disc;
   padding-left: 20px;
 }
 
-.rating-section .stars {
+.ratingSection .stars {
   font-size: 16px;
   color: #ffd700;
 }
 
-.profile-right-column {
-  background-color: #f0f2f5;
-  width: 70%;
-  background: #f0f2f5;
-  padding: 120px 10px 10px 30px;
-}
-
-.right-header {
+.rightHeader {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   text-align: left;
-  padding: 14px 20px;
   position: absolute;
   top: 10px;
   left: -15px;
@@ -112,39 +109,30 @@
   padding: 14px 20px;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, .40);
   z-index: 5;
-  border: 1px solid#6f787c;
+  border: 1px solid #6f787c;
 }
 
-.profile-right-column {
-  background: #f0f2f5;
-  position: relative;
-  width: 70%;
-  padding: 120px 10px 10px 30px;  
-}
-
-.right-header h2,
-.right-header p {
+.rightHeader h2,
+.rightHeader p {
   margin-left: 0 !important;
   text-align: left !important;
   background: none !important;
   width: 100%;
 }
 
-.right-header h2 {
+.rightHeader h2 {
   margin: 0 0 5px 0;
   color: #000;
 }
 
-.right-header p {
+.rightHeader p {
   margin: 0;
   color: #0c0b0b;
   text-transform: uppercase;
-
   font-size: 0.9rem;
 }
 
-
-.right-section h3 {
+.rightSection h3 {
   color: #2e5cb8;
   margin-top: 0;
   margin-bottom: 15px;
@@ -153,35 +141,35 @@
   gap: 10px;
 }
 
-.right-section ul {
+.rightSection ul {
   list-style: none;
   margin: 0;
   padding-left: 24px;
 }
 
-.right-section ul li {
+.rightSection ul li {
   margin-bottom: 10px;
   display: flex;
   gap: 10px;
 }
 
-.right-section ul li span:first-child {
+.rightSection ul li span:first-child {
   font-weight: bold;
   min-width: 80px;
 }
 
-.timeline-container {
+.timelineContainer {
   padding-left: 20px;
 }
 
-.timeline-item {
+.timelineItem {
   position: relative;
   border-left: 2px solid #ccc;
   padding-left: 20px;
   margin-bottom: 15px;
 }
 
-.timeline-item::before {
+.timelineItem::before {
   display: flex;
   content: '';
   position: absolute;
@@ -193,20 +181,20 @@
   top: 4px;
 }
 
-.timeline-date {
+.timelineDate {
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
   display: block;
 }
 
-.timeline-content {
+.timelineContent {
   display: flex;
   gap: 15px;
   align-items: flex-start;
 }
 
-.timeline-content img {
+.timelineContent img {
   width: 100px;
   height: 80px;
   object-fit: cover;
@@ -214,9 +202,8 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.activity-images {
+.activityImages {
   margin-top: 20px;
   display: flex;
   gap: 10px;
 }
-
