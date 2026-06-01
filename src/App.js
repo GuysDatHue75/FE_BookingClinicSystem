@@ -225,7 +225,7 @@ function App() {
             {currentRole === "PhongKham" && (
               <>
                 <Route path="/clinic" element={<LayoutClinic />}>
-                    <Route index element={<StatisticalClinic />} />
+                    <Route index element={<DashBoard />} />
                     <Route path="thong-tin-phong-kham" element={<ClinicView />}/>
                     <Route path="quan-ly-bac-si" element={<MNDoctorAll />}/>
                     <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />}/>
@@ -233,7 +233,7 @@ function App() {
                     {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
                     <Route path="quan-ly-thong-bao" element={<NotificationClinic />}/>
                     <Route path="quan-ly-tin-tuc" element={<NewsManager />}/>
-                    <Route path="thong-ke-bao-cao" element={<StatisticalClinic />}/>
+                    <Route path="thong-ke-bao-cao" element={<DashBoard />}/>
                     <Route path="doi-mat-khau" element={<Changepassword />}/>
                 </Route>
                 <Route path="/*" element={<NotFound />} />
