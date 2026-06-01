@@ -12,7 +12,7 @@ const ClinicRequestManagement = () => {
 
   // State tương tác UI
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("Chờ duyệt");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 

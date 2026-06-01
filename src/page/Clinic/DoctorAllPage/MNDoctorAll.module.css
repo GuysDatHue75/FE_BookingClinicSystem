@@ -57,28 +57,42 @@
 
 .searchInputWrap {
   flex: 1;
+  position: relative; /* Giữ icon nằm trong khung này */
   display: flex;
   align-items: center;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0 12px;
   background: #fff;
+  transition: all 0.3s ease; /* Hiệu ứng mượt mà khi bấm vào */
+}
+
+/* 💥 Nâng cấp viền xanh tinh tế thay cho Outline mặc định thô kệch */
+.searchInputWrap:focus-within {
+  border-color: #3b82f6; /* Viền xanh dương */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); /* Quầng sáng xanh mờ bao quanh (Giống phong cách Apple) */
 }
 
 .searchIcon {
   position: absolute;
   left: 5.5%;
-  top: 21%;
+  top: 28%;
   transform: translateY(-50%);
   color: #7f8c8d;
 }
 
 .searchInput {
   flex: 1;
-  border: none;
-  padding: 10px;
-  outline: none;
+  border: none; /* Bỏ viền mặc định của thẻ input vì đã có thẻ Wrap bọc ngoài */
+  padding: 10px 12px 10px 36px; /* 💥 PADDING QUAN TRỌNG: Đẩy chữ sang phải 36px để nhường chỗ cho icon kính lúp */
+  outline: none; /* Bỏ cái viền outline xanh mặc định của trình duyệt */
   font-size: 14px;
+  color: #334155;
+  background: transparent;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8; /* Chữ placeholder màu xám nhạt */
 }
 
 .filterGroup {

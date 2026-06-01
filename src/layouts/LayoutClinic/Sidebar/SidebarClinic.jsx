@@ -35,6 +35,7 @@ const Sidebar = ({ role, name, urlImage, menusItems }) => {
           <div key={idx} className={styles['menu-group']}>
             <NavLink
               to={item.path}
+              end
               /* FIX: Kết hợp class động bằng Template String (` `) */
               className={({ isActive }) =>
                 isActive 
@@ -60,6 +61,7 @@ const Sidebar = ({ role, name, urlImage, menusItems }) => {
                   <NavLink
                     key={subIdx}
                     to={sub.path}
+                    end
                     /* FIX: Module hóa class Active cho menu con */
                     className={({ isActive }) =>
                       isActive 
