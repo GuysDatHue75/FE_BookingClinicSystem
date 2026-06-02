@@ -30,13 +30,14 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
       return alert("Vui lòng nhập Mã lịch khám trước khi kiểm tra!");
     }
     try {
-      // Gọi đúng endpoint sếp vừa test thành công trên Postman
       const res = await apiClient.get(`/api/v1/doctor-schedules/${formData.maLichKham}`);
       const data = res.data;
 
       // Đổ dữ liệu trả về vào form state
       setFormData(prev => ({
         ...prev,
+        maBenhNhan: data.maBenhNhan, 
+        maBacSi: data.maBacSi || localStorage.getItem('maBacSi'),
         tenBenhNhan: data.tenBenhNhan,
         sdtBenhNhan: data.sdtBenhNhan,
         tenBacSi: data.tenBacSi,
@@ -54,12 +55,10 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
-    // Lưu file vào state để gửi lên server
     setSelectedFiles(prev => [...prev, ...files]);
 
-    // Tạo đường dẫn tạm thời (Blob URL) để hiển thị preview cho bác sĩ xem trước
     const newPreviews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews(prev => [...prev, ...newPreviews]);
+    imagePreviews(prev => [...prev, ...newPreviews]);
   };
 
   // Xóa ảnh đã chọn nếu chọn nhầm
@@ -75,7 +74,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
       ...prev,
       danhSachThuoc: [...(prev.danhSachThuoc || []), { ...newDrug }]
     }));
-    setNewDrug({ tenThuoc: '', donVi: 'Viên', soLuong: 1, lieuDung: '', ghiChu: '' }); // Reset ô nhập thuốc
+    setNewDrug({ tenThuoc: '', donVi: 'Viên', soLuong: 1, lieuDung: '', ghiChu: '' });
   };
 
   // Xóa bớt thuốc khỏi danh sách
@@ -114,7 +113,6 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
 
         alert(res.data || "Tạo đơn thuốc thành công!");
       } else if (currentMode === 'edit') {
-        // Gọi API PUT cập nhật đơn thuốc dựa trên maSoDonThuoc (Gửi JSON thông thường nếu sửa không đổi ảnh)
         const res = await apiClient.put(`/api/v1/prescription/update/${formData.maSoDonThuoc}`, formData);
         alert("Cập nhật đơn thuốc thành công!");
       }
@@ -176,16 +174,21 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
               )}
             </div>
 
+            {/* ĐÃ CẬP NHẬT HIỂN THỊ MÃ HỒ SƠ TẠI ĐÂY */}
             <div className={styles.invoiceMetaCard}>
-              <div className={styles.metaCardTitle}>BIỂU MẪU ĐIỆN TỬ</div>
+              <div className={styles.metaCardTitle}>HỒ SƠ & ĐƠN THUỐC</div>
               <div className={styles.metaInputGroup}>
-                <label>Mã Số:</label>
-                <input type="text" readOnly value={formData.maSoDonThuoc || "Tự động sinh"} className={styles.formInputBold} />
+                <label>Mã hồ sơ:</label>
+                <input type="text" readOnly value={formData.maHoSo || "Đang khởi tạo..."} className={styles.formInputBold} style={{ color: '#e02424' }} />
+              </div>
+              <div className={styles.metaInputGroup} style={{ marginTop: '6px' }}>
+                <label>Mã đơn thuốc:</label>
+                <input type="text" readOnly value={formData.maSoDonThuoc || "Tự động sinh"} className={styles.formInput} style={{ fontSize: '12px' }} />
               </div>
             </div>
           </div>
 
-          {/* HỒ SƠ LÂM SÀNG BỆNH NHÂN - KHÓA KHI TẠO ĐƠN THUỐC ĐỂ DÙNG DATA TỪ HỆ THỐNG */}
+          {/* HỒ SƠ LÂM SÀNG BỆNH NHÂN */}
           <div className={styles.sectionDividerTitle}>Thông tin bệnh lý lâm sàng</div>
           <div className={styles.patientFormGrid}>
             <div className={styles.inputFieldBlock}>
@@ -193,7 +196,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
               <input
                 type="text"
                 name="tenBenhNhan"
-                readOnly={currentMode === 'view' || currentMode === 'create'} // Khóa ô nhập liệu ở chế độ tạo/xem
+                readOnly={currentMode === 'view' || currentMode === 'create'}
                 value={formData.tenBenhNhan || ""}
                 onChange={handleInputChange}
                 className={styles.formInput}
@@ -205,7 +208,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
               <input
                 type="text"
                 name="sdtBenhNhan"
-                readOnly={currentMode === 'view' || currentMode === 'create'} // Khóa ô nhập liệu ở chế độ tạo/xem
+                readOnly={currentMode === 'view' || currentMode === 'create'}
                 value={formData.sdtBenhNhan || ""}
                 onChange={handleInputChange}
                 className={styles.formInput}
@@ -222,7 +225,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
             </div>
           </div>
 
-          {/* QUẢN LÝ THÊM BỚT DANH MỤC THUỐC ĐỘNG */}
+          {/* DANH MỤC THUỐC ĐỘNG */}
           <div className={styles.tableHeaderSection}>
             <div className={styles.sectionDividerTitle}>Danh mục thuốc được chỉ định</div>
           </div>
@@ -256,7 +259,6 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
                 </tr>
               ))}
 
-              {/* DÒNG NHẬP THUỐC MỚI */}
               {currentMode !== 'view' && (
                 <tr className="no-print" style={{ backgroundColor: '#fafafa' }}>
                   <td className={styles.textCenter}>+</td>
@@ -291,7 +293,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
             </div>
           </div>
 
-          {/* KHU VỰC UPLOAD HÌNH ẢNH LÂM SÀNG (SIÊU ÂM, X-QUANG) */}
+          {/* UPLOAD HÌNH ẢNH LÂM SÀNG */}
           {currentMode !== 'view' && (
             <div className="no-print" style={{ marginTop: '25px', padding: '15px', border: '1px dashed #d9d9d9', borderRadius: '6px', backgroundColor: '#faf0f6' }}>
               <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#722ed1' }}>
@@ -305,7 +307,6 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
                 style={{ fontSize: '13px' }}
               />
 
-              {/* Vùng hiển thị danh sách ảnh đang chọn để xem trước (Preview) */}
               {imagePreviews.length > 0 && (
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '15px' }}>
                   {imagePreviews.map((previewUrl, idx) => (
@@ -325,7 +326,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
             </div>
           )}
 
-          {/* KHU VỰC THAO TÁC GỬI LÊN SERVER */}
+          {/* KHU VỰC THAO TÁC */}
           <div className={`${styles.formBottomActions} no-print`} style={{ marginTop: '25px' }}>
             {currentMode !== 'view' ? (
               <>

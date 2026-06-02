@@ -1,49 +1,51 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./Header.css";
 
 // 1. IMPORT CÁC FILE SVG VÀO ĐÂY:
 import caiDatIcon from "../../../assets/svg/CaiDat.svg";
 import thongBaoIcon from "../../../assets/svg/Chuong.svg";
-import Avatar from "../../../assets/image/avt.jpg";
+import Avatar from "../../../assets/image/avt.jpg"; // Ảnh mặc định ban đầu
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { State } from "../../../state/context";
 
 const Header = ({ urlImage, notificationCount = 3 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-
-  const navigate = useNavigate(); //  tạo điều hướng
+  const navigate = useNavigate(); // Tạo điều hướng
 
   // --- HÀM XỬ LÝ CHỨC NĂNG ---
-
   const handleGoToChangePassword = () => {
-
     setShowDropdown(false); // Đóng menu lại cho chuyên nghiệp
     navigate("/doctor/doi-mat-khau");
   };
 
   const handleLogout = () => {
     setShowDropdown(false);
-
-    // 1. Xóa Token/Session ở đây (sau này code)
-    // localStorage.removeItem("token"); 
-
-    alert("Đang đăng xuất..."); // Thông báo tạm thời
-    navigate("/login"); // 
-  };
-  // 1.  tra cứu tiêu đề dựa trên path
-
-  const pageTitles = {
-    "/doctor": "Bảng điều khiển",
-    "/doctor/Patients": "Quản lý bệnh nhân",
-    "/doctor/settings": "Cài đặt hệ thống",
-    "/doctor/profile": "Hồ sơ cá nhân",
-
+    // Xóa dữ liệu avatar khỏi bộ nhớ khi đăng xuất để user sau vào không bị trùng
+    localStorage.removeItem("doctorAvatar");
+    alert("Đang đăng xuất...");
+    navigate("/login");
   };
 
-  // 2. Lấy tiêu đề tương ứng, nếu không thấy thì để mặc định là "Doctor Online"
 
-  const currentTitle = pageTitles[location.pathname] || "Doctor Online Connect";
+
+
+  // 1. Lấy tiêu đề  để mặc định là "Doctor Online Connect"
+  const currentTitle = "Doctor Online Connect";
+
+  // ĐOẠN ĐỒNG BỘ AVATAR TỪ CONTEXT 
+  const { image, setImage } = useContext(State);
+
+  // Khi Header vừa mount, nạp ảnh từ localStorage vào Context nếu có (giúp F5 không mất ảnh)
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem("doctorAvatar");
+    if (savedAvatar && !image) {
+      setImage(savedAvatar);
+    }
+  }, [image, setImage]);
+
+  // Thứ tự ưu tiên: Ảnh mới vừa cập nhật -> Ảnh đã lưu trong máy -> Ảnh mặc định dự phòng (Avatar)
+  const displayAvatar = image || localStorage.getItem("doctorAvatar") || Avatar;
 
   return (
     <header className="header-container">
@@ -52,37 +54,34 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
       </div>
 
       <div className="header-right">
-
-        {/* 1. Icon Cài đặt: Dùng thẻ img gọi thẳng biến caiDatIcon */}
+        {/* 1. Icon Cài đặt */}
         <button className="header-btn" title="Cài đặt">
           <img src={caiDatIcon} alt="Cài đặt" className="header-icon-img" />
         </button>
 
-        {/* 2. Icon Thông báo: Gọi thẳng biến thongBaoIcon */}
+        {/* 2. Icon Thông báo */}
         <button className="header-btn notification-btn" title="Thông báo">
           <img src={thongBaoIcon} alt="Thông báo" className="header-icon-img" />
-
-          {/* Chấm đỏ đếm thông báo */}
           {notificationCount > 0 && (
             <span className="noti-badge-header">{notificationCount}</span>
           )}
         </button>
 
         {/* 3. Avatar Mini */}
-        <div className="avatar-wrapper"> {/* Phải dùng class avatar-wrapper để menu thả xuống đúng vị trí */}
+        <div className="avatar-wrapper">
           <div
             className="header-avatar-box"
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            {/* Cho ảnh chui vào trong box này thì nó mới nằm đè lên nền xám được */}
+            {/* ĐÃ SỬA: Thay đổi từ src={Avatar} thành src={displayAvatar} */}
             <img
-              src={Avatar}
+              src={displayAvatar}
               alt="Avatar Bác sĩ"
               className="avatar-img-round"
             />
           </div>
 
-          {/* Menu thả xuống phải nằm trong wrapper để position: absolute hoạt động chuẩn */}
+          {/* Menu thả xuống */}
           {showDropdown && (
             <div className="avatar-dropdown">
               <div className="dropdown-info">

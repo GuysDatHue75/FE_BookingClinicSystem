@@ -1,33 +1,125 @@
-/* Layout Tổng */
-.chatContainer {
-    height: calc(100vh - 40px);
-    /* Thay đổi 40px tùy theo padding/margin tổng của layout cha nếu có */
+/* --- PHẦN STYLE ĐIỀU KHIỂN ĐỂ BIẾN THÀNH MODAL OVERLAY --- */
+
+/* Nền mờ phủ toàn màn hình */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Làm tối nền sau */
+    backdrop-filter: blur(5px);
+    /* Làm mờ các thông tin phía sau */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Đảm bảo luôn nổi lên trên cùng */
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Khung nội dung chính của Modal */
+.modalContent {
+    background: #f4f5f7;
+    width: 85%;
+    max-width: 1100px;
+    height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Ngăn chặn cuộn toàn bộ trang web */
+    animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.pageTitle {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #1a1a1a;
-    flex-shrink: 0;
+/* Thanh Header trên cùng của Modal */
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
 }
 
+.modalHeader h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+/* Nút đóng X của Modal */
+.closeModalBtn {
+    background: #f3f4f6;
+    border: none;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.closeModalBtn:hover {
+    background: #e5e7eb;
+    color: #000;
+}
+
+/* Nút mở hộp chat ở màn hình chính */
+.openChatBtn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Hiệu ứng mượt mà */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* --- GIỮ NGUYÊN CÁC STYLE GỐC CỦA SẾP VÀ ĐIỀU CHỈNH HEIGHT CHO HỢP LÝ --- */
 .chatLayout {
     display: grid;
     grid-template-columns: 350px 1fr;
-    gap: 20px;
+    gap: 16px;
     flex: 1;
     min-height: 0;
+    padding: 16px;
 }
 
-/* Sidebar (Inbox) */
 .sidebar {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -68,12 +160,12 @@
 
 .inboxItem:hover,
 .inboxItem.active {
-    background: #f9fafb;
+    background: #f4f5f7;
 }
 
 .avatar {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -85,21 +177,21 @@
     justify-content: center;
 }
 
-.inboxHeader,
+.inboxItemHeader,
 .inboxSnippet {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.inboxHeader h4 {
+.inboxItemHeader h4 {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
     color: #111827;
 }
 
 .time {
-    font-size: 12px;
+    font-size: 11px;
     color: #6b7280;
 }
 
@@ -110,7 +202,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 180px;
 }
 
 .unreadBadge {
@@ -122,10 +214,9 @@
     font-weight: bold;
 }
 
-/* Window (Tin nhắn) */
 .chatWindow {
     background: #F0F0F0;
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -137,7 +228,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
+    padding: 12px 20px;
     background: #D9D9D9;
     border-bottom: 1px solid #eee;
     flex-shrink: 0;
@@ -151,7 +242,7 @@
 
 .headerUser h4 {
     margin: 0 0 4px 0;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .headerUser p {
@@ -169,7 +260,6 @@
     cursor: pointer;
 }
 
-/* Lịch sử tin nhắn */
 .messageList {
     flex: 1;
     padding: 20px;
@@ -177,13 +267,6 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-}
-
-.dateDivider {
-    text-align: center;
-    font-size: 12px;
-    color: #9ca3af;
-    margin: 10px 0;
 }
 
 .messageWrapper {
@@ -217,7 +300,7 @@
 }
 
 .bubble {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 16px;
     font-size: 14px;
     line-height: 1.4;
@@ -250,12 +333,11 @@
     margin-top: 4px;
 }
 
-/* Khu vực Input */
 .inputArea {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 24px;
+    padding: 12px 20px;
     background: white;
     border-top: 1px solid #eee;
     flex-shrink: 0;
@@ -263,7 +345,7 @@
 
 .inputArea input {
     flex: 1;
-    padding: 12px 16px;
+    padding: 10px 16px;
     border-radius: 20px;
     border: 1px solid #e5e7eb;
     outline: none;
@@ -282,7 +364,7 @@
     background: #3b82f6;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 20px;
     font-weight: bold;
     cursor: pointer;

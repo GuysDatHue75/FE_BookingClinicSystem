@@ -17,7 +17,7 @@ const menuItems = [
   { icon: quanLyBenhNhanIcon, label: "Quản lý bệnh nhân", path: "/doctor/Patients" },
   { icon: duyetLichKhamIcon, label: "Duyệt lịch khám", path: "/doctor/View" },
   { icon: quanLyLichKhamIcon, label: "Quản lý lịch khám", path: "/doctor/schedule" },
-  { icon: donThuocIcon, label: "Đơn thuốc", path: "/doctor/Invoice" },
+  { icon: donThuocIcon, label: "Đơn thuốc", path: "/doctor/Invoice", subMenu: [{ label: "Tạo đơn thuốc", path: "/doctor/Invoice/CreateInvoice" }], },
   //{ icon: dienDanIcon, label: "Diễn đàn", path: "/doctor/OnlineConsult" },
   //{ icon: tinTucIcon, label: "Tin tức - Thông báo", path: "" },
   { icon: tuVanIcon, label: "Trả lời hỏi đáp", path: "/doctor/QnA" },
@@ -30,7 +30,7 @@ const menuItems = [
     subMenu: [{ label: "Sửa Profile", path: "/doctor/Profile/EditProfile" }],
   },
 
-  
+
 
 ];
 
