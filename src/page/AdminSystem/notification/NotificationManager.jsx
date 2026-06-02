@@ -46,7 +46,7 @@ const NotificationManager = () => {
         fromDate: formatDateTime(fromDate, false),
         toDate: formatDateTime(toDate, true),
         isRead: null,
-        maTaiKhoan: null,
+        maTaiKhoan: localStorage.getItem("idAccount"),
         page: pageIndex,
         size: size,
         sortBy: "thoiGianGui",

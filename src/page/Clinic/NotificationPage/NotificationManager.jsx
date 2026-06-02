@@ -144,11 +144,11 @@ const NotificationManager = () => {
     <div className={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 className={styles.title} style={{ margin: 0 }}>Quản lý thông báo</h1>
-        {unreadCount > 0 && (
+        {/* {unreadCount > 0 && (
           <div style={{ backgroundColor: '#ef4444', color: '#fff', padding: '8px 16px', borderRadius: '20px', fontWeight: 'bold' }}>
             <i className="fa-solid fa-bell"></i> Bạn có {unreadCount} thông báo mới
           </div>
-        )}
+        )} */}
         <button className={styles.createBtn} onClick={handleOpenCreate}>
             <i className="fa-solid fa-bullhorn"></i> Viết thông báo
         </button>

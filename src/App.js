@@ -239,7 +239,7 @@ function App() {
                   <Route path="quan-ly-thong-bao" element={<NotificationManager />} />
                   <Route path="quan-ly-goi-dang-ky" element={<PackageManager />} />
                   <Route path="thong-ke-bao-cao/" element={<Statistical />} />
-                  <Route path="doi-mat-khau" element={<ChangePass />} />
+                  <Route path="/admin/doi-mat-khau" element={<ChangePass />} />
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
@@ -248,16 +248,16 @@ function App() {
             {currentRole === "PhongKham" && (
               <>
                 <Route path="/clinic" element={<LayoutClinic />}>
-                  <Route index element={<StatisticalClinic />} />
-                  <Route path="thong-tin-phong-kham" element={<ClinicView />} />
-                  <Route path="quan-ly-bac-si" element={<MNDoctorAll />} />
-                  <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />} />
-                  <Route path="lich-lam-viec" element={<MNSchedules />} />
-                  {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
-                  <Route path="quan-ly-thong-bao" element={<NotificationClinic />} />
-                  <Route path="quan-ly-tin-tuc" element={<NewsManager />} />
-                  <Route path="thong-ke-bao-cao" element={<StatisticalClinic />} />
-                  <Route path="doi-mat-khau" element={<ChangePass />} />
+                    <Route index element={<DashBoard />} />
+                    <Route path="thong-tin-phong-kham" element={<ClinicView />}/>
+                    <Route path="quan-ly-bac-si" element={<MNDoctorAll />}/>
+                    <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />}/>
+                    <Route path="lich-lam-viec" element={<MNSchedules />}/>
+                    {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
+                    <Route path="quan-ly-thong-bao" element={<NotificationClinic />}/>
+                    <Route path="quan-ly-tin-tuc" element={<NewsManager />}/>
+                    <Route path="thong-ke-bao-cao" element={<DashBoard />}/>
+                    <Route path="/clinic/doi-mat-khau" element={<ChangePass />} />
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
