@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./QAPage.module.css";
 import apiClient from "../../../../api/api"; // Lưu ý: Chỉnh lại đường dẫn này cho khớp với cấu trúc dự án của bạn
+import { State } from "../../../../state/context";
 
 const DoctorQAPage = () => {
   const [qaList, setQaList] = useState([]);
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const {setAdvieIndex} = useContext(State);
 
   // 1. Gọi API lấy danh sách câu hỏi đang chờ (Trạng thái false)
   useEffect(() => {
@@ -19,6 +21,8 @@ const DoctorQAPage = () => {
         // GET /api/v1/doctor/advise/pending
         const response = await apiClient.get("/api/v1/doctor/advise/pending");
         setQaList(response.data);
+        setAdvieIndex(response.data.length);
+        
       } catch (error) {
         console.error("Lỗi khi lấy danh sách câu hỏi:", error);
       } finally {

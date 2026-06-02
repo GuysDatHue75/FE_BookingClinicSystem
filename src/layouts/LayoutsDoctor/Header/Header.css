@@ -25,7 +25,9 @@
     /* Hoặc font sếp đang dùng */
     letter-spacing: -0.5px;
 }
-
+/* .notification-wrapper {
+  position: relative;
+} */
 /* KHU VỰC CHỨA ICON & AVATAR BÊN PHẢI */
 .header-right {
     display: flex;

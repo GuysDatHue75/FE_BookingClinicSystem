@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Header.css";
 
 // 1. IMPORT CÁC FILE SVG VÀO ĐÂY:
@@ -6,12 +6,28 @@ import caiDatIcon from "../../../assets/svg/CaiDat.svg";
 import thongBaoIcon from "../../../assets/svg/Chuong.svg";
 import Avatar from "../../../assets/image/avt.jpg";
 import { useLocation, useNavigate } from "react-router-dom";
+import apiClient from "../../../api/api";
+import HeaderNotification from "./HeaderNotification";
+import { State } from "../../../state/context";
 
 
-const Header = ({ urlImage, notificationCount = 3 }) => {
+const Header = ({ urlImage }) => {
+  const maBacSi = localStorage.getItem("idDocter");
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-
+  const idAccount = localStorage.getItem("idAccount");
+  const { showNotification, setShowNotification, notificationIndex, setNotificationIndex,setAppointmentIndex } = useContext(State);
+  useEffect(() => {
+    const getCountNotification = async () => {
+      const resPatientIndex = await apiClient.get(`/api/v1/confirm-appointment/pending`, {
+        params: { maBacSi }
+      });
+     setAppointmentIndex(resPatientIndex.data.length);
+      const resNotificationIndex = await apiClient.get(`/api/v1/c-notification?idAccount=${idAccount}&isRead=${false}`);
+      setNotificationIndex(resNotificationIndex.data);
+    }
+    getCountNotification();
+  }, [])
   const navigate = useNavigate(); //  tạo điều hướng
 
   // --- HÀM XỬ LÝ CHỨC NĂNG ---
@@ -52,21 +68,31 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
       </div>
 
       <div className="header-right">
+        <div className="notification-wrapper">
+          <button
+            className="header-btn notification-btn"
+            title="Thông báo"
+            onClick={() => setShowNotification(!showNotification)}
+          >
+            <img
+              src={thongBaoIcon}
+              alt="Thông báo"
+              className="header-icon-img"
+            />
 
-        {/* 1. Icon Cài đặt: Dùng thẻ img gọi thẳng biến caiDatIcon */}
-        <button className="header-btn" title="Cài đặt">
-          <img src={caiDatIcon} alt="Cài đặt" className="header-icon-img" />
-        </button>
+            {notificationIndex > 0 && (
+              <span className="noti-badge-header">
+                {notificationIndex}
+              </span>
+            )}
+          </button>
 
-        {/* 2. Icon Thông báo: Gọi thẳng biến thongBaoIcon */}
-        <button className="header-btn notification-btn" title="Thông báo">
-          <img src={thongBaoIcon} alt="Thông báo" className="header-icon-img" />
-
-          {/* Chấm đỏ đếm thông báo */}
-          {notificationCount > 0 && (
-            <span className="noti-badge-header">{notificationCount}</span>
+          {showNotification && (
+            <HeaderNotification
+              onClose={() => setShowNotification(false)}
+            />
           )}
-        </button>
+        </div>
 
         {/* 3. Avatar Mini */}
         <div className="avatar-wrapper"> {/* Phải dùng class avatar-wrapper để menu thả xuống đúng vị trí */}

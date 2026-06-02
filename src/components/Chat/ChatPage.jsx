@@ -3,13 +3,14 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import apiClient from '../../api/api';
 import styles from './ChatPage.module.css';
+import Header from '../../layouts/LayoutsUser/Header/Header';
 
 const ChatPage = () => {
     const [inboxList, setInboxList] = useState([]);
     const [patientList, setPatientList] = useState([]);
     const [activeTab, setActiveTab] = useState('inbox');
     const [searchTerm, setSearchTerm] = useState('');
-
+    const role = localStorage.getItem("role");
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
@@ -229,12 +230,14 @@ const ChatPage = () => {
     );
 
     return (
-        <div className={styles.chatContainer}>
+        <>
+       {role == "BenhNhan" && <Header />}
+        
+        <div className={role == "BenhNhan" ? styles.chatContainerUser : styles.chatContainer}>
             <h1 className={styles.pageTitle}>Tin nhắn</h1>
-
             <div className={styles.chatLayout}>
                 {/* --- CỘT TRÁI: SIDEBAR --- */}
-                <div className={styles.sidebar}>
+                <div className={role == "BenhNhan" ? styles.sidebarUser : styles.sidebar}>
                     <div className={styles.searchBar}>
                         <input
                             type="text"
@@ -390,6 +393,7 @@ const ChatPage = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

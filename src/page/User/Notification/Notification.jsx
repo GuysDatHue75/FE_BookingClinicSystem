@@ -10,11 +10,13 @@ const NotificationDetail = () => {
     const [loading, setLoading] = useState(true);
     const { notifications, setNotifications } = useContext(State)
     const navigate = useNavigate();
-
+    const role = localStorage.getItem("role");
     const { id: idNotification } = useParams();
 
     useEffect(() => {
         setNotifications(false);
+        console.log(role);
+        
         const getNotification = async () => {
             try {
                 const res = await apiClient.get(
@@ -60,8 +62,8 @@ const NotificationDetail = () => {
 
     return (
         <>
-            <Header />
-            <div className="notification-page">
+            {role == "BenhNhan" && <Header />}
+            <div className={role == "BenhNhan" ? "notification-page" : "notification-page-other"}>
                 <div className="notification-container">
                     <div className="notification-header">
                         <h1 className="notification-title">

@@ -220,6 +220,7 @@ function App() {
                   <Route path="/doctor/DoctorStatistics/Revenue" element={<Statistical />} />
                   <Route path="DoctorStatistics/Visits" element={<Visits />} />
                   <Route path="Profile" element={<Profile />} />
+                  <Route path="/doctor/thong-bao/:id" element={<NotificationDetail />} />
                   <Route path="Profile/EditProfile" element={<EditProfile />} />
                   <Route path="ForgotPassword" element={<ForgotPassword />} />
                 </Route>

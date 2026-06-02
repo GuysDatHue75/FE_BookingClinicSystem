@@ -1,4 +1,4 @@
-.notification-page {
+.notification-page,.notification-page-other {
   background: #f5f7fb;
   min-height: 89vh;
   display: flex;
@@ -6,7 +6,12 @@
   padding: 40px 20px;
   margin-top: 80px;
 }
+.notification-page-other{
+  min-height: 70vh;
+  background: none;
 
+  margin-top: -50px;
+}
 .notification-container {
   background: #ffffff;
   width: 100%;

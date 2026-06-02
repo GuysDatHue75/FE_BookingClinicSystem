@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import apiClient from '../../../../api/api';
 import styles from './AppointmentApproval.module.css';
+import { State } from '../../../../state/context';
 
 const ConfirmAppointmentPage = () => {
   const maBacSi = localStorage.getItem('idDoctor');
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {appointmentIndex, setAppointmentIndex} = useContext(State);
 
   // Bảng Map cứng mã khung giờ ra Text để hiển thị (Khớp với dữ liệu DB của bạn)
   const timeSlotMap = {
@@ -58,8 +60,8 @@ const ConfirmAppointmentPage = () => {
         if (a.maKhungGio > b.maKhungGio) return 1;
 
         return 0;
-      });
-
+      });      
+      setAppointmentIndex(data.length);
       setAppointments(data);
     } catch (err) {
       console.error("Lỗi tải danh sách lịch khám:", err);
@@ -111,7 +113,7 @@ const ConfirmAppointmentPage = () => {
       {/* Giả lập Tab giống thiết kế */}
       <div className={styles.tabs}>
         <div className={`${styles.tabItem} ${styles.activeTab}`}>
-          Yêu cầu mới (Chờ xác nhận) <span className={styles.badge}>{appointments.length}</span>
+          Yêu cầu mới (Chờ xác nhận) 
         </div>
         {/* Các tab khác (Đã xác nhận, Đã hủy) có thể phát triển thêm sau */}
       </div>
@@ -183,7 +185,7 @@ const ConfirmAppointmentPage = () => {
                             title="Từ chối"
                             onClick={() => handleAction(item.maLichKham, 'DaHuy')}
                           >
-                            <i className="fa-solid fa-xmark"></i>
+                            <i className="fa-solid fa-xmark"  style={{marginRight:"10px"}}></i>
                           </button>
                         </div>
                       </td>

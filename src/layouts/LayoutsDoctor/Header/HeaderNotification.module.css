@@ -1,0 +1,109 @@
+
+.notificationPanel {
+  position: absolute;
+  top: 86%;
+  right: 70px;
+  width: 400px;
+  height: 600px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.notificationPanel::-webkit-scrollbar {
+  display: none;
+}
+
+.header {
+  padding: 20px 24px 10px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+.notificationItem {
+  display: flex;
+  min-width: 100% !important;
+  align-items: flex-start;
+  gap: 14px;
+  cursor:  pointer;
+  padding: 10px 15px;
+  text-decoration: none;
+}
+.notificationItem:hover{
+  background-color: #F0F0F0;
+}
+
+.notificationImage {
+  width: 57px;
+  height: 57px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationContent p,.notificationContentRead p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1.35;
+  color: #222;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notificationContentRead p{
+  font-weight: normal;
+  margin: 0;
+}
+.notificationAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.unreadDot {
+  width: 10px;
+  height: 10px;
+  transform: translateX(-23px);
+  border-radius: 50%;
+  background: #2563eb;
+}
+
+.deleteBtn {
+  border: none;
+  background: transparent;
+  transform: translateY(-5px);
+  color: #9ca3af;
+  transform: translateX(-23px);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+.notificationList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notificationList::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}

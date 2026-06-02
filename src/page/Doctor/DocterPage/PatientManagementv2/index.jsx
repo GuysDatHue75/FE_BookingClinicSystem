@@ -24,12 +24,10 @@ const PatientManagement = () => {
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
-      // console.log(idDoctor, idClinic);
       
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
       setTotalPages(response.data.totalPages || 0);
-      console.log(response.data.content);
     } catch (error) {
       console.error("Lỗi API:", error);
     } finally {
