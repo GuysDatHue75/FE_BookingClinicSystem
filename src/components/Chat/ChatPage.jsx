@@ -3,11 +3,14 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import apiClient from '../../api/api';
 import styles from './ChatPage.module.css';
+import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 
 const ChatPage = ({ onClose }) => {
     // State quản lý việc ẩn/hiện Modal chat
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [inboxList, setInboxList] = useState([]);
     const [patientList, setPatientList] = useState([]);
     const [activeTab, setActiveTab] = useState('inbox');
@@ -33,8 +36,21 @@ const ChatPage = ({ onClose }) => {
 
     const selectedUserRef = useRef(selectedUser);
     useEffect(() => {
-        selectedUserRef.current = selectedUser;
-    }, [selectedUser]);
+        if (location.state?.targetPatient) {
+            const patient = location.state.targetPatient;
+            const accountChatId = patient.maBenhNhan.replace('BN', 'TK');
+
+            // Thiết lập người đang chat hiện tại
+            setSelectedUser({
+                maDoiPhuong: accountChatId,
+                tenDoiPhuong: patient.hoVaTen,
+                avatar: patient.avatar
+            });
+
+            // Chuyển sang Tab bệnh nhân để đồng bộ UI 
+            setActiveTab('patients');
+        }
+    }, [location.state]);
 
     const fetchInboxListOnly = async () => {
         if (!currentUserId) return;
@@ -196,6 +212,15 @@ const ChatPage = ({ onClose }) => {
             isTypingSentRef.current = false;
         }, 2000);
     };
+    const handleCloseChat = () => {
+        if (typeof onClose === 'function') {
+            // Trường hợp 1: Nếu ChatPage được dùng làm Popup Modal ở đâu đó, gọi hàm onClose cũ
+            onClose();
+        } else {
+            // Trường hợp 2: Nếu mở dạng trang độc lập bằng Route (/doctor/chat), quay về danh sách bệnh nhân
+            navigate(-1);
+        }
+    };
 
     const filteredInbox = inboxList.filter(item =>
         item.tenDoiPhuong?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -209,13 +234,13 @@ const ChatPage = ({ onClose }) => {
 
     return (
         <>
-            <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalOverlay} onClick={handleCloseChat}>
                 <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 
                     {/* Thanh tiêu đề trên cùng của Modal */}
                     <div className={styles.modalHeader}>
                         <h2>Hộp thư tư vấn trực tuyến</h2>
-                        <button className={styles.closeModalBtn} onClick={onClose}>✕</button>
+                        <button className={styles.closeModalBtn} onClick={handleCloseChat}>✕</button>
                     </div>
 
                     <div className={styles.chatLayout}>

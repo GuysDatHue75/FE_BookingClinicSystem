@@ -42,7 +42,7 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
     if (savedAvatar && !image) {
       setImage(savedAvatar);
     }
-  }, [image, setImage]);
+  }, []);
 
   // Thứ tự ưu tiên: Ảnh mới vừa cập nhật -> Ảnh đã lưu trong máy -> Ảnh mặc định dự phòng (Avatar)
   const displayAvatar = image || localStorage.getItem("doctorAvatar") || Avatar;

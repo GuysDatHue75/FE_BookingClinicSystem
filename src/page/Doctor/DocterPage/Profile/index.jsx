@@ -25,10 +25,8 @@ const Profile = () => {
             validAvt = `http://localhost:8080/uploads/${validAvt}`;
           }
           // Chỉ cập nhật nếu Context hiện tại đang trống
-          if (!image) {
-            setImage(validAvt);
-            localStorage.setItem("doctorAvatar", validAvt);
-          }
+          setImage(validAvt);
+          localStorage.setItem("doctorAvatar", validAvt);
         }
       } catch (error) {
         console.error("Lỗi khi lấy thông tin hồ sơ bác sĩ:", error);

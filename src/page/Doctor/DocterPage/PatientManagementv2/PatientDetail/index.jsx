@@ -113,7 +113,7 @@ const PatientDetail = () => {
                   <p className={styles.patientId}>ID: {patient.maBenhNhan}</p>
                 </div>
               </div>
-              <div className={styles.actionButtons}>
+              {/* <div className={styles.actionButtons}>
                 <img
                   src={editButton}
                   alt="Sửa"
@@ -121,7 +121,7 @@ const PatientDetail = () => {
                   onClick={handleEditClick}
                   title="Chỉnh sửa thông tin sức khỏe"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* 2. Card Detail (Thông tin cá nhân + Sức khỏe) */}

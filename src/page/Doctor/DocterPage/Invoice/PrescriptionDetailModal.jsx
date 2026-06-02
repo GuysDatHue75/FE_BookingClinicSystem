@@ -36,7 +36,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
       // Đổ dữ liệu trả về vào form state
       setFormData(prev => ({
         ...prev,
-        maBenhNhan: data.maBenhNhan, 
+        maBenhNhan: data.maBenhNhan,
         maBacSi: data.maBacSi || localStorage.getItem('maBacSi'),
         tenBenhNhan: data.tenBenhNhan,
         sdtBenhNhan: data.sdtBenhNhan,
@@ -58,7 +58,7 @@ const PrescriptionDetailModal = ({ mode, initialData, onClose }) => {
     setSelectedFiles(prev => [...prev, ...files]);
 
     const newPreviews = files.map(file => URL.createObjectURL(file));
-    imagePreviews(prev => [...prev, ...newPreviews]);
+    setImagePreviews(prev => [...prev, ...newPreviews]);
   };
 
   // Xóa ảnh đã chọn nếu chọn nhầm
