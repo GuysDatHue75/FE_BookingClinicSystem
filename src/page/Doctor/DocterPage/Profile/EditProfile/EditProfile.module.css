@@ -1,0 +1,238 @@
+.editProfileWrapper {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #333;
+}
+
+.loadingState,
+.errorState {
+    text-align: center;
+    padding: 80px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+}
+
+/* SIDEBAR TRÁI */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.avatarCard,
+.formCard {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f1f3;
+}
+
+.avatarCard {
+    text-align: center;
+}
+
+.avatarContainer {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 12px;
+}
+
+.avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.avatarEditBadge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 34px;
+    height: 34px;
+    background: #0056b3;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid #fff;
+    transition: background 0.2s;
+}
+
+.avatarEditBadge:hover {
+    background: #004085;
+}
+
+.sidebarHint {
+    font-size: 12px;
+    color: #8c96a3;
+    margin: 0;
+}
+
+.cardTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+/* THÀNH PHẦN INPUT CỦA FORM */
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.inputGroup:last-child {
+    margin-bottom: 0;
+}
+
+.inputLabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background-color: #fff;
+    color: #334155;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.12);
+}
+
+.disabledInput {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+.highlightInput {
+    border-color: #f87171;
+    font-weight: 600;
+}
+
+.formTextarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* CỘT PHẢI NỘI DUNG CHUYÊN MÔN */
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0056b3;
+    margin: 0 0 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grid2Col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* THANH ĐIỀU KHIỂN DƯỚI CÙNG */
+.actionControlBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    background: #f8fafc;
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.btnCancel {
+    padding: 11px 22px;
+    background-color: #fff;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btnCancel:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+.btnSubmit {
+    padding: 11px 26px;
+    background-color: #0056b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+    transition: all 0.2s;
+}
+
+.btnSubmit:hover {
+    background-color: #004085;
+    box-shadow: 0 4px 14px rgba(0, 86, 179, 0.3);
+}
+
+.btnSubmit:disabled,
+.btnCancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive cấu hình thiết bị di động */
+@media (max-width: 900px) {
+    .editProfileWrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .grid2Col {
+        grid-template-columns: 1fr;
+    }
+}

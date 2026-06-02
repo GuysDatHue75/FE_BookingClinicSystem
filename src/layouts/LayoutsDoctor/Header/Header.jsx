@@ -1,20 +1,21 @@
+
 import React, { useContext, useEffect, useState } from "react";
 import "./Header.css";
 
 // 1. IMPORT CÁC FILE SVG VÀO ĐÂY:
 import caiDatIcon from "../../../assets/svg/CaiDat.svg";
 import thongBaoIcon from "../../../assets/svg/Chuong.svg";
-import Avatar from "../../../assets/image/avt.jpg";
+import Avatar from "../../../assets/image/avt.jpg"; // Ảnh mặc định ban đầu
 import { useLocation, useNavigate } from "react-router-dom";
 import apiClient from "../../../api/api";
 import HeaderNotification from "./HeaderNotification";
 import { State } from "../../../state/context";
 
-
 const Header = ({ urlImage }) => {
   const maBacSi = localStorage.getItem("idDocter");
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
+
   const idAccount = localStorage.getItem("idAccount");
   const { showNotification, setShowNotification, notificationIndex, setNotificationIndex,setAppointmentIndex } = useContext(State);
   useEffect(() => {
@@ -31,35 +32,38 @@ const Header = ({ urlImage }) => {
   const navigate = useNavigate(); //  tạo điều hướng
 
   // --- HÀM XỬ LÝ CHỨC NĂNG ---
-
   const handleGoToChangePassword = () => {
-
     setShowDropdown(false); // Đóng menu lại cho chuyên nghiệp
     navigate("/doctor/doi-mat-khau");
   };
 
   const handleLogout = () => {
     setShowDropdown(false);
-
-    // 1. Xóa Token/Session ở đây (sau này code)
-    // localStorage.removeItem("token"); 
-
-    alert("Đang đăng xuất..."); // Thông báo tạm thời
-    navigate("/login"); // 
-  };
-  // 1.  tra cứu tiêu đề dựa trên path
-
-  const pageTitles = {
-    "/doctor": "Bảng điều khiển",
-    "/doctor/Patients": "Quản lý bệnh nhân",
-    "/doctor/settings": "Cài đặt hệ thống",
-    "/doctor/profile": "Hồ sơ cá nhân",
-
+    // Xóa dữ liệu avatar khỏi bộ nhớ khi đăng xuất để user sau vào không bị trùng
+    localStorage.removeItem("doctorAvatar");
+    alert("Đang đăng xuất...");
+    navigate("/login");
   };
 
-  // 2. Lấy tiêu đề tương ứng, nếu không thấy thì để mặc định là "Doctor Online"
 
-  const currentTitle = pageTitles[location.pathname] || "Doctor Online Connect";
+
+
+  // 1. Lấy tiêu đề  để mặc định là "Doctor Online Connect"
+  const currentTitle = "Doctor Online Connect";
+
+  // ĐOẠN ĐỒNG BỘ AVATAR TỪ CONTEXT 
+  const { image, setImage } = useContext(State);
+
+  // Khi Header vừa mount, nạp ảnh từ localStorage vào Context nếu có (giúp F5 không mất ảnh)
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem("doctorAvatar");
+    if (savedAvatar && !image) {
+      setImage(savedAvatar);
+    }
+  }, [image, setImage]);
+
+  // Thứ tự ưu tiên: Ảnh mới vừa cập nhật -> Ảnh đã lưu trong máy -> Ảnh mặc định dự phòng (Avatar)
+  const displayAvatar = image || localStorage.getItem("doctorAvatar") || Avatar;
 
   return (
     <header className="header-container">
@@ -95,20 +99,20 @@ const Header = ({ urlImage }) => {
         </div>
 
         {/* 3. Avatar Mini */}
-        <div className="avatar-wrapper"> {/* Phải dùng class avatar-wrapper để menu thả xuống đúng vị trí */}
+        <div className="avatar-wrapper">
           <div
             className="header-avatar-box"
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            {/* Cho ảnh chui vào trong box này thì nó mới nằm đè lên nền xám được */}
+            {/* ĐÃ SỬA: Thay đổi từ src={Avatar} thành src={displayAvatar} */}
             <img
-              src={Avatar}
+              src={displayAvatar}
               alt="Avatar Bác sĩ"
               className="avatar-img-round"
             />
           </div>
 
-          {/* Menu thả xuống phải nằm trong wrapper để position: absolute hoạt động chuẩn */}
+          {/* Menu thả xuống */}
           {showDropdown && (
             <div className="avatar-dropdown">
               <div className="dropdown-info">

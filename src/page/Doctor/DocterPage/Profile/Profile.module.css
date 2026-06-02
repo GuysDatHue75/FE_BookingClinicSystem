@@ -1,209 +1,358 @@
-.profileContainer {
-  display: flex;
-  min-height: 100vh;
-  margin: 10px auto;
-  border-radius: 5px;
-  overflow-y: auto;
-  position: relative;
+/* Giao diện tổng thể */
+.profileWrapper {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #333;
 }
 
-.profileRightColumn::-webkit-scrollbar {
-  display: none;
+.loadingState,
+.errorState {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  font-weight: 500;
 }
 
-.profileRightColumn {
-  scrollbar-width: none;
-  background: #f0f2f5;
-  position: relative;
-  width: 70%;
-  padding: 120px 10px 10px 30px;
+.errorState {
+  color: #dc3545;
 }
 
-.profileLeftColumn {
-  background-color: #1B7EEE;
-  width: 35%;
-  color: #080000;
-  padding: 10px;
+/* ================= BÊN TRÁI (SIDEBAR) ================= */
+.sidebar {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border-radius: 3px;
-  border: 1px solid #000;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  position: relative;
-}
-
-.avatarSection {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
-
-.doctorAvatar {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 0.25px solid #0c0000;
-  object-fit: cover;
-}
-
-.infoSection {
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
   gap: 20px;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.infoSection h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #0a0000;
+.avatarCard,
+.infoCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
 }
 
-.contactInfo ul,
-.careerObjective ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.contactInfo li {
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.contactInfo li i {
-  color: #080000;
-  width: 20px;
+.avatarCard {
   text-align: center;
 }
 
-.careerObjective ul {
-  list-style: disc;
-  padding-left: 20px;
+.avatarContainer {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  padding: 0px;
+  background: transparent;
 }
 
-.ratingSection .stars {
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #fff;
+}
+
+.doctorName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.doctorTitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 16px 0;
+}
+
+.badgeGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: #e6f2ff;
+  color: #0056b3;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cardTitle {
   font-size: 16px;
-  color: #ffd700;
+  font-weight: 700;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  margin: 0 0 16px 0;
+  color: #2c3e50;
 }
 
-.rightHeader {
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+
+.infoList li {
+  display: flex;
   align-items: flex-start;
+  gap: 12px;
+}
+
+.infoIcon {
+  width: 32px;
+  height: 32px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  text-align: left;
-  position: absolute;
-  top: 10px;
-  left: -15px;
-  width: calc(90% + 30px);
-  background: #93A2AA;
-  padding: 14px 20px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, .40);
-  z-index: 5;
-  border: 1px solid #6f787c;
+  color: #0056b3;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.rightHeader h2,
-.rightHeader p {
-  margin-left: 0 !important;
-  text-align: left !important;
-  background: none !important;
-  width: 100%;
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.rightHeader h2 {
-  margin: 0 0 5px 0;
-  color: #000;
+.infoLabel {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
 }
 
-.rightHeader p {
-  margin: 0;
-  color: #0c0b0b;
-  text-transform: uppercase;
-  font-size: 0.9rem;
+.infoValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  word-wrap: break-word;
 }
 
-.rightSection h3 {
-  color: #2e5cb8;
-  margin-top: 0;
-  margin-bottom: 15px;
+
+/* ================= BÊN PHẢI (MAIN CONTENT) ================= */
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contentCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0056b3;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.rightSection ul {
-  list-style: none;
+.paragraphText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #4a4a4a;
+  white-space: pre-line;
   margin: 0;
-  padding-left: 24px;
 }
 
-.rightSection ul li {
-  margin-bottom: 10px;
-  display: flex;
-  gap: 10px;
+/* Highlight Box */
+.highlightBox {
+  background: #fff8e6;
+  border-left: 4px solid #ffc107;
+  padding: 16px;
+  border-radius: 4px 8px 8px 4px;
+  margin-bottom: 20px;
 }
 
-.rightSection ul li span:first-child {
-  font-weight: bold;
-  min-width: 80px;
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 16px;
+  margin-top: 16px;
 }
 
-.timelineContainer {
-  padding-left: 20px;
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 2px;
+  background: #e9ecef;
 }
 
 .timelineItem {
   position: relative;
-  border-left: 2px solid #ccc;
-  padding-left: 20px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.timelineItem::before {
-  display: flex;
-  content: '';
+.timelineItem:last-child {
+  margin-bottom: 0;
+}
+
+.timelineDot {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #2e5cb8;
-  border-radius: 50%;
-  left: -6px;
   top: 4px;
+  left: -21px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0056b3;
+  border: 2px solid #fff;
 }
 
-.timelineDate {
-  font-weight: bold;
+.timelineContent h4 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
   color: #333;
-  margin-bottom: 5px;
+}
+
+.timelineContent p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Grid layout cho Học vấn */
+.grid2Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dataGroup {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.dataGroup label {
   display: block;
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
-.timelineContent {
+.dataGroup div {
+  font-size: 15px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* Thông tin pháp lý */
+.legalInfoBox {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.legalRow {
   display: flex;
-  gap: 15px;
-  align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
 }
 
-.timelineContent img {
-  width: 100px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.legalRow:last-child {
+  border-bottom: none;
 }
 
-.activityImages {
-  margin-top: 20px;
+.legalRow:nth-child(odd) {
+  background-color: #fcfcfc;
+}
+
+.legalLabel {
+  width: 180px;
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.legalValue {
+  color: #333;
+  font-size: 14px;
+}
+
+.legalValueHighlight {
+  color: #d93025;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Tệp đính kèm */
+.attachmentBox {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #eef2f5;
+  border-radius: 8px;
+  border: 1px dashed #b3cce6;
+}
+
+.attachmentIcon {
+  font-size: 32px;
+  color: #dc3545;
+}
+
+.attachmentInfo h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.downloadLink {
+  font-size: 13px;
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.downloadLink:hover {
+  color: #003d82;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profileWrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .grid2Col {
+    grid-template-columns: 1fr;
+  }
 }

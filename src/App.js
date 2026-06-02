@@ -38,6 +38,7 @@ import MedicalHistory from "./page/Doctor/DocterPage/PatientManagementv2/Medical
 import AcceptMedicalAppointment from "./page/Doctor/DocterPage/AcceptMedicalAppointment/index";
 import QnA from "./page/Doctor/DocterPage/QnA/index";
 import Invoice from "./page/Doctor/DocterPage/Invoice/index";
+import CreateInvoice from "./page/Doctor/DocterPage/Invoice/CreateInvoice.jsx";
 import DoctorStatistics from "./page/Doctor/DocterPage/DoctorStatistics/index";
 import Revenue from "./page/Doctor/DocterPage/DoctorStatistics/Revenue/index";
 import Visits from "./page/Doctor/DocterPage/DoctorStatistics/Visits/index";
@@ -215,6 +216,7 @@ function App() {
                   <Route path="/doctor/Accept" element={<AcceptMedicalAppointment />} />
                   <Route path="/doctor/QnA" element={<QnA />} />
                   <Route path="/doctor/Invoice" element={<Invoice />} />
+                  <Route path="/doctor/Invoice/CreateInvoice" element={<CreateInvoice />} />
                   <Route path="/doctor/OnlineConsult" element={<OnlineConsult />} />
                   <Route path="/doctor/DoctorStatistics" element={<DoctorStatistics />} />
                   <Route path="/doctor/DoctorStatistics/Revenue" element={<Statistical />} />

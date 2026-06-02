@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-// Import CSS Module dưới dạng biến styles
 import styles from "./Profile.module.css";
 import apiClient from "../../../../api/api";
 import { State } from "../../../../state/context";
@@ -7,16 +6,30 @@ import { State } from "../../../../state/context";
 const Profile = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { image } = useContext(State);
+  const { image, setImage } = useContext(State);
 
   useEffect(() => {
     window.scrollTo({ behavior: "instant", top: 0 });
-    const maBacSi = localStorage.getItem("maBacSi") || "BS001";
+
+    // Lấy mã bác sĩ từ localStorage, mặc định theo dữ liệu test của bạn
+    const maBacSi = localStorage.getItem("idDoctor") || localStorage.getItem("maBacSi") || "BS001";
 
     const fetchDoctorProfile = async () => {
       try {
         const response = await apiClient.get(`/api/v1/doctor/profile/${maBacSi}`);
         setDoctor(response.data);
+
+        if (response.data.avt && response.data.avt.trim() !== "" && response.data.avt !== "null") {
+          let validAvt = response.data.avt;
+          if (!validAvt.startsWith("http") && !validAvt.startsWith("blob") && !validAvt.startsWith("data:image/")) {
+            validAvt = `http://localhost:8080/uploads/${validAvt}`;
+          }
+          // Chỉ cập nhật nếu Context hiện tại đang trống
+          if (!image) {
+            setImage(validAvt);
+            localStorage.setItem("doctorAvatar", validAvt);
+          }
+        }
       } catch (error) {
         console.error("Lỗi khi lấy thông tin hồ sơ bác sĩ:", error);
         alert("Không thể tải thông tin hồ sơ bác sĩ!");
@@ -28,94 +41,199 @@ const Profile = () => {
     fetchDoctorProfile();
   }, []);
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '50px', fontSize: '18px' }}>Đang tải thông tin hồ sơ...</div>;
-  if (!doctor) return <div style={{ textAlign: 'center', padding: '50px', fontSize: '18px', color: 'red' }}>Không tìm thấy thông tin bác sĩ!</div>;
+  if (loading) return <div className={styles.loadingState}>Đang tải thông tin hồ sơ...</div>;
+  if (!doctor) return <div className={styles.errorState}>Không tìm thấy thông tin bác sĩ!</div>;
 
-  const avatarUrl = doctor.anhDaiDien
-    ? (doctor.anhDaiDien.startsWith("http") || doctor.anhDaiDien.startsWith("blob")
-      ? doctor.anhDaiDien
-      : `http://localhost:8080/uploads/${doctor.anhDaiDien}`)
-    : image;
+  // Xử lý avatar: nếu null thì dùng ảnh mặc định từ context
+
+
+  const avatarUrl = doctor.avt
+    ? (doctor.avt.startsWith("http") || doctor.avt.startsWith("blob") || doctor.avt.startsWith("data:image/"))
+      ? doctor.avt
+      : `http://localhost:8080/uploads/${doctor.avt}`
+    : (image || localStorage.getItem("doctorAvatar"));
+
+  // Format ngày tháng
+  const formatDate = (dateString) => {
+    if (!dateString) return "Chưa cập nhật";
+    return new Date(dateString).toLocaleDateString('vi-VN');
+  };
 
   return (
-    <div className={styles.profileContainer}>
-      {/* ----------------- CỘT TRÁI ----------------- */}
-      <div className={styles.profileLeftColumn}>
-        <div className={styles.avatarSection}>
-          <img src={avatarUrl} alt="Avatar Bác sĩ" className={styles.doctorAvatar} />
+    <div className={styles.profileWrapper}>
+
+      {/* --- CỘT TRÁI: SIDEBAR THÔNG TIN CÁ NHÂN --- */}
+      <div className={styles.sidebar}>
+        <div className={styles.avatarCard}>
+          <div className={styles.avatarContainer}>
+            <img src={avatarUrl} alt="Avatar Bác sĩ" className={styles.avatarImage} onError={(e) => {
+              e.target.onerror = null; // Ngăn vòng lặp vô hạn nếu ảnh fallback cũng lỗi
+              e.target.src = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=200&auto=format&fit=crop"; // Đường dẫn ảnh mặc định hoặc avatar placeholder sạch sẽ
+            }} />
+          </div>
+          <h2 className={styles.doctorName}>{doctor.hocHam ? `${doctor.hocHam} ` : ''}{doctor.tenBacSi}</h2>
+          <p className={styles.doctorTitle}>{doctor.chucVu || "Bác sĩ điều trị"}</p>
+          <div className={styles.badgeGroup}>
+            <span className={styles.badge}><i className="fa-solid fa-stethoscope"></i> {doctor.maChuyenKhoa}</span>
+            <span className={styles.badge}><i className="fa-solid fa-hospital-user"></i> {doctor.maPhongKham}</span>
+          </div>
         </div>
 
-        <div className={`${styles.infoSection} ${styles.contactInfo}`}>
-          <h4>Thông Tin Liên Hệ</h4>
-          <ul>
-            <li><i className="fas fa-user-tie"></i><span>Giới tính: <strong>{doctor.gioiTinh ? "Nam" : "Nữ"}</strong></span></li>
-            <li><i className="fas fa-calendar-alt"></i><span>Ngày sinh: <strong>{doctor.ngaySinh ? new Date(doctor.ngaySinh).toLocaleDateString('vi-VN') : "Chưa cập nhật"}</strong></span></li>
-            <li><i className="fas fa-id-card"></i><span>CCCD: <strong>{doctor.cccd || "Chưa cập nhật"}</strong></span></li>
-            <li><i className="fas fa-home"></i><span>Địa chỉ: <strong>{doctor.diaChi || "Chưa cập nhật"}</strong></span></li>
-            <li><i className="fas fa-phone-alt"></i><span>{doctor.soDienThoai || "Chưa cập nhật"}</span></li>
-            <li><i className="fas fa-envelope"></i><span style={{ wordBreak: "break-all" }}>{doctor.email || "Chưa cập nhật"}</span></li>
+        <div className={styles.infoCard}>
+          <h3 className={styles.cardTitle}>Thông Tin Cá Nhân</h3>
+          <ul className={styles.infoList}>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-venus-mars"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Giới tính</span>
+                <span className={styles.infoValue}>{doctor.gioiTinh ? "Nam" : "Nữ"}</span>
+              </div>
+            </li>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-calendar-days"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Ngày sinh</span>
+                <span className={styles.infoValue}>{formatDate(doctor.ngaySinh)}</span>
+              </div>
+            </li>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-regular fa-id-card"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>CCCD / Hộ chiếu</span>
+                <span className={styles.infoValue}>{doctor.cccd || "Chưa cập nhật"}</span>
+              </div>
+            </li>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-map-location-dot"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Quê quán</span>
+                <span className={styles.infoValue}>{doctor.queQuan || "Chưa cập nhật"}</span>
+              </div>
+            </li>
           </ul>
         </div>
 
-        <div className={`${styles.infoSection} ${styles.careerObjective}`}>
-          <h4>Mục Tiêu Nghề Nghiệp</h4>
-          <p style={{ fontSize: "14px", lineHeight: "1.5", whiteSpace: "pre-line", margin: 0 }}>
-            {doctor.mieuTa1 || "Chưa có thông tin miêu tả mục tiêu nghề nghiệp."}
-          </p>
-        </div>
-
-        <div className={`${styles.infoSection} ${styles.ratingSection}`}>
-          <h4>Đánh Giá Công Tác Khám</h4>
-          <div className={styles.stars}>
-            <i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i>
-          </div>
+        <div className={styles.infoCard}>
+          <h3 className={styles.cardTitle}>Thông Tin Liên Hệ</h3>
+          <ul className={styles.infoList}>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-phone"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Số điện thoại</span>
+                <span className={styles.infoValue}>{doctor.soDienThoai || "Chưa cập nhật"}</span>
+              </div>
+            </li>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-envelope"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Email</span>
+                <span className={styles.infoValue}>{doctor.email || "Chưa cập nhật"}</span>
+              </div>
+            </li>
+            <li>
+              <div className={styles.infoIcon}><i className="fa-solid fa-house-chimney"></i></div>
+              <div className={styles.infoContent}>
+                <span className={styles.infoLabel}>Địa chỉ hiện tại</span>
+                <span className={styles.infoValue}>{doctor.diaChi || "Chưa cập nhật"}</span>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
 
-      {/* ----------------- CỘT PHẢI ----------------- */}
-      <div className={styles.profileRightColumn}>
-        <div className={styles.rightBox}>
+      {/* --- CỘT PHẢI: NỘI DUNG CHUYÊN MÔN --- */}
+      <div className={styles.mainContent}>
 
-          <div className={styles.rightHeader}>
-            <h2>{doctor.hoVaTen ? doctor.hoVaTen.toUpperCase() : "BÁC SĨ CHƯA CẬP NHẬT TÊN"}</h2>
-            <p>Mã phòng khám: {doctor.maPhongKham || "N/A"} | Chuyên khoa: {doctor.tenChuyenKhoa || doctor.maChuyenKhoa || "N/A"}</p>
+        {/* Giới thiệu (mieuTa1) */}
+        <div className={styles.contentCard}>
+          <h3 className={styles.sectionTitle}><i className="fa-solid fa-user-doctor"></i> Giới Thiệu Chung</h3>
+          <p className={styles.paragraphText}>
+            {doctor.mieuTa1 || "Chưa có thông tin giới thiệu."}
+          </p>
+        </div>
+
+        {/* Chuyên môn sâu (mieuTa2) & Hoạt động */}
+        <div className={styles.contentCard}>
+          <h3 className={styles.sectionTitle}><i className="fa-solid fa-heart-pulse"></i> Chuyên Môn & Hoạt Động</h3>
+
+          <div className={styles.highlightBox}>
+            <strong><i className="fa-solid fa-star"></i> Thế mạnh chuyên môn: </strong>
+            <p className={styles.paragraphText} style={{ marginTop: '8px' }}>{doctor.mieuTa2 || "Chưa cập nhật chuyên môn sâu."}</p>
           </div>
 
-          <div className={`${styles.rightSection} ${styles.education}`}>
-            <h3><i className="fas fa-graduation-cap"></i> HỌC VẤN & THÔNG TIN CHUYÊN MÔN</h3>
-            <ul>
-              <li><span>Chức vụ:</span> {doctor.chucVu || "Chưa cập nhật"}</li>
-              <li><span>Học hàm/vị:</span> {doctor.hocHam || "Chưa cập nhật"}</li>
-              <li><span>Bằng cấp:</span> {doctor.bangCap || "Chưa cập nhật"}</li>
-              <li><span>Kinh nghiệm:</span> {doctor.kinhNghiem || "Chưa cập nhật"}</li>
-              <li><span>Số giấy phép:</span> {doctor.soGiayPhep || "N/A"} (Cấp ngày: {doctor.ngayCap ? new Date(doctor.ngayCap).toLocaleDateString('vi-VN') : "N/A"} tại {doctor.noiCap || "N/A"})</li>
-            </ul>
-          </div>
-
-          <div className={`${styles.rightSection} ${styles.activities}`}>
-            <h3><i className="fas fa-flag"></i> HOẠT ĐỘNG & QUÁ TRÌNH CÔNG TÁC</h3>
-            <div className={styles.timelineContainer}>
-              <div className={styles.timelineItem}>
-                <span className={styles.timelineDate}>Lịch sử hoạt động</span>
-                <div className={styles.timelineContent}>
-                  <p style={{ margin: 0, whiteSpace: "pre-line", lineHeight: "1.6" }}>
-                    {doctor.hoatDong || "Chưa có thông tin về các hoạt động y khoa đã tham gia."}
-                  </p>
-                </div>
+          <div className={styles.timeline}>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}></div>
+              <div className={styles.timelineContent}>
+                <h4>Kinh nghiệm công tác</h4>
+                <p>{doctor.kinhNghiem || "Chưa cập nhật kinh nghiệm."}</p>
               </div>
+            </div>
+            <div className={styles.timelineItem}>
+              <div className={styles.timelineDot}></div>
+              <div className={styles.timelineContent}>
+                <h4>Lĩnh vực khám chữa bệnh</h4>
+                <p>{doctor.hoatDong || "Chưa cập nhật hoạt động."}</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              {doctor.mieuTa2 && (
-                <div className={styles.timelineItem}>
-                  <span className={styles.timelineDate}>Thông tin bổ sung</span>
-                  <div className={styles.timelineContent}>
-                    <p style={{ margin: 0, whiteSpace: "pre-line", lineHeight: "1.6" }}>{doctor.mieuTa2}</p>
-                  </div>
-                </div>
-              )}
+        {/* Học vấn & Bằng cấp */}
+        <div className={styles.contentCard}>
+          <h3 className={styles.sectionTitle}><i className="fa-solid fa-graduation-cap"></i> Trình Độ Học Vấn</h3>
+          <div className={styles.grid2Col}>
+            <div className={styles.dataGroup}>
+              <label>Học hàm / Học vị</label>
+              <div>{doctor.hocHam || "Chưa cập nhật"}</div>
+            </div>
+            <div className={styles.dataGroup}>
+              <label>Bằng cấp chuyên môn</label>
+              <div style={{ color: '#0056b3', fontWeight: '600' }}>{doctor.bangCap || "Chưa cập nhật"}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Thông tin pháp lý & Hồ sơ đính kèm */}
+        <div className={styles.contentCard}>
+          <h3 className={styles.sectionTitle}><i className="fa-solid fa-scale-balanced"></i> Thông Tin Pháp Lý & Chứng Chỉ</h3>
+
+          <div className={styles.legalInfoBox}>
+            <div className={styles.legalRow}>
+              <span className={styles.legalLabel}>Số giấy phép hành nghề:</span>
+              <span className={styles.legalValueHighlight}>{doctor.soGiayPhep || "Chưa cập nhật"}</span>
+            </div>
+            <div className={styles.legalRow}>
+              <span className={styles.legalLabel}>Ngày cấp:</span>
+              <span className={styles.legalValue}>{formatDate(doctor.ngayCap)}</span>
+            </div>
+            <div className={styles.legalRow}>
+              <span className={styles.legalLabel}>Nơi cấp:</span>
+              <span className={styles.legalValue}>{doctor.noiCap || "Chưa cập nhật"}</span>
             </div>
           </div>
 
+          {/* Xử lý hiển thị file đính kèm */}
+          {doctor.tepDinhKem && (
+            <div className={styles.attachmentBox}>
+              <div className={styles.attachmentIcon}>
+                <i className="fa-regular fa-file-pdf"></i>
+              </div>
+              <div className={styles.attachmentInfo}>
+                <h4>Hồ sơ đính kèm (Giấy phép / CCCD)</h4>
+                <a
+                  href={doctor.tepDinhKem.startsWith("http") ? doctor.tepDinhKem : `http://localhost:8080${doctor.tepDinhKem}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.downloadLink}
+                >
+                  Xem tài liệu <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+          )}
         </div>
+
       </div>
     </div>
   );
