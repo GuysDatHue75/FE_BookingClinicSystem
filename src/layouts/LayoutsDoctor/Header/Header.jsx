@@ -29,20 +29,21 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
 
 
 
-
+  const doctorName = localStorage.getItem("doctorName") || "Bác sĩ phụ trách";
+  const doctorSpecialty = localStorage.getItem("doctorSpecialty") || "Chuyên khoa";
   // 1. Lấy tiêu đề  để mặc định là "Doctor Online Connect"
   const currentTitle = "Doctor Online Connect";
 
   // ĐOẠN ĐỒNG BỘ AVATAR TỪ CONTEXT 
   const { image, setImage } = useContext(State);
 
-  // Khi Header vừa mount, nạp ảnh từ localStorage vào Context nếu có (giúp F5 không mất ảnh)
+  // Khi Header vừa mount, nạp ảnh từ localStorage vào Context nếu có 
   useEffect(() => {
     const savedAvatar = localStorage.getItem("doctorAvatar");
-    if (savedAvatar && !image) {
+    if (savedAvatar) {
       setImage(savedAvatar);
     }
-  }, []);
+  }, [location, setImage]);
 
   // Thứ tự ưu tiên: Ảnh mới vừa cập nhật -> Ảnh đã lưu trong máy -> Ảnh mặc định dự phòng (Avatar)
   const displayAvatar = image || localStorage.getItem("doctorAvatar") || Avatar;
@@ -73,7 +74,6 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
             className="header-avatar-box"
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            {/* ĐÃ SỬA: Thay đổi từ src={Avatar} thành src={displayAvatar} */}
             <img
               src={displayAvatar}
               alt="Avatar Bác sĩ"
@@ -85,8 +85,8 @@ const Header = ({ urlImage, notificationCount = 3 }) => {
           {showDropdown && (
             <div className="avatar-dropdown">
               <div className="dropdown-info">
-                <strong>Bác sĩ Nguyễn Văn A</strong>
-                <span>BS. Chuyên khoa I</span>
+                <strong>Bs: {doctorName}</strong>
+                <span>Chuyên khoa : {doctorSpecialty}</span>
               </div>
               <hr />
               <button className="dropdown-item" onClick={handleGoToChangePassword}>
