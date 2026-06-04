@@ -52,19 +52,10 @@ const ChatPage = ({ onClose, targetDoctor }) => {
         if (location.state?.targetPatient) {
             const patient = location.state.targetPatient;
             const accountChatId = patient.maBenhNhan.replace('BN', 'TK');
-// <<<<<<< HEAD
-//             setSelectedUser({
-//                 maDoiPhuong: accountChatId,
-//                 tenDoiPhuong: patient.hoVaTen,
-//                 avatar: patient.avatar,
-//                 role: "patient"
-//             });
-// =======
-
             setSelectedUser({
                 maDoiPhuong: accountChatId,
                 tenDoiPhuong: patient.hoVaTen,
-                avatarDoiPhuong: patient.avatar 
+                avatarDoiPhuong: patient.avatar
             });
 
             setActiveTab('patients');
@@ -72,7 +63,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
             setSelectedUser({
                 maDoiPhuong: targetDoctor.maTaiKhoan,
                 tenDoiPhuong: targetDoctor.hoVaTen,
-                avatar: targetDoctor.avatar,
+                avatarDoiPhuong: targetDoctor.avatar,
                 hocHam: targetDoctor.hocHam,
                 chuyenKhoa: targetDoctor.chuyenKhoa,
                 role: "doctor"
@@ -261,48 +252,6 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                 }
             });
 
-// <<<<<<< HEAD
-//             const sentTime = new Date().toISOString();
-//             const renderedMsg = { ...newMsg, thoiGianGui: sentTime };
-
-//             setMessages(prev => [...prev, renderedMsg]);
-//             setMessageInput('');
-//             handleTypingStatus(false);
-//             isTypingSentRef.current = false;
-
-//             // Tiến hành cập nhật giao diện sidebar ảo ngay lập tức
-//             setInboxList(prevInbox => {
-//                 const existingIndex = prevInbox.findIndex(item => item.maDoiPhuong === selectedUser.maDoiPhuong);
-
-//                 const updatedItem = {
-//                     maDoiPhuong: selectedUser.maDoiPhuong,
-//                     tenDoiPhuong: selectedUser.tenDoiPhuong,
-//                     avatar: selectedUser.avatar,
-//                     tinNhanCuoi: newMsg.noiDung,
-//                     maNguoiGuiCuoi: currentUserId,
-//                     thoiGianCuoi: sentTime,
-//                     soTinChuaDoc: 0,
-//                     ...(existingIndex >= 0 ? prevInbox[existingIndex] : {}) // Giữ thuộc tính cũ nếu đã tồn tại
-//                 };
-
-//                 // Đè dữ liệu tin nhắn mới nhất
-//                 updatedItem.tinNhanCuoi = newMsg.noiDung;
-//                 updatedItem.maNguoiGuiCuoi = currentUserId;
-//                 updatedItem.thoiGianCuoi = sentTime;
-
-//                 if (existingIndex >= 0) {
-//                     // Nếu đã có, lọc bỏ vị trí cũ và đưa lên đầu danh sách lịch sử
-//                     const filtered = prevInbox.filter((_, idx) => idx !== existingIndex);
-//                     return [updatedItem, ...filtered];
-//                 } else {
-//                     // Nếu chưa có (Chat mới từ nút Nhắn Tin), chèn thẳng vào đầu danh sách
-//                     return [updatedItem, ...prevInbox];
-//                 }
-//             });
-
-//             // Tăng thời gian chờ lên 1000ms để database Backend kịp ghi nhận dữ liệu
-//             setTimeout(() => fetchInboxListOnly(), 1000);
-// =======
             // Lấy URL tương đối trả về từ backend (Ví dụ: /uploads/chats/filename.png)
             const fileUrl = res.data;
 
@@ -324,7 +273,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
 
     // Hàm chuẩn hóa URL để tránh trùng lặp domain
     const formatFileUrl = (url) => {
-        if (!url) return '';
+        if (!url) return "https://via.placeholder.com/48";
         if (url.startsWith('http://') || url.startsWith('https://')) {
             return url; // Nếu backend đã trả về full đường dẫn thì giữ nguyên
         }
@@ -438,7 +387,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 onClick={() => setSelectedUser(inbox)}
                                             >
                                                 {/*  Hiển thị avatar đối phương thật từ DTO mới */}
-                                                <img src={inbox.avatarDoiPhuong ? `${BASE_URL}${inbox.avatarDoiPhuong}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
+                                                <img src={formatFileUrl(inbox.avatarDoiPhuong)} alt="avt" className={styles.avatar} />
                                                 <div className={styles.inboxInfo}>
                                                     <div className={styles.inboxItemHeader}>
                                                         <h4>{inbox.tenDoiPhuong}</h4>
@@ -472,7 +421,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                     className={`${styles.inboxItem} ${selectedUser?.maDoiPhuong === mappedChatId ? styles.active : ''}`}
                                                     onClick={() => handleSelectPatientNewChat(patient)}
                                                 >
-                                                    <img src={patient.avatar ? `${BASE_URL}${patient.avatar}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
+                                                    <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.avatar} />
                                                     <div className={styles.inboxInfo}>
                                                         <div className={styles.inboxItemHeader}>
                                                             <h4>{patient.hoVaTen}</h4>
@@ -497,7 +446,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                         <div className={styles.chatWindow}>
                             {selectedUser ? (
                                 <>
-{/* <<<<<<< HEAD
+                                    {/* <<<<<<< HEAD
                                     <div className={styles.headerUser}>
                                         <img
                                             src={selectedUser.avatar || "https://via.placeholder.com/48"}
@@ -516,8 +465,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
 ======= */}
                                     <div className={styles.chatHeader}>
                                         <div className={styles.headerUser}>
-                                            <img src={selectedUser.avatarDoiPhuong ? `${BASE_URL}${selectedUser.avatarDoiPhuong}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
-                                            <div>
+                                            <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.avatar} />                                            <div>
                                                 <h4>{selectedUser.tenDoiPhuong}</h4>
                                                 <p style={{ fontSize: '12px', color: '#666' }}>ID: {selectedUser.maDoiPhuong}</p>
                                             </div>
@@ -530,7 +478,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 const isMe = msg.maNguoiGui === currentUserId;
                                                 return (
                                                     <div key={msg.maTinNhan || `msg_${idx}`} className={`${styles.messageWrapper} ${isMe ? styles.messageRight : styles.messageLeft}`}>
-                                                        {!isMe && <img src={selectedUser.avatarDoiPhuong ? `${BASE_URL}${selectedUser.avatarDoiPhuong}` : "https://via.placeholder.com/32"} alt="avt" className={styles.messageAvatar} />}
+                                                        {!isMe && <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.messageAvatar} />}
                                                         <div className={styles.messageContent}>
 
                                                             {/*  RENDER TIN NHẮN THEO ĐỊNH DẠNG TEXT / IMAGE / FILE */}
