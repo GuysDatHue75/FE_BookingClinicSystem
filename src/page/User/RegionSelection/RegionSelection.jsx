@@ -7,7 +7,8 @@ import apiClient from "../../../api/api";
 const RegionSelection = () => {
     const [provinces, setProvinces] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    
     const navigate = useNavigate();
     const idpatient = localStorage.getItem('idPatient');
     const idAccount = localStorage.getItem('idAccount')
@@ -34,8 +35,7 @@ const RegionSelection = () => {
         const selectedRegion = provinces.find(p => p.id === selectedId);
         if (selectedRegion) {
             localStorage.setItem("city", selectedRegion.name);
-            localStorage.setItem('isOneLogin', JSON.stringify(0));
-            await apiClient.put(`/api/v1/convert-status-login/${idAccount}`)
+            localStorage.setItem('isOneLogin', user.taiKhoan.lanDauDangNhap);
             await apiClient.put(`/api/v1/patientQQ/${idpatient}`, {
                 qq: selectedRegion.name
             })

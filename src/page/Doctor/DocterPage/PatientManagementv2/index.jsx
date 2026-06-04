@@ -24,9 +24,10 @@ const PatientManagement = () => {
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
-      
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
+      console.log(response.data);
+      
       setTotalPages(response.data.totalPages || 0);
     } catch (error) {
       console.error("Lỗi API:", error);
@@ -69,7 +70,7 @@ const PatientManagement = () => {
       render: (p) => (
         <div className={styles.patientNameCell}>
 
-          <img src={p.taiKhoan?.anh || 'default-avatar.png'} alt="avatar" />
+          <img src={p?.avatar || 'default-avatar.png'} alt="avatar" />
           <span>{p.taiKhoan?.hoVaTen || p.hoVaTen}</span>
         </div>
       )
@@ -85,7 +86,21 @@ const PatientManagement = () => {
         <div className={styles.actionGroup}>
 
           <button className={styles.btnAction} title="Hồ sơ" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-file-invoice"></i></button>
-          <button className={styles.btnAction} title="Nhắn tin" onClick={() => navigate(`/doctor/chat`)}><i className="fa-solid fa-comment-dots"></i></button>
+          <button
+            className={styles.btnAction}
+            title="Nhắn tin"
+            onClick={() => navigate(`/doctor/chat`, {
+              state: {
+                targetPatient: {
+                  maBenhNhan: p.maBenhNhan,
+                  hoVaTen: p.taiKhoan?.hoVaTen || p.hoVaTen,
+                  avatar: p.taiKhoan?.anh || p.anhDaiDien
+                }
+              }
+            })}
+          >
+            <i className="fa-solid fa-comments"></i>
+          </button>
           <button className={styles.btnAction} title="Sửa" onClick={() => navigate(`/doctor/patient-detail/${p.maBenhNhan}`)}><i className="fa-solid fa-pen-to-square"></i></button>
           <button className={styles.btnAction} title="Xóa" onClick={() => handleDeleteClick(p.maBenhNhan)}>
             <i className="fa-solid fa-trash"></i>
@@ -151,7 +166,7 @@ const PatientManagement = () => {
         pagination={PaginationUI}
       />
 
-      {/* --- SẾP PHẢI NHÉT THÊM CỤC NÀY VÀO ĐÂY THÌ NÓ MỚI HIỆN POPUP ĐƯỢC --- */}
+      {/*THÊM CỤC NÀY VÀO ĐÂY THÌ NÓ MỚI HIỆN POPUP ĐƯỢC --- */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

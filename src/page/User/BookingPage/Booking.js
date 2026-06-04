@@ -247,9 +247,9 @@ const Booking = () => {
             <table className="booking-table">
               <thead>
                 <tr>
-                  <th>Buổi</th>
+                  <th style={{color:"#fff"}}>Buổi</th>
                   {DAYS.map((d, i) => (
-                    <th key={i}>{d}</th>
+                    <th key={i} style={{color:"#fff"}}>{d}</th>
                   ))}
                 </tr>
               </thead>
@@ -264,7 +264,7 @@ const Booking = () => {
                     });
 
                     return (
-                      <td key={i}>
+                      <td key={i} style={{verticalAlign:"top"}}>
                         <div className="time-list">
                           {morningList.length > 0 ? (
                             morningList.map((item, idx) => (

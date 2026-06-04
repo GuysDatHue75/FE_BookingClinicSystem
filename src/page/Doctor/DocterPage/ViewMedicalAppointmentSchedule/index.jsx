@@ -183,7 +183,7 @@ const ConfirmAppointmentPage = () => {
                           <button
                             className={styles.btnReject}
                             title="Từ chối"
-                            onClick={() => handleAction(item.maLichKham, 'DaHuy')}
+                            onClick={() => handleAction(item.maLichKham, 'DaTuChoi')}
                           >
                             <i className="fa-solid fa-xmark"  style={{marginRight:"10px"}}></i>
                           </button>

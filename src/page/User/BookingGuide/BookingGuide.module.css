@@ -138,3 +138,84 @@
 .btnPrimary:hover {
     background: #1e40af;
 }
+
+.introText {
+  margin-top: 12px;
+  color: #555;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.promptContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.promptCard {
+  background: #fff;
+  border: 1px solid #e8eef5;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.promptCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.promptCard h3 {
+  color: #1976d2;
+  margin-bottom: 12px;
+  font-size: 17px;
+}
+
+.promptExample {
+  background: #f7faff;
+  border-left: 4px solid #1976d2;
+  padding: 12px;
+  border-radius: 8px;
+  font-style: italic;
+  color: #444;
+  line-height: 1.6;
+}
+
+.tipBox {
+  margin-top: 30px;
+  background: linear-gradient(
+    135deg,
+    #e3f2fd,
+    #f5fbff
+  );
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid #bbdefb;
+}
+
+.tipBox h4 {
+  color: #1565c0;
+  margin-bottom: 15px;
+}
+
+.tipBox ul {
+  padding-left: 20px;
+}
+
+.tipBox li {
+  margin-bottom: 10px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.warningBox {
+  margin-top: 20px;
+  background: #fff8e1;
+  border: 1px solid #ffd54f;
+  color: #8d6e00;
+  padding: 18px;
+  border-radius: 14px;
+  line-height: 1.7;
+}

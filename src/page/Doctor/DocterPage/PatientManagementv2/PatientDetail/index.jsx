@@ -18,7 +18,7 @@ const PatientDetail = () => {
       try {
         const response = await apiClient.get(`/api/v1/patient/get-detail/${id}`);
         setPatient(response.data);
-        console.log(response);
+        console.log(response.data);
         
       } catch (error) {
         console.error("Lỗi lấy dữ liệu api: ", error);
@@ -102,8 +102,8 @@ const PatientDetail = () => {
             <div className={styles.patientHeaderCard}>
               <div className={styles.avtGroup}>
                 <div className={styles.avatar}>
-                  {patient.anhDaiDien ? (
-                    <img src={patient.anhDaiDien} alt="Avatar" className={styles.avatarImg} />
+                  {patient.account.anhDaiDien ? (
+                    <img src={patient.account.anhDaiDien} alt="Avatar" className={styles.avatarImg} />
                   ) : (
                     patient.hoVaTen?.charAt(0) || "P"
                   )}
@@ -113,7 +113,7 @@ const PatientDetail = () => {
                   <p className={styles.patientId}>ID: {patient.maBenhNhan}</p>
                 </div>
               </div>
-              <div className={styles.actionButtons}>
+              {/* <div className={styles.actionButtons}>
                 <img
                   src={editButton}
                   alt="Sửa"
@@ -121,7 +121,7 @@ const PatientDetail = () => {
                   onClick={handleEditClick}
                   title="Chỉnh sửa thông tin sức khỏe"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* 2. Card Detail (Thông tin cá nhân + Sức khỏe) */}

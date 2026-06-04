@@ -8,10 +8,12 @@ import { useNavigate } from 'react-router-dom';
 const AIChatBox = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const name = JSON.parse(localStorage.getItem("user")).taiKhoan.hoVaTen;
+    
     const [messages, setMessages] = useState([
         {
             id: 1,
-            text: "Xin chào! Tôi là trợ lý AI của Booking Clinic. Bạn cần hỗ trợ gì ạ?",
+            text: `Xin chào ${name}! Hôm nay sức khỏe bạn có ổn không?`,
             sender: 'ai'
         }
     ]);
@@ -82,31 +84,26 @@ const AIChatBox = () => {
 
     return (
         <>
-            {/* Nút bấm mở Chat */}
             <div className="chat-button" onClick={() => setIsOpen(!isOpen)}>
                 <i class="fa-brands fa-bots"></i>
             </div>
 
-            {/* Cửa sổ Chat */}
             {isOpen && (
                 <div className="chat-window glass-panel">
-                    {/* Header */}
                     <div className="chat-header">
                         <div className="bot-icon-bg">
                             <Bot size={20} color="#2563eb" />
                         </div>
                         <div style={{ margin: '0' }}>
-                            <h4 style={{ margin: 0, fontSize: '15px' }}>AI Assistant</h4>
+                            <h4 style={{ margin: 0, fontSize: '15px' }}>Trợ lý riêng của bạn</h4>
                             <span style={{ fontSize: '12px', color: '#10b981' }}>● Online</span>
                         </div>
                     </div>
 
-                    {/* Danh sách tin nhắn */}
                     <div ref={scrollRef} className="chat-messages-container">
                         {messages.map((msg) => (
                             <div key={msg.id} className={`message-wrapper ${msg.sender === 'user' ? 'user-align' : 'ai-align'}`}>
                                 <div className={`message-bubble ${msg.sender === 'user' ? 'user-msg' : 'ai-msg'}`}>
-                                    {/* Nội dung văn bản (Markdown) */}
                                     {msg.sender === 'ai' ? (
                                         <div className="markdown-content">
                                             <ReactMarkdown>{msg.text}</ReactMarkdown>
@@ -115,7 +112,6 @@ const AIChatBox = () => {
                                         msg.text
                                     )}
 
-                                    {/* Nội dung danh sách Card (Phòng khám/Bác sĩ) */}
                                     {msg.kieuTraVe === "clinic_search" && msg.data && msg.data.length > 0 && (
                                         <div className="result-grid">
                                             {msg.data.map((item, index) => (
@@ -144,7 +140,7 @@ const AIChatBox = () => {
                                                                 : (item.moTa ? item.moTa.substring(0, 90) + "..." : "Đang cập nhật mô tả...")
                                                             }
                                                         </p>
-                                                        <button className="card-btn" onClick={() => navigate(`${msg.entity === 'doctor' ? `/xem-chi-tiet-bac-si/${item.maBacSi}` : `/chi-tiet-phong-kham/${item.maPhongKham}`}`)}>Xem chi tiết</button>
+                                                        <button className="card-btn" onClick={() => {navigate(`${msg.entity === 'doctor' ? `/xem-chi-tiet-bac-si/${item.maBacSi}` : `/chi-tiet-phong-kham/${item.maPhongKham}`}`); setIsOpen(false)}}>Xem chi tiết</button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -154,7 +150,6 @@ const AIChatBox = () => {
                             </div>
                         ))}
 
-                        {/* Loading Spinner */}
                         {isLoading && (
                             <div className="ai-align message-wrapper">
                                 <div className="ai-msg message-bubble" style={{ padding: '12px 20px' }}>
@@ -164,14 +159,13 @@ const AIChatBox = () => {
                         )}
                     </div>
 
-                    {/* Input nhập liệu */}
                     <div className="chat-input-area">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder={isLoading ? "AI đang trả lời..." : "Hỏi AI về lịch khám..."}
+                            placeholder={isLoading ? "AI đang trả lời..." : "Tìm kiếm phòng khám, bác sĩ hay hỏi về sức khỏe..."}
                             disabled={isLoading}
                             className="chat-input-field"
                         />

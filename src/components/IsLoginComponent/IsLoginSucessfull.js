@@ -57,18 +57,7 @@ const IsLoginSucessfull = () => {
     };
   }, []);
   const HandelClickLogout = () => {
-    localStorage.removeItem("role");
-    localStorage.removeItem('user');
-    localStorage.removeItem('isOneLogin');
-    localStorage.removeItem('idAccount');
-    localStorage.removeItem('city');
-    localStorage.removeItem('idPatient');
-    localStorage.removeItem('idDoctor');
-    localStorage.removeItem('_grecaptcha');
-    localStorage.removeItem('stringee_browser_id');
-    localStorage.removeItem('animation');
-    localStorage.removeItem('IDSP');
-    localStorage.removeItem('NAMESP');
+    localStorage.clear();
     navigate("/login");
   }
 

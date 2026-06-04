@@ -4,13 +4,16 @@ import "./DetailDocter.css";
 import { useEffect, useState } from "react";
 import Button from "../../../components/ButtonComponent/Button";
 import { Advise } from "../../../components/ButtonComponent/Button";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../api/api";
 import avtErr from "../../../assets/image/user-avt.png"
+import ChatPage from "../../../components/Chat/ChatPage";
+
 const DetailDocter = () => {
   const [docterDetail, setDocterDetail] = useState();
   const { id: idDocter } = useParams();
-
+  const [showChat, setShowChat] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const dataDoctor = async () => {
       const response = await apiClient.get(`/api/v1/doctors/${idDocter}`);
@@ -26,9 +29,25 @@ const DetailDocter = () => {
       behavior: "instant",
     });
   }, []);
+
+
   return (
     <>
       <Header />
+      {
+        showChat && docterDetail && (
+          <ChatPage
+            onClose={() => setShowChat(false)}
+            targetDoctor={{
+              maTaiKhoan: docterDetail.maTaiKhoan,
+              hoVaTen: docterDetail.taiKhoan?.hoVaTen, // Dùng toán tử ?. để tránh lỗi crash nếu object rỗng
+              avatar: docterDetail.avt,
+              hocHam: docterDetail.hocHam,
+              chuyenKhoa: docterDetail.specialty?.tenChuyenKhoa
+            }}
+          />
+        )
+      }
       <div className="container-docterDetail">
         <p className="title-docterDetail">{docterDetail?.hocHam + " " + docterDetail?.taiKhoan.hoVaTen}</p>
         <div className="wrapper-backgroung-docterDetail">
@@ -60,19 +79,19 @@ const DetailDocter = () => {
           {docterDetail?.trainingProgram.length > 0 ?
             <ul>
               {docterDetail.trainingProgram?.map((train) => (
-                <li style={{listStyle:"none"}} key={train.maDaoTao}>
-                  <span style={{fontWeight:"bold"}}>{train.namBatDau} - {train.namKetThuc}</span>: {train.suKien} 
+                <li style={{ listStyle: "none" }} key={train.maDaoTao}>
+                  <span style={{ fontWeight: "bold" }}>{train.namBatDau} - {train.namKetThuc}</span>: {train.suKien}
                 </li>
               ))}
             </ul> : <p>...</p>}
           <p style={{ margin: "15px 0", fontWeight: "600" }}>
             Kinh nghiệm công tác
           </p>
-          {docterDetail?.workEx.length > 0 ? 
+          {docterDetail?.workEx.length > 0 ?
             <ul>
               {docterDetail.workEx?.map((work) => (
-                <li style={{listStyle:"none"}} key={work.maCongTac}>
-                  <span style={{fontWeight:"bold"}}>{work.namBatDau} - {work.namKetThuc}</span>: {work.suKien}
+                <li style={{ listStyle: "none" }} key={work.maCongTac}>
+                  <span style={{ fontWeight: "bold" }}>{work.namBatDau} - {work.namKetThuc}</span>: {work.suKien}
                 </li>
               ))}
             </ul> : <p>...</p>}
@@ -84,7 +103,12 @@ const DetailDocter = () => {
               idDocter={docterDetail?.maBacSi}
             />
             <Advise path={"/tu-van"} />
-
+            <button
+              className="message-doctor"
+              onClick={() => setShowChat(true)}
+            >
+              Nhắn tin
+            </button>
           </div>
         </div>
       </div>

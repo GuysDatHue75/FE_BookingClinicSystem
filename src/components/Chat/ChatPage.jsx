@@ -3,18 +3,18 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import apiClient from '../../api/api';
 import styles from './ChatPage.module.css';
-import Header from '../../layouts/LayoutsUser/Header/Header';
-import { data } from 'react-router-dom';
+import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 
-const ChatPage = ({ onClose }) => {
-    // State quản lý việc ẩn/hiện Modal chat
+const ChatPage = ({ onClose, targetDoctor }) => {
+    const messageListRef = useRef(null);
+    const location = useLocation();
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [inboxList, setInboxList] = useState([]);
     const [patientList, setPatientList] = useState([]);
     const [activeTab, setActiveTab] = useState('inbox');
     const [searchTerm, setSearchTerm] = useState('');
-    const role = localStorage.getItem("role");
+
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
@@ -25,7 +25,7 @@ const ChatPage = ({ onClose }) => {
     const currentClinicId = JSON.parse(localStorage.getItem('user'));
     const currentRole = localStorage.getItem('role');
 
-    // Kiểm tra chính xác vai trò Bác sĩ (loại trừ vai trò BenhNhan)
+    
     const isDoctor = currentRole === 'BacSi' || !!currentDoctorId;
 
     const stompClient = useRef(null);
@@ -38,15 +38,36 @@ const ChatPage = ({ onClose }) => {
         selectedUserRef.current = selectedUser;
     }, [selectedUser]);
 
+    // --- SỬA LỖI 1: GỘP VÀ SỬA DEPENDENCY ARRAY CHO ĐỒNG BỘ TARGET USER ---
+    useEffect(() => {
+        if (location.state?.targetPatient) {
+            const patient = location.state.targetPatient;
+            const accountChatId = patient.maBenhNhan.replace('BN', 'TK');
+            setSelectedUser({
+                maDoiPhuong: accountChatId,
+                tenDoiPhuong: patient.hoVaTen,
+                avatar: patient.avatar,
+                role: "patient"
+            });
+            setActiveTab('patients');
+        } else if (targetDoctor) {
+            setSelectedUser({
+                maDoiPhuong: targetDoctor.maTaiKhoan,
+                tenDoiPhuong: targetDoctor.hoVaTen,
+                avatar: targetDoctor.avatar,
+                hocHam: targetDoctor.hocHam,
+                chuyenKhoa: targetDoctor.chuyenKhoa,
+                role: "doctor"
+            });
+            setActiveTab('inbox'); // Đảm bảo người dùng ở tab inbox để thấy lịch sử chat mới
+        }
+    }, [location.state, targetDoctor]); // Thêm targetDoctor vào dependencies
+
     const fetchInboxListOnly = async () => {
-        console.log(currentClinicId);
-        
         if (!currentUserId) return;
         try {
             const res = await apiClient.get(`/api/v1/chat/inbox/${currentUserId}?page=0&size=20`);
             setInboxList(res.data.content || []);
-            console.log(res.data.content);
-            
         } catch (err) {
             console.error("Lỗi cập nhật danh sách inbox:", err);
         }
@@ -102,12 +123,9 @@ const ChatPage = ({ onClose }) => {
     useEffect(() => {
         if (!isDoctor || !currentClinicId?.phongKham?.maPhongKham) return;
         const fetchPatients = async () => {
-            
             try {
                 const res = await apiClient.get(`/api/v1/patient/get-all?page=0&size=10&maBacSi=${currentDoctorId}&maPhongKham=${currentClinicId.phongKham.maPhongKham}`);
-                console.log(res.data.content);
                 setPatientList(res.data.content || []);
-                
             } catch (err) {
                 console.error("Lỗi lấy danh sách bệnh nhân:", err);
             }
@@ -142,7 +160,11 @@ const ChatPage = ({ onClose }) => {
     }, [selectedUser, currentUserId]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (!messageListRef.current) return;
+        messageListRef.current.scrollTo({
+            top: messageListRef.current.scrollHeight,
+            behavior: "smooth"
+        });
     }, [messages, isTyping]);
 
     const handleSelectPatientNewChat = (patient) => {
@@ -154,8 +176,10 @@ const ChatPage = ({ onClose }) => {
         });
     };
 
+    // --- SỬA LỖI 2: THÊM OPTIMISTIC UPDATE ĐỂ ĐƯA BÁC SĨ VÀO SIDEBAR NGAY KHI GỬI TIN ---
     const handleSendMessage = (e) => {
         e.preventDefault();
+
         if (!messageInput.trim() || !selectedUser) return;
 
         const newMsg = {
@@ -171,12 +195,46 @@ const ChatPage = ({ onClose }) => {
                 body: JSON.stringify(newMsg)
             });
 
-            const renderedMsg = { ...newMsg, thoiGianGui: new Date().toISOString() };
+            const sentTime = new Date().toISOString();
+            const renderedMsg = { ...newMsg, thoiGianGui: sentTime };
+
             setMessages(prev => [...prev, renderedMsg]);
             setMessageInput('');
             handleTypingStatus(false);
             isTypingSentRef.current = false;
-            setTimeout(() => fetchInboxListOnly(), 300);
+
+            // Tiến hành cập nhật giao diện sidebar ảo ngay lập tức
+            setInboxList(prevInbox => {
+                const existingIndex = prevInbox.findIndex(item => item.maDoiPhuong === selectedUser.maDoiPhuong);
+
+                const updatedItem = {
+                    maDoiPhuong: selectedUser.maDoiPhuong,
+                    tenDoiPhuong: selectedUser.tenDoiPhuong,
+                    avatar: selectedUser.avatar,
+                    tinNhanCuoi: newMsg.noiDung,
+                    maNguoiGuiCuoi: currentUserId,
+                    thoiGianCuoi: sentTime,
+                    soTinChuaDoc: 0,
+                    ...(existingIndex >= 0 ? prevInbox[existingIndex] : {}) // Giữ thuộc tính cũ nếu đã tồn tại
+                };
+
+                // Đè dữ liệu tin nhắn mới nhất
+                updatedItem.tinNhanCuoi = newMsg.noiDung;
+                updatedItem.maNguoiGuiCuoi = currentUserId;
+                updatedItem.thoiGianCuoi = sentTime;
+
+                if (existingIndex >= 0) {
+                    // Nếu đã có, lọc bỏ vị trí cũ và đưa lên đầu danh sách lịch sử
+                    const filtered = prevInbox.filter((_, idx) => idx !== existingIndex);
+                    return [updatedItem, ...filtered];
+                } else {
+                    // Nếu chưa có (Chat mới từ nút Nhắn Tin), chèn thẳng vào đầu danh sách
+                    return [updatedItem, ...prevInbox];
+                }
+            });
+
+            // Tăng thời gian chờ lên 1000ms để database Backend kịp ghi nhận dữ liệu
+            setTimeout(() => fetchInboxListOnly(), 1000);
         }
     };
 
@@ -206,6 +264,14 @@ const ChatPage = ({ onClose }) => {
         }, 2000);
     };
 
+    const handleCloseChat = () => {
+        if (typeof onClose === 'function') {
+            onClose();
+        } else {
+            navigate(-1);
+        }
+    };
+
     const filteredInbox = inboxList.filter(item =>
         item.tenDoiPhuong?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.maDoiPhuong?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -215,23 +281,20 @@ const ChatPage = ({ onClose }) => {
         item.hoVaTen?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.maBenhNhan?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    if (location.pathname === "/chon-tinhthanh") {
+        return null;
+    }
 
     return (
         <>
-            {role == "BenhNhan" && <Header />}
-
-            <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalOverlay} onClick={handleCloseChat}>
                 <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-
-                    {/* Thanh tiêu đề trên cùng của Modal */}
                     <div className={styles.modalHeader}>
                         <h2>Hộp thư tư vấn trực tuyến</h2>
-                        <button className={styles.closeModalBtn} onClick={onClose}>✕</button>
-
+                        <button className={styles.closeModalBtn} onClick={handleCloseChat}>✕</button>
                     </div>
 
                     <div className={styles.chatLayout}>
-                        {/* --- CỘT TRÁI: SIDEBAR --- */}
                         <div className={styles.sidebar}>
                             <div className={styles.searchBar}>
                                 <input
@@ -240,10 +303,9 @@ const ChatPage = ({ onClose }) => {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                                <span className={styles.filterIcon}>&#128269;</span>
+                                <span className={styles.filterIcon}>🔍</span>
                             </div>
 
-                            {/* CHỈ HIỂN THỊ THANH CHUYỂN TAB NẾU LÀ BÁC SĨ */}
                             {isDoctor && (
                                 <div style={{ display: 'flex', borderBottom: '1px solid #eee', marginBottom: '10px' }}>
                                     <button
@@ -290,7 +352,6 @@ const ChatPage = ({ onClose }) => {
                                     )
                                 )}
 
-                                {/* CHỈ HIỂN THỊ DANH SÁCH BỆNH NHÂN NẾU LÀ BÁC SĨ VÀ ĐANG CHỌN TAB PATIENTS */}
                                 {isDoctor && activeTab === 'patients' && (
                                     filteredPatients.length > 0 ? (
                                         filteredPatients.map((patient) => {
@@ -323,22 +384,28 @@ const ChatPage = ({ onClose }) => {
                             </div>
                         </div>
 
-                        {/* --- CỘT PHẢI: CHI TIẾT KHUNG CHAT --- */}
                         <div className={styles.chatWindow}>
                             {selectedUser ? (
                                 <>
-                                    <div className={styles.chatHeader}>
-                                        <div className={styles.headerUser}>
-                                            <img src={selectedUser.avatar || "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
-                                            <div>
-                                                <h4>{selectedUser.tenDoiPhuong}</h4>
-                                                <p style={{ fontSize: '12px', color: '#666' }}>ID: {selectedUser.maDoiPhuong}</p>
-                                            </div>
+                                    <div className={styles.headerUser}>
+                                        <img
+                                            src={selectedUser.avatar || "https://via.placeholder.com/48"}
+                                            alt="avt"
+                                            className={styles.avatar}
+                                        />
+                                        <div className={styles.userInfo}>
+                                            <h4>{selectedUser.tenDoiPhuong}</h4>
+                                            {selectedUser.role === "doctor" && (
+                                                <>
+                                                    <p className={styles.doctorDegree}>{selectedUser.hocHam}</p>
+                                                    <p className={styles.doctorSpecialty}>{selectedUser.chuyenKhoa}</p>
+                                                </>
+                                            )}
+                                            <p className={styles.userId}>ID: {selectedUser.maDoiPhuong}</p>
                                         </div>
-                                        <button className={styles.moreOptions}>•••</button>
                                     </div>
 
-                                    <div className={styles.messageList}>
+                                    <div className={styles.messageList} ref={messageListRef}>
                                         {messages.length > 0 ? (
                                             messages.map((msg, idx) => {
                                                 const isMe = msg.maNguoiGui === currentUserId;
@@ -384,7 +451,6 @@ const ChatPage = ({ onClose }) => {
                             )}
                         </div>
                     </div>
-
                 </div>
             </div>
         </>

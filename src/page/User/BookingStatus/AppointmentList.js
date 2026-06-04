@@ -23,7 +23,6 @@ const AppointmentList = () => {
     }
   }, [bookingDone]);
   const cancelAppointment = async (appt) => {
-    console.log(appt?.doctorSchedule?.maLichLamViec, appt.maLichKham);
     
     setModalConfig(
       {
@@ -127,7 +126,7 @@ const AppointmentList = () => {
       </div>
       <ConfirmModal
         {...modalConfig}
-        onCancel={closeModal}
+        onClose={closeModal}
       />
     </>
   );

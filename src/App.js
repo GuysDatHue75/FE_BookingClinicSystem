@@ -87,6 +87,7 @@ import Newss from "./page/User/NewsPage/Newss.jsx";
 import AuthGuard from "./components/AuthGuardComponent/AuthGuard.jsx";
 import LoginSuccess from "./page/User/LoginCuccessForGG/LoginCuccess.jsx";
 import Loading from "./components/LoadingComponent/Loading.js";
+import SystemGuideNotice from "./components/SystemGuideNotice/SystemGuideNotice.jsx";
 
 function App() {
   const { valueText, roleLocal, loading } = useContext(State);
@@ -94,8 +95,10 @@ function App() {
   // const [role, setRole] = useState("");
   const location = useLocation()
   // const storedRole = localStorage.getItem("role");
+  const hideChatOnRegionSelection = location.pathname === "/chon-tinhthanh";
   const { user, loading: authLoading } = useAuth();
   // const currentRole = user?.rawRole || localStorage.getItem("role") || "TD";
+  const [showGuide, setShowGuide] = useState(false);
   const [currentRole, setCurrentRole] = useState(
     localStorage.getItem("role") || "TD"
   );
@@ -107,6 +110,17 @@ function App() {
     const role = localStorage.getItem("role") || "TD";
     setCurrentRole(role);
 
+  }, [location.pathname]);
+  useEffect(() => {
+    const isOneLogin = localStorage.getItem("isOneLogin");
+
+    if (isOneLogin === "1") {
+      const timer = setTimeout(() => {
+        setShowGuide(true);
+      }, 1500); // hiện sau 1.5s
+
+      return () => clearTimeout(timer);
+    }
   }, [location.pathname]);
 
   useEffect(() => {
@@ -154,24 +168,37 @@ function App() {
 
   return (
     <>
+      {showGuide && (
+        <SystemGuideNotice
+          onClose={() => {
+            localStorage.setItem("isOneLogin", "0");
+            setShowGuide(false);
+          }}
+        />
+      )}
       <CommonProvider>
         <PatientProvider>
           {valueText.length > 0 && <Opacity />}
-          {!shouldHideChat && currentRole === "BenhNhan" && <AIChatBox />}
+          {!shouldHideChat && !hideChatOnRegionSelection &&
+            currentRole === "BenhNhan" && (
+              <AIChatBox />
+            )}
+
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/login-success" element={<LoginSuccess />} />
+
             {/* User */}
             {(currentRole == "BenhNhan" || currentRole == "TD") && (
               <>
-
                 <Route path="/trang-chu" element={<Home />} />
                 <Route path="/bac-si" element={<Docter />} />
                 <Route path="/bac-si/page/:page" element={<Docter />} />
                 <Route path="/phong-kham" element={<Clinic />} />
+                <Route path="/chon-tinhthanh" element={<RegionSelection />} />
                 <Route path="/phong-kham/page/:page" element={<Clinic />} />
                 <Route path="/tu-van" element={<AuthGuard role={currentRole}><Question /></AuthGuard>} />
                 <Route path="/tu-van/page/:page" element={<AuthGuard role={currentRole}><Question /></AuthGuard>} />
@@ -187,7 +214,6 @@ function App() {
                 <Route path="/thong-bao/:id" element={<AuthGuard role={currentRole}><NotificationDetail /> </AuthGuard>} />
                 <Route path="/kham-lam-san" element={<AuthGuard role={currentRole}><CallDocter /></AuthGuard>} />
                 <Route path="/doi-mat-khau" element={<AuthGuard role={currentRole}><ChangePass /></AuthGuard>} />
-                <Route path="/chon-tinhthanh" element={<RegionSelection />} />
                 <Route path="/tin-tuc/xem-chi-tiet/:id" element={<NewsDetail />} />
                 <Route path="/chi-tiet-phong-kham/:id" element={<DetailClinic />} />
                 <Route path="/tim-kiem-chuyen-khoa" element={<SearchClinic />} />
@@ -216,7 +242,7 @@ function App() {
                   <Route path="/doctor/Accept" element={<AcceptMedicalAppointment />} />
                   <Route path="/doctor/QnA" element={<QnA />} />
                   <Route path="/doctor/Invoice" element={<Invoice />} />
-                  <Route path="/doctor/Invoice/CreateInvoice" element={<CreateInvoice />} />
+                  <Route path=" " element={<CreateInvoice />} />
                   <Route path="/doctor/OnlineConsult" element={<OnlineConsult />} />
                   <Route path="/doctor/DoctorStatistics" element={<DoctorStatistics />} />
                   <Route path="/doctor/DoctorStatistics/Revenue" element={<Statistical />} />
@@ -249,23 +275,23 @@ function App() {
             {currentRole === "PhongKham" && (
               <>
                 <Route path="/clinic" element={<LayoutClinic />}>
-                    <Route index element={<DashBoard />} />
-                    <Route path="thong-tin-phong-kham" element={<ClinicView />}/>
-                    <Route path="quan-ly-bac-si" element={<MNDoctorAll />}/>
-                    <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />}/>
-                    <Route path="lich-lam-viec" element={<MNSchedules />}/>
-                    {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
-                    <Route path="quan-ly-thong-bao" element={<NotificationClinic />}/>
-                    <Route path="quan-ly-tin-tuc" element={<NewsManager />}/>
-                    <Route path="thong-ke-bao-cao" element={<DashBoard />}/>
-                    <Route path="/clinic/doi-mat-khau" element={<ChangePass />} />
+                  <Route index element={<DashBoard />} />
+                  <Route path="thong-tin-phong-kham" element={<ClinicView />} />
+                  <Route path="quan-ly-bac-si" element={<MNDoctorAll />} />
+                  <Route path="quan-ly-chuyen-khoa" element={<MNSpecialty />} />
+                  <Route path="lich-lam-viec" element={<MNSchedules />} />
+                  {/* <Route path="quan-ly-lich-kham" element={<MNSpecialty />}/> */}
+                  <Route path="quan-ly-thong-bao" element={<NotificationClinic />} />
+                  <Route path="quan-ly-tin-tuc" element={<NewsManager />} />
+                  <Route path="thong-ke-bao-cao" element={<DashBoard />} />
+                  <Route path="/clinic/doi-mat-khau" element={<ChangePass />} />
                 </Route>
                 <Route path="/*" element={<NotFound />} />
               </>
             )}
 
           </Routes>
-          <FloatingChatBubble />
+          {!hideChatOnRegionSelection && <FloatingChatBubble />}
           <ToastContainer />
         </PatientProvider>
       </CommonProvider>
