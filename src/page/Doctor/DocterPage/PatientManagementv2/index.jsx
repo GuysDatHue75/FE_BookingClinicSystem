@@ -6,7 +6,7 @@ import ConfirmModal from "../../../../components/ConfirmModal/ConfirmModal";
 import apiClient from "../../../../api/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import avtErr from "../../../../assets/image/avt.jpg"
 
 const PatientManagement = () => {
   /*const [tenBien, hamDoiGiaTri] = useState(giaTriBanDau);*/
@@ -19,14 +19,13 @@ const PatientManagement = () => {
   const [loading, setLoading] = useState(false);
   const idDoctor = localStorage.getItem("idDoctor");
   const idClinic = JSON.parse(localStorage.getItem("user")).phongKham.maPhongKham;
-  const pageSize = 5;
+  const pageSize = 10;
 
   const fetchPatients = useCallback(async () => {
     setLoading(true);
     try {
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
-      console.log(response.data);
       
       setTotalPages(response.data.totalPages || 0);
     } catch (error) {
@@ -70,7 +69,7 @@ const PatientManagement = () => {
       render: (p) => (
         <div className={styles.patientNameCell}>
 
-          <img src={p?.avatar || 'default-avatar.png'} alt="avatar" />
+          <img src={p?.avatar || avtErr} alt="avatar" />
           <span>{p.taiKhoan?.hoVaTen || p.hoVaTen}</span>
         </div>
       )
