@@ -236,13 +236,13 @@ function App() {
                   <Route path="/doctor/Patients/Detail/:maBenhNhan" element={<PatientDetail />} />
                   <Route path="/doctor/doi-mat-khau" element={<ChangePass />} />
                   <Route path="/doctor/chat" element={<ChatPage />} />
-                  <Route path="/doctor" element={<DoctorStatistics />} />
+                  <Route path="/doctor" element={<ViewMedicalRecords />} />
                   <Route path="/doctor/schedule" element={<ScheduleAppointment />} />
                   <Route path="/doctor/View" element={<ViewMedicalRecords />} />
                   <Route path="/doctor/Accept" element={<AcceptMedicalAppointment />} />
                   <Route path="/doctor/QnA" element={<QnA />} />
                   <Route path="/doctor/Invoice" element={<Invoice />} />
-                  <Route path=" " element={<CreateInvoice />} />
+                  <Route path="/doctor/Invoice/CreateInvoice" element={<CreateInvoice />} />
                   <Route path="/doctor/OnlineConsult" element={<OnlineConsult />} />
                   <Route path="/doctor/DoctorStatistics" element={<DoctorStatistics />} />
                   <Route path="/doctor/DoctorStatistics/Revenue" element={<Statistical />} />

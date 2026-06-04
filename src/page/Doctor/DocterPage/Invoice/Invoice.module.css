@@ -374,8 +374,9 @@
 /* Lưới thông tin bệnh nhân */
 .patientFormGrid {
   display: grid;
-  grid-template-columns: 2fr 2fr 2fr 1.5fr;
-  gap: 12px 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .inputFieldBlock {
@@ -552,29 +553,4 @@
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-}
-
-/* --- TỐI ƯU HÓA LỆNH IN RA GIẤY (Đọc từ no-print) --- */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-
-  #print-area,
-  #print-area * {
-    visibility: visible;
-  }
-
-  #print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    border: none;
-    padding: 0;
-  }
-
-  .no-print {
-    display: none !important;
-  }
 }

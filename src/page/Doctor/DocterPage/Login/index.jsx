@@ -49,7 +49,7 @@ const Login = () => {
         localStorage.setItem("idAccount", response.data.account.maTaiKhoan || "");
         localStorage.setItem("user", JSON.stringify(response.data));
         localStorage.setItem("role", response.data.account?.vaiTro);
-      }else if(response.data.vaiTro){
+      } else if (response.data.vaiTro) {
         localStorage.setItem("idAccount", response.data.maTaiKhoan || "");
         localStorage.setItem("user", JSON.stringify(response.data));
         localStorage.setItem("role", response.data.vaiTro);
@@ -71,9 +71,14 @@ const Login = () => {
           navigate("/trang-chu");
         }
       } else if (roleApi === "BacSi") {
-          localStorage.setItem("role", response.data.taiKhoan.vaiTro);
-        navigate("/doctor") 
-        window.location.reload(); 
+        console.log(response.data);
+
+        localStorage.setItem("role", response.data.taiKhoan.vaiTro);
+        localStorage.setItem("doctorName", response.data.tenBacSi);
+        localStorage.setItem("doctorSpecialty", response.data.specialty?.tenChuyenKhoa || "Bác sĩ chuyên khoa");
+        localStorage.setItem("doctorAvatar", response.data.avt || "");
+        navigate("/doctor")
+        window.location.reload();
       } else if (roleApi === "PhongKham") {
         localStorage.setItem("role", response.data.account?.vaiTro);
         navigate("/clinic")

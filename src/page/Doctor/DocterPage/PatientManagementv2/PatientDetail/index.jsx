@@ -18,8 +18,6 @@ const PatientDetail = () => {
       try {
         const response = await apiClient.get(`/api/v1/patient/get-detail/${id}`);
         setPatient(response.data);
-        console.log(response.data);
-        
       } catch (error) {
         console.error("Lỗi lấy dữ liệu api: ", error);
 
@@ -217,59 +215,6 @@ const PatientDetail = () => {
               </div>
             </div>
 
-            {/* 3. Lịch sử khám bệnh (Table) */}
-            <div className={styles.historyCard}>
-              <h3>Lịch sử khám bệnh</h3>
-              <table className={styles.historyTable}>
-                <thead>
-                  <tr>
-                    <th>Ngày Khám</th>
-                    <th>Bác sĩ</th>
-                    <th>Chẩn đoán</th>
-                    <th>Thuốc được kê</th>
-                    <th>Kết luận / Ghi chú</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patient.lichSuKham && patient.lichSuKham.length > 0 ? (
-                    patient.lichSuKham.map((kham, index) => (
-                      <tr key={index}>
-                        <td>{formatDate(kham.ngayLap)}</td>
-                        <td>{kham.tenBacSi}</td>
-                        <td>
-                          <strong>{kham.chuanDoan || "Không rõ"}</strong> <br />
-                          <span style={{ fontSize: "12px", color: "#666" }}>{kham.trieuChung}</span>
-                        </td>
-                        <td>
-                          {kham.danhSachThuoc && kham.danhSachThuoc.length > 0 ? (
-                            <ul style={{ paddingLeft: "15px", margin: 0, fontSize: "13px" }}>
-                              {kham.danhSachThuoc.map((thuoc, idx) => (
-                                <li key={idx}>
-                                  <strong>{thuoc.tenThuoc}</strong> ({thuoc.soLuong} {thuoc.donVi})
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <span style={{ color: "#999" }}>Không kê thuốc</span>
-                          )}
-                        </td>
-                        <td style={{ fontSize: "13px" }}>
-                          {kham.ketLuan}
-                          {kham.ghiChu && <div><em>*Lưu ý: {kham.ghiChu}</em></div>}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
-                        Bệnh nhân chưa có lịch sử khám.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
           </div>
 
           {/* CỘT PHẢI */}
@@ -307,6 +252,58 @@ const PatientDetail = () => {
               </div>
             </div>
 
+          </div>
+          {/* 3. Lịch sử khám bệnh (Table) */}
+          <div className={styles.historyCard}>
+            <h3>Lịch sử khám bệnh</h3>
+            <table className={styles.historyTable}>
+              <thead>
+                <tr>
+                  <th>Ngày Khám</th>
+                  <th>Bác sĩ</th>
+                  <th>Chẩn đoán</th>
+                  <th>Thuốc được kê</th>
+                  <th>Kết luận / Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody>
+                {patient.lichSuKham && patient.lichSuKham.length > 0 ? (
+                  patient.lichSuKham.map((kham, index) => (
+                    <tr key={index}>
+                      <td>{formatDate(kham.ngayLap)}</td>
+                      <td>{kham.tenBacSi}</td>
+                      <td>
+                        <strong>{kham.chuanDoan || "Không rõ"}</strong> <br />
+                        <span style={{ fontSize: "12px", color: "#666" }}>{kham.trieuChung}</span>
+                      </td>
+                      <td>
+                        {kham.danhSachThuoc && kham.danhSachThuoc.length > 0 ? (
+                          <ul style={{ paddingLeft: "15px", margin: 0, fontSize: "13px" }}>
+                            {kham.danhSachThuoc.map((thuoc, idx) => (
+                              <li key={idx}>
+                                <strong>{thuoc.tenThuoc}</strong> ({thuoc.soLuong} {thuoc.donVi})
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span style={{ color: "#999" }}>Không kê thuốc</span>
+                        )}
+                      </td>
+                      <td style={{ fontSize: "13px" }}>
+                        {kham.ketLuan}
+                        {kham.ghiChu && <div><em>*Lưu ý: {kham.ghiChu}</em></div>}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+                      Bệnh nhân chưa có lịch sử khám.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

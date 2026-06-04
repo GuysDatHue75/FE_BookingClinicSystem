@@ -3,13 +3,15 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import apiClient from '../../api/api';
 import styles from './ChatPage.module.css';
-import { useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 
 const ChatPage = ({ onClose, targetDoctor }) => {
     const messageListRef = useRef(null);
+
     const location = useLocation();
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [inboxList, setInboxList] = useState([]);
     const [patientList, setPatientList] = useState([]);
     const [activeTab, setActiveTab] = useState('inbox');
@@ -19,21 +21,28 @@ const ChatPage = ({ onClose, targetDoctor }) => {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [isUploading, setIsUploading] = useState(false); // Trạng thái khi đang upload file
+
 
     const currentUserId = localStorage.getItem('idAccount');
     const currentDoctorId = localStorage.getItem('idDoctor');
     const currentClinicId = JSON.parse(localStorage.getItem('user'));
     const currentRole = localStorage.getItem('role');
-
-    
     const isDoctor = currentRole === 'BacSi' || !!currentDoctorId;
 
     const stompClient = useRef(null);
     const messagesEndRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const isTypingSentRef = useRef(false);
+    const fileInputRef = useRef(null); // Ref điều khiển input file ẩn
 
     const selectedUserRef = useRef(selectedUser);
+
+    // Cập nhật ref để tránh hiện tượng closure trong sự kiện lắng nghe WebSocket
+    useEffect(() => {
+        selectedUserRef.current = selectedUser;
+    }, [selectedUser]);
+
     useEffect(() => {
         selectedUserRef.current = selectedUser;
     }, [selectedUser]);
@@ -43,12 +52,21 @@ const ChatPage = ({ onClose, targetDoctor }) => {
         if (location.state?.targetPatient) {
             const patient = location.state.targetPatient;
             const accountChatId = patient.maBenhNhan.replace('BN', 'TK');
+// <<<<<<< HEAD
+//             setSelectedUser({
+//                 maDoiPhuong: accountChatId,
+//                 tenDoiPhuong: patient.hoVaTen,
+//                 avatar: patient.avatar,
+//                 role: "patient"
+//             });
+// =======
+
             setSelectedUser({
                 maDoiPhuong: accountChatId,
                 tenDoiPhuong: patient.hoVaTen,
-                avatar: patient.avatar,
-                role: "patient"
+                avatarDoiPhuong: patient.avatar 
             });
+
             setActiveTab('patients');
         } else if (targetDoctor) {
             setSelectedUser({
@@ -86,12 +104,22 @@ const ChatPage = ({ onClose, targetDoctor }) => {
 
                 client.subscribe(`/topic/messages/${currentUserId}`, (msg) => {
                     const newMsg = JSON.parse(msg.body);
+
+                    // Nếu tin nhắn nhận được là từ người ĐANG CHỌN CHAT
                     if (selectedUserRef.current && newMsg.maNguoiGui === selectedUserRef.current.maDoiPhuong) {
                         setMessages(prev => [...prev, newMsg]);
-                    }
-                    fetchInboxListOnly();
-                });
 
+                        // Gọi API báo đã đọc tin nhắn này ngay lập tức để không bị tích lũy thông báo chưa đọc
+                        apiClient.post(`/api/v1/chat/read/${newMsg.maNguoiGui}/${currentUserId}`)
+                            .then(() => {
+                                setTimeout(() => fetchInboxListOnly(), 200);
+                            })
+                            .catch(err => console.error("Lỗi đọc tin nhắn thời gian thực:", err));
+                    } else {
+                        // Nếu thuộc người khác thì chỉ cần load lại danh sách inbox để tăng số nhảy tin nhắn chưa đọc
+                        fetchInboxListOnly();
+                    }
+                });
                 client.subscribe(`/topic/typing/${currentUserId}`, (msg) => {
                     const data = JSON.parse(msg.body);
                     if (selectedUserRef.current && data.maNguoiGui === selectedUserRef.current.maDoiPhuong) {
@@ -139,6 +167,13 @@ const ChatPage = ({ onClose, targetDoctor }) => {
 
         const fetchHistory = async () => {
             try {
+                setInboxList(prevList =>
+                    prevList.map(item =>
+                        item.maDoiPhuong === selectedUser.maDoiPhuong
+                            ? { ...item, soTinChuaDoc: 0 }
+                            : item
+                    )
+                );
                 const res = await apiClient.get(`/api/v1/chat/history/${currentUserId}/${selectedUser.maDoiPhuong}?page=0&size=50`);
                 setMessages(res.data.content?.reverse() || []);
 
@@ -172,72 +207,131 @@ const ChatPage = ({ onClose, targetDoctor }) => {
         setSelectedUser({
             maDoiPhuong: accountChatId,
             tenDoiPhuong: patient.hoVaTen,
-            avatar: patient.avatar
+            avatarDoiPhuong: patient.avatar // Đồng bộ ánh xạ dữ liệu ảnh từ Tab bệnh nhân
         });
     };
 
-    // --- SỬA LỖI 2: THÊM OPTIMISTIC UPDATE ĐỂ ĐƯA BÁC SĨ VÀO SIDEBAR NGAY KHI GỬI TIN ---
+
+    //  XỬ LÝ GỬI TIN NHẮN CHUNG (Dùng chung cho cả Text và File)
+    const sendChatMessage = (noiDung, loaiTinNhan = "TEXT") => {
+        if (!stompClient.current?.connected || !selectedUser) return;
+
+        const newMsg = {
+            maNguoiGui: currentUserId,
+            maNguoiNhan: selectedUser.maDoiPhuong,
+            noiDung: noiDung,
+            loaiTinNhan: loaiTinNhan
+        };
+
+        stompClient.current.publish({
+            destination: '/app/chat',
+            body: JSON.stringify(newMsg)
+        });
+
+        const renderedMsg = { ...newMsg, thoiGianGui: new Date().toISOString() };
+        setMessages(prev => [...prev, renderedMsg]);
+        setTimeout(() => fetchInboxListOnly(), 300);
+    };
     const handleSendMessage = (e) => {
         e.preventDefault();
 
         if (!messageInput.trim() || !selectedUser) return;
 
-        const newMsg = {
-            maNguoiGui: currentUserId,
-            maNguoiNhan: selectedUser.maDoiPhuong,
-            noiDung: messageInput,
-            loaiTinNhan: "TEXT"
-        };
+        sendChatMessage(messageInput, "TEXT");
+        setMessageInput('');
+        handleTypingStatus(false);
+        isTypingSentRef.current = false;
+    };
 
-        if (stompClient.current?.connected) {
-            stompClient.current.publish({
-                destination: '/app/chat',
-                body: JSON.stringify(newMsg)
-            });
+    //  XỬ LÝ UPLOAD VÀ GỬI FILE QUA API BACK-END ĐÃ BỔ SUNG
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file || !selectedUser) return;
 
-            const sentTime = new Date().toISOString();
-            const renderedMsg = { ...newMsg, thoiGianGui: sentTime };
+        // Tạo FormData để đóng gói file gửi lên HTTP Post
+        const formData = new FormData();
+        formData.append("file", file);
 
-            setMessages(prev => [...prev, renderedMsg]);
-            setMessageInput('');
-            handleTypingStatus(false);
-            isTypingSentRef.current = false;
-
-            // Tiến hành cập nhật giao diện sidebar ảo ngay lập tức
-            setInboxList(prevInbox => {
-                const existingIndex = prevInbox.findIndex(item => item.maDoiPhuong === selectedUser.maDoiPhuong);
-
-                const updatedItem = {
-                    maDoiPhuong: selectedUser.maDoiPhuong,
-                    tenDoiPhuong: selectedUser.tenDoiPhuong,
-                    avatar: selectedUser.avatar,
-                    tinNhanCuoi: newMsg.noiDung,
-                    maNguoiGuiCuoi: currentUserId,
-                    thoiGianCuoi: sentTime,
-                    soTinChuaDoc: 0,
-                    ...(existingIndex >= 0 ? prevInbox[existingIndex] : {}) // Giữ thuộc tính cũ nếu đã tồn tại
-                };
-
-                // Đè dữ liệu tin nhắn mới nhất
-                updatedItem.tinNhanCuoi = newMsg.noiDung;
-                updatedItem.maNguoiGuiCuoi = currentUserId;
-                updatedItem.thoiGianCuoi = sentTime;
-
-                if (existingIndex >= 0) {
-                    // Nếu đã có, lọc bỏ vị trí cũ và đưa lên đầu danh sách lịch sử
-                    const filtered = prevInbox.filter((_, idx) => idx !== existingIndex);
-                    return [updatedItem, ...filtered];
-                } else {
-                    // Nếu chưa có (Chat mới từ nút Nhắn Tin), chèn thẳng vào đầu danh sách
-                    return [updatedItem, ...prevInbox];
+        setIsUploading(true);
+        try {
+            // Gọi API upload của FileUploadController
+            const res = await apiClient.post('/api/v1/files/upload-chat', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
             });
 
-            // Tăng thời gian chờ lên 1000ms để database Backend kịp ghi nhận dữ liệu
-            setTimeout(() => fetchInboxListOnly(), 1000);
+// <<<<<<< HEAD
+//             const sentTime = new Date().toISOString();
+//             const renderedMsg = { ...newMsg, thoiGianGui: sentTime };
+
+//             setMessages(prev => [...prev, renderedMsg]);
+//             setMessageInput('');
+//             handleTypingStatus(false);
+//             isTypingSentRef.current = false;
+
+//             // Tiến hành cập nhật giao diện sidebar ảo ngay lập tức
+//             setInboxList(prevInbox => {
+//                 const existingIndex = prevInbox.findIndex(item => item.maDoiPhuong === selectedUser.maDoiPhuong);
+
+//                 const updatedItem = {
+//                     maDoiPhuong: selectedUser.maDoiPhuong,
+//                     tenDoiPhuong: selectedUser.tenDoiPhuong,
+//                     avatar: selectedUser.avatar,
+//                     tinNhanCuoi: newMsg.noiDung,
+//                     maNguoiGuiCuoi: currentUserId,
+//                     thoiGianCuoi: sentTime,
+//                     soTinChuaDoc: 0,
+//                     ...(existingIndex >= 0 ? prevInbox[existingIndex] : {}) // Giữ thuộc tính cũ nếu đã tồn tại
+//                 };
+
+//                 // Đè dữ liệu tin nhắn mới nhất
+//                 updatedItem.tinNhanCuoi = newMsg.noiDung;
+//                 updatedItem.maNguoiGuiCuoi = currentUserId;
+//                 updatedItem.thoiGianCuoi = sentTime;
+
+//                 if (existingIndex >= 0) {
+//                     // Nếu đã có, lọc bỏ vị trí cũ và đưa lên đầu danh sách lịch sử
+//                     const filtered = prevInbox.filter((_, idx) => idx !== existingIndex);
+//                     return [updatedItem, ...filtered];
+//                 } else {
+//                     // Nếu chưa có (Chat mới từ nút Nhắn Tin), chèn thẳng vào đầu danh sách
+//                     return [updatedItem, ...prevInbox];
+//                 }
+//             });
+
+//             // Tăng thời gian chờ lên 1000ms để database Backend kịp ghi nhận dữ liệu
+//             setTimeout(() => fetchInboxListOnly(), 1000);
+// =======
+            // Lấy URL tương đối trả về từ backend (Ví dụ: /uploads/chats/filename.png)
+            const fileUrl = res.data;
+
+            // Kiểm tra định dạng file để định nghĩa loaiTinNhan phù hợp
+            const isImage = file.type.startsWith('image/');
+            const chatType = isImage ? "IMAGE" : "FILE";
+
+            // Bắn tin nhắn URL qua WebSocket
+            sendChatMessage(fileUrl, chatType);
+
+        } catch (err) {
+            console.error("Lỗi khi tải file lên hệ thống:", err);
+            alert("Không thể gửi file. Vui lòng kiểm tra lại cấu hình dung lượng hoặc kết nối!");
+        } finally {
+            setIsUploading(false);
+            e.target.value = ''; // Reset input để có thể chọn lại file cũ nếu muốn
         }
     };
 
+    // Hàm chuẩn hóa URL để tránh trùng lặp domain
+    const formatFileUrl = (url) => {
+        if (!url) return '';
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url; // Nếu backend đã trả về full đường dẫn thì giữ nguyên
+        }
+        // Nếu backend chỉ trả về dạng "/uploads/chats/..."
+        const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+        return `http://localhost:8080${cleanUrl}`;
+    };
     const handleTypingStatus = (typing) => {
         if (stompClient.current?.connected && selectedUser) {
             stompClient.current.publish({
@@ -285,8 +379,19 @@ const ChatPage = ({ onClose, targetDoctor }) => {
         return null;
     }
 
+    // Định nghĩa base URL của backend để load được tài nguyên tĩnh từ thư mục /uploads
+    const BASE_URL = "http://localhost:8080";
+
     return (
         <>
+            {/* Input file ẩn phục vụ việc click vào icon kẹp giấy */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+            />
+
             <div className={styles.modalOverlay} onClick={handleCloseChat}>
                 <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                     <div className={styles.modalHeader}>
@@ -332,7 +437,8 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 className={`${styles.inboxItem} ${selectedUser?.maDoiPhuong === inbox.maDoiPhuong ? styles.active : ''}`}
                                                 onClick={() => setSelectedUser(inbox)}
                                             >
-                                                <img src={inbox.avatar || "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
+                                                {/*  Hiển thị avatar đối phương thật từ DTO mới */}
+                                                <img src={inbox.avatarDoiPhuong ? `${BASE_URL}${inbox.avatarDoiPhuong}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
                                                 <div className={styles.inboxInfo}>
                                                     <div className={styles.inboxItemHeader}>
                                                         <h4>{inbox.tenDoiPhuong}</h4>
@@ -341,7 +447,11 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                         </span>
                                                     </div>
                                                     <div className={styles.inboxSnippet}>
-                                                        <p>{inbox.maNguoiGuiCuoi === currentUserId ? 'Bạn: ' : ''}{inbox.tinNhanCuoi}</p>
+                                                        {/* Phân loại nội dung tin nhắn cuối ngoài danh sách inbox */}
+                                                        <p>
+                                                            {inbox.maNguoiGuiCuoi === currentUserId ? 'Bạn: ' : ''}
+                                                            {inbox.loaiTinNhan === "IMAGE" ? ' [Hình ảnh]' : inbox.loaiTinNhan === "FILE" ? '📎 [Tệp tin]' : inbox.tinNhanCuoi}
+                                                        </p>
                                                         {inbox.soTinChuaDoc > 0 && <span className={styles.unreadBadge}>{inbox.soTinChuaDoc}</span>}
                                                     </div>
                                                 </div>
@@ -362,7 +472,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                     className={`${styles.inboxItem} ${selectedUser?.maDoiPhuong === mappedChatId ? styles.active : ''}`}
                                                     onClick={() => handleSelectPatientNewChat(patient)}
                                                 >
-                                                    <img src={patient.avatar || "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
+                                                    <img src={patient.avatar ? `${BASE_URL}${patient.avatar}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
                                                     <div className={styles.inboxInfo}>
                                                         <div className={styles.inboxItemHeader}>
                                                             <h4>{patient.hoVaTen}</h4>
@@ -387,6 +497,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                         <div className={styles.chatWindow}>
                             {selectedUser ? (
                                 <>
+{/* <<<<<<< HEAD
                                     <div className={styles.headerUser}>
                                         <img
                                             src={selectedUser.avatar || "https://via.placeholder.com/48"}
@@ -402,6 +513,14 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 </>
                                             )}
                                             <p className={styles.userId}>ID: {selectedUser.maDoiPhuong}</p>
+======= */}
+                                    <div className={styles.chatHeader}>
+                                        <div className={styles.headerUser}>
+                                            <img src={selectedUser.avatarDoiPhuong ? `${BASE_URL}${selectedUser.avatarDoiPhuong}` : "https://via.placeholder.com/48"} alt="avt" className={styles.avatar} />
+                                            <div>
+                                                <h4>{selectedUser.tenDoiPhuong}</h4>
+                                                <p style={{ fontSize: '12px', color: '#666' }}>ID: {selectedUser.maDoiPhuong}</p>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -411,9 +530,46 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 const isMe = msg.maNguoiGui === currentUserId;
                                                 return (
                                                     <div key={msg.maTinNhan || `msg_${idx}`} className={`${styles.messageWrapper} ${isMe ? styles.messageRight : styles.messageLeft}`}>
-                                                        {!isMe && <img src={selectedUser.avatar || "https://via.placeholder.com/32"} alt="avt" className={styles.messageAvatar} />}
+                                                        {!isMe && <img src={selectedUser.avatarDoiPhuong ? `${BASE_URL}${selectedUser.avatarDoiPhuong}` : "https://via.placeholder.com/32"} alt="avt" className={styles.messageAvatar} />}
                                                         <div className={styles.messageContent}>
-                                                            <div className={styles.bubble}>{msg.noiDung}</div>
+
+                                                            {/*  RENDER TIN NHẮN THEO ĐỊNH DẠNG TEXT / IMAGE / FILE */}
+                                                            <div className={styles.bubble}>
+                                                                {msg.loaiTinNhan === "IMAGE" ? (
+                                                                    <Zoom>
+                                                                        <img
+                                                                            src={formatFileUrl(msg.noiDung)}
+                                                                            alt="Ảnh gửi trong cuộc trò chuyện"
+                                                                            className={styles.chatImage}
+                                                                            style={{
+                                                                                maxWidth: '250px',
+                                                                                maxHeight: '250px',
+                                                                                borderRadius: '8px',
+                                                                                cursor: 'pointer',
+                                                                                objectFit: 'cover',
+                                                                                display: 'block'
+                                                                            }}
+                                                                            onError={(e) => {
+                                                                                e.target.onerror = null;
+                                                                                e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'><rect width='100%' height='100%' fill='%23eee'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23999'>Lỗi tải ảnh</text></svg>";
+                                                                            }}
+                                                                        />
+                                                                    </Zoom>
+                                                                ) : msg.loaiTinNhan === "FILE" ? (
+                                                                    <a
+                                                                        href={formatFileUrl(msg.noiDung)}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className={styles.chatFileLink}
+                                                                        style={{ color: isMe ? '#fff' : '#007bff', textDecoration: 'underline', wordBreak: 'break-all' }}
+                                                                    >
+                                                                        Tải xuống tài liệu đính kèm
+                                                                    </a>
+                                                                ) : (
+                                                                    msg.noiDung
+                                                                )}
+                                                            </div>
+
                                                             <span className={styles.msgTime}>
                                                                 {msg.thoiGianGui ? new Date(msg.thoiGianGui).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''} {isMe && '✓✓'}
                                                             </span>
@@ -423,6 +579,15 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                             })
                                         ) : (
                                             <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0' }}>Hãy gửi tin nhắn đầu tiên!</div>
+                                        )}
+
+                                        {/* Loading hiển thị trạng thái gửi tệp tin */}
+                                        {isUploading && (
+                                            <div className={`${styles.messageWrapper} ${styles.messageRight}`}>
+                                                <div className={styles.messageContent}>
+                                                    <div className={styles.bubble} style={{ opacity: 0.6 }}>Đang tải lên tệp tin...</div>
+                                                </div>
+                                            </div>
                                         )}
 
                                         {isTyping && (
@@ -436,14 +601,23 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                     </div>
 
                                     <form className={styles.inputArea} onSubmit={handleSendMessage}>
-                                        <button type="button" className={styles.attachBtn}>📎</button>
+                                        {/* Kích hoạt chọn file từ thẻ input ẩn */}
+                                        <button
+                                            type="button"
+                                            className={styles.attachBtn}
+                                            onClick={() => fileInputRef.current.click()}
+                                            disabled={isUploading}
+                                        >
+                                            📎
+                                        </button>
                                         <input
                                             type="text"
                                             placeholder="Nhập tin nhắn..."
                                             value={messageInput}
                                             onChange={handleInputChange}
+                                            disabled={isUploading}
                                         />
-                                        <button type="submit" className={styles.sendBtn}>Gửi</button>
+                                        <button type="submit" className={styles.sendBtn} disabled={isUploading}>Gửi</button>
                                     </form>
                                 </>
                             ) : (
