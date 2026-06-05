@@ -1,0 +1,644 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: block;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 0px 16px;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 960px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  margin: 40px auto;
+}
+
+/* Header đỉnh */
+.detailTopHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 12px;
+}
+
+.detailTitle {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Toàn bộ vùng Form bao quanh */
+.formMainContainer {
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 30px;
+  background: #ffffff;
+}
+
+/* Phần phân bổ hàng Clinic và hóa đơn meta */
+.formHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 24px;
+}
+
+.clinicDetails {
+  flex: 1;
+}
+
+.clinicName {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  color: #000000;
+}
+
+.clinicDoctorInfo {
+  font-size: 14px;
+  color: #595959;
+  margin-bottom: 12px;
+}
+
+.clinicInputGroupFlex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.appointmentLabel {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* Ô nhập liệu */
+.formInput {
+  flex: 1;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #333333;
+  background-color: #ffffff;
+  height: 32px;
+}
+
+.formInput:focus,
+.tableInput:focus {
+  outline: none;
+  border-color: #40a9ff;
+}
+
+.inputDisabled {
+  background-color: #f5f5f5;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
+
+/* Thẻ hóa đơn bên phải */
+.invoiceMetaCard {
+  border: 1px solid #e8e8e8;
+  background-color: #fcfcfc;
+  border-radius: 8px;
+  padding: 14px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metaCardTitle {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  color: #434343;
+  margin-bottom: 4px;
+}
+
+.metaInputGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.metaInputGroup label {
+  font-size: 13px;
+  color: #595959;
+  white-space: nowrap;
+}
+
+.formInputBold {
+  width: 140px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+  height: 32px;
+}
+
+/* Phân mục tiêu đề */
+.sectionDividerTitle {
+  font-size: 15px;
+  font-weight: bold;
+  color: #000000;
+  margin: 20px 0 12px 0;
+  border-left: 4px solid #0066ff;
+  padding-left: 8px;
+}
+
+.sectionDividerSpacing {
+  margin-top: 30px;
+}
+
+/* Lưới thông tin bệnh nhân */
+.patientFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.inputFieldBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputFieldBlock label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.fullWidthRow {
+  grid-column: span 2;
+}
+
+/* Phần quản lý bảng thuốc */
+.tableHeaderSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drugFormTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.drugFormTable th {
+  background-color: #f0f5ff;
+  border: 1px solid #d9d9d9;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+.drugFormTable td {
+  border: 1px solid #d9d9d9;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.thStt {
+  width: 50px;
+  text-align: center !important;
+}
+
+.thUnit {
+  width: 90px;
+}
+
+.thQuantity {
+  width: 80px;
+  text-align: center !important;
+}
+
+.thDelete {
+  width: 60px;
+  text-align: center !important;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.tdDrugName {
+  font-weight: 500;
+}
+
+.tableInput {
+  width: 100%;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.tableInputCenter {
+  composes: tableInput;
+  text-align: center;
+}
+
+.tableSelect {
+  width: 100%;
+  height: 32px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+/* Ghi chú Textarea */
+.conclusionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.formTextarea {
+  width: 100%;
+  height: 70px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+/* Khu vực Upload ảnh */
+.uploadZone {
+  margin-top: 25px;
+  padding: 20px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.uploadZoneTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 12px;
+}
+
+.uploadInput {
+  margin-bottom: 15px;
+}
+
+.imageGallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.imageCard {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  overflow: visible;
+  background: #fff;
+}
+
+.imageItem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.imageItemClickable {
+  composes: imageItem;
+  cursor: pointer;
+}
+
+.imageBadge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 10px;
+  text-align: center;
+  color: #fff;
+  padding: 2px 0;
+}
+
+.badgeOld {
+  background-color: rgba(0, 102, 255, 0.8);
+}
+
+.badgeNew {
+  background-color: rgba(82, 196, 26, 0.8);
+}
+
+.emptyImageNotice {
+  font-size: 13px;
+  color: #8c8c8c;
+  font-style: italic;
+}
+
+
+
+.btnCloseModal {
+  background: none;
+  border: none;
+  height: 32px;
+  width: 32px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #df1717;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnCloseModal:hover {
+  color: #ff4d4f;
+  transform: scale(1.1);
+}
+
+/* 2. Nút "Sửa đơn" ở Top Header */
+.btnUpdateTop {
+  background-color: #e6f7ff;
+  color: #0066ff;
+  border: 1px solid #91d5ff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnUpdateTop:hover {
+  background-color: #0066ff;
+  color: #ffffff;
+  border-color: #0066ff;
+}
+
+/* 3. Nút "Kiểm tra" đồng bộ lịch khám */
+.btnCheckAppointment {
+  background-color: #0066ff;
+  color: #ffffff;
+  border: none;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  height: 32px;
+  /* Thụt bằng chiều cao ô Input */
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnCheckAppointment:hover {
+  background-color: #0052cc;
+}
+
+/* 4. Nút Xóa dòng thuốc (Dấu × ở cột cuối Table) */
+.btnDeleteRow {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffccc7;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btnDeleteRow:hover {
+  background-color: #ff4d4f;
+  color: #ffffff;
+  border-color: #ff4d4f;
+}
+
+/* 5. Nút Thêm dòng thuốc mới (Dấu + ở hàng cuối Table) */
+.btnAddNewDrug {
+  background-color: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btnAddNewDrug:hover {
+  background-color: #52c41a;
+  color: #ffffff;
+  border-color: #52c41a;
+}
+
+/* 6. Nút hủy chọn ảnh (Dấu × nhỏ trên góc ảnh Preview mới) */
+.btnRemoveImage {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+  z-index: 10;
+}
+
+.btnRemoveFile:hover {
+  background-color: #d9363e;
+}
+
+/* 7. Bộ khung nút điều hướng Footer Modal */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
+  padding-bottom: 8px;
+}
+
+/* 7.1 Nút Đóng Footer */
+.btnFooterClose {
+  background-color: #ffffff;
+  color: #595959;
+  border: 1px solid #d9d9d9;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnFooterClose:hover {
+  color: #262626;
+  border-color: #bfbfbf;
+  background-color: #fafafa;
+}
+
+/* 7.2 Nút Lưu Dữ Liệu Đơn */
+.btnFooterSave {
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.btnFooterSave:hover {
+  background-color: #0052cc;
+}
+
+/* 7.3 Nút In Đơn Thuốc */
+.btnFooterPrint {
+  background-color: #52c41a;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.btnFooterPrint:hover {
+  background-color: #389e0d;
+}
+
+/* Hỗ trợ ẩn khi kích hoạt print windows inline */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+.imageViewerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* Nền đen mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Đảm bảo nổi lên trên cùng màn hình */
+  cursor: zoom-out; /* Đổi icon chuột để ngầm báo bấm vào sẽ đóng */
+}
+
+.imageViewerContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+}
+
+.fullSizeImage {
+  max-width: 100%;
+  max-height: 90vh; /* Không vượt quá 90% chiều cao màn hình */
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: fadeInZoom 0.2s ease-out; /* Hiệu ứng mở mượt mà */
+}
+
+.closeImageViewer {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  padding: 10px;
+  transition: transform 0.2s;
+}
+
+.closeImageViewer:hover {
+  transform: scale(1.2);
+  color: #ff4d4f;
+}
+
+@keyframes fadeInZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
