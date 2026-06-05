@@ -185,7 +185,7 @@ const ConfirmAppointmentPage = () => {
                             title="Từ chối"
                             onClick={() => handleAction(item.maLichKham, 'DaTuChoi')}
                           >
-                            <i className="fa-solid fa-xmark"  style={{marginRight:"10px"}}></i>
+                            <i className="fa-solid fa-xmark"style={{marginRight:"6px"}} ></i>
                           </button>
                         </div>
                       </td>

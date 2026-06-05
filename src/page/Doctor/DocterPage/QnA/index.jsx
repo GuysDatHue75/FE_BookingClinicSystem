@@ -7,7 +7,7 @@ const DoctorQAPage = () => {
   const [qaList, setQaList] = useState([]);
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const {setAdvieIndex} = useContext(State);
+  const { setAdvieIndex } = useContext(State);
 
   // 1. Gọi API lấy danh sách câu hỏi đang chờ (Trạng thái false)
   useEffect(() => {
@@ -16,13 +16,14 @@ const DoctorQAPage = () => {
       top: 0,
     });
 
+
     const fetchPendingQuestions = async () => {
       try {
         // GET /api/v1/doctor/advise/pending
         const response = await apiClient.get("/api/v1/doctor/advise/pending");
         setQaList(response.data);
         setAdvieIndex(response.data.length);
-        
+
       } catch (error) {
         console.error("Lỗi khi lấy danh sách câu hỏi:", error);
       } finally {
@@ -37,11 +38,14 @@ const DoctorQAPage = () => {
   const handleAnswerChange = (maTuVan, value) => {
     setAnswers({ ...answers, [maTuVan]: value });
   };
+  useEffect(() => {
+    setAdvieIndex(qaList.length);
+  }, [qaList, setAdvieIndex]);
 
   // 3. Xử lý Gửi câu trả lời
   const handleSubmit = async (maTuVan) => {
     console.log(maTuVan);
-    
+
     if (!answers[maTuVan] || answers[maTuVan].trim() === "") {
       alert("Vui lòng nhập câu trả lời trước khi gửi!");
       return;
@@ -59,8 +63,10 @@ const DoctorQAPage = () => {
 
       alert("Đã gửi câu trả lời cho bệnh nhân thành công!");
 
-      // Loại bỏ câu hỏi vừa trả lời khỏi danh sách UI
-      setQaList(qaList.filter((qa) => qa.maTuVan !== maTuVan));
+
+      setQaList(prev =>
+        prev.filter(qa => qa.maTuVan !== maTuVan)
+      );
 
       // Xóa state nội dung text vừa nhập
       const newAnswers = { ...answers };

@@ -6,7 +6,7 @@ import ConfirmModal from "../../../../components/ConfirmModal/ConfirmModal";
 import apiClient from "../../../../api/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import avtErr from "../../../../assets/image/avt.jpg"
+import avtErr from "../../../../assets/image/user-avt.png"
 
 const PatientManagement = () => {
   /*const [tenBien, hamDoiGiaTri] = useState(giaTriBanDau);*/
@@ -26,7 +26,9 @@ const PatientManagement = () => {
     try {
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
+      console.log(response.data.content);
       
+
       setTotalPages(response.data.totalPages || 0);
     } catch (error) {
       console.error("Lỗi API:", error);
@@ -113,15 +115,7 @@ const PatientManagement = () => {
   // Giao diện Bộ lọc
   const FilterUI = (
     <div className={styles.filterContainer}>
-      {/* <div className={styles.filterLeft}>
-        <div className={styles.inputWrapper}>
-          <input type="date" className={styles.inputDate} />
-        </div>
-        <div className={styles.inputWrapper}>
-          <i className="fa-solid fa-filter"></i>
-          <select className={styles.selectAge}><option>Ngày sinh</option></select>
-        </div>
-      </div> */}
+
 
       <div className={styles.filterRight}>
         <div className={styles.inputWrapper}>
@@ -148,7 +142,12 @@ const PatientManagement = () => {
           <i className="fa-solid fa-chevron-left"></i>
         </button>
         <span className={styles.pageCurrent}>{currentPage + 1}</span>
-
+        <button
+          disabled={currentPage >= totalPages - 1 || totalPages === 0}
+          onClick={() => setCurrentPage(p => p + 1)}
+        >
+          <i className="fa-solid fa-chevron-right"></i>
+        </button>
       </div>
     </div>
   );

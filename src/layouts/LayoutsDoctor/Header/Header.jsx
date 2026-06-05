@@ -12,7 +12,7 @@ import HeaderNotification from "./HeaderNotification";
 import { State } from "../../../state/context";
 
 const Header = ({ urlImage }) => {
-  const maBacSi = localStorage.getItem("idDocter");
+  const maBacSi = localStorage.getItem("idDoctor");
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
 
@@ -23,6 +23,8 @@ const Header = ({ urlImage }) => {
       const resPatientIndex = await apiClient.get(`/api/v1/confirm-appointment/pending`, {
         params: { maBacSi }
       });
+      console.log(resPatientIndex.data);
+      
      setAppointmentIndex(resPatientIndex.data.length);
       const resNotificationIndex = await apiClient.get(`/api/v1/c-notification?idAccount=${idAccount}&isRead=${false}`);
       setNotificationIndex(resNotificationIndex.data);
@@ -50,7 +52,7 @@ const Header = ({ urlImage }) => {
   const doctorName = localStorage.getItem("doctorName") || "Bác sĩ phụ trách";
   const doctorSpecialty = localStorage.getItem("doctorSpecialty") || "Chuyên khoa";
   // 1. Lấy tiêu đề  để mặc định là "Doctor Online Connect"
-  const currentTitle = "Doctor Online Connect";
+  // const currentTitle = "Doctor Online Connect";
 
   // ĐOẠN ĐỒNG BỘ AVATAR TỪ CONTEXT 
   const { image, setImage } = useContext(State);
@@ -69,7 +71,6 @@ const Header = ({ urlImage }) => {
   return (
     <header className="header-container">
       <div className="header-left">
-        <h2 className="page-title">{currentTitle}</h2>
       </div>
 
       <div className="header-right">

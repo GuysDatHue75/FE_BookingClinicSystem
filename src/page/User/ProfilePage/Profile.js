@@ -68,7 +68,6 @@ const Profile = () => {
         alert("Ảnh quá lớn! Vui lòng chọn ảnh dưới 2MB.");
         return;
       }
-
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64String = reader.result;
@@ -92,7 +91,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileUser = async () => {
       const response = await apiClient.get(`/api/v1/patient/${idPatient}`);
-        console.log(response.data);
 
       setProfile(response.data);
 

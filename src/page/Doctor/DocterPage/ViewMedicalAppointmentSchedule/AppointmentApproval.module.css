@@ -130,7 +130,7 @@
   font-size: 14px;
   line-height: 1.4;
   color: #334155;
-  background: #f1f5f9;
+  /* background: #f1f5f9; */
   padding: 8px 12px;
   border-radius: 6px;
 }
@@ -152,7 +152,7 @@
   justify-content: center;
   cursor: pointer;
   font-size: 16px;
-  color: white;
+  color: black;
   transition: all 0.2s;
 }
 
@@ -168,15 +168,9 @@
 
 .btnReject {
   background-color: #ef4444;
-  /* Đỏ */
+  color: #fff;
 }
 
-.btnReject:hover {
-  background-color: #dc2626;
-  transform: scale(1.05);
-}
-
-/* Empty State & Loading */
 .emptyState {
   text-align: center;
   padding: 60px 20px !important;
