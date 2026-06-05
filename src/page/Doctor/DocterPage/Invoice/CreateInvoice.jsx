@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiClient from '../../../../api/api';
 import styles from './Invoice.module.css';
-import PrescriptionDetailModal from './PrescriptionDetailModal';
+import PrescriptionDetailModal from './DetailInvoice/PrescriptionDetailModal';
 
 const CreateInvoice = () => {
     const [appointments, setAppointments] = useState([]); // Lưu danh sách lịch khám gốc từ API

@@ -35,7 +35,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
     const typingTimeoutRef = useRef(null);
     const isTypingSentRef = useRef(false);
     const fileInputRef = useRef(null); // Ref điều khiển input file ẩn
-
+    const role = localStorage.getItem("role");
     const selectedUserRef = useRef(selectedUser);
 
     // Cập nhật ref để tránh hiện tượng closure trong sự kiện lắng nghe WebSocket
@@ -70,6 +70,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
             });
             setActiveTab('inbox'); // Đảm bảo người dùng ở tab inbox để thấy lịch sử chat mới
         }
+
     }, [location.state, targetDoctor]); // Thêm targetDoctor vào dependencies
 
     const fetchInboxListOnly = async () => {
@@ -200,6 +201,8 @@ const ChatPage = ({ onClose, targetDoctor }) => {
             tenDoiPhuong: patient.hoVaTen,
             avatarDoiPhuong: patient.avatar // Đồng bộ ánh xạ dữ liệu ảnh từ Tab bệnh nhân
         });
+        console.log(selectedUser);
+
     };
 
 
@@ -272,15 +275,15 @@ const ChatPage = ({ onClose, targetDoctor }) => {
     };
 
     // Hàm chuẩn hóa URL để tránh trùng lặp domain
-    const formatFileUrl = (url) => {
-        if (!url) return "https://via.placeholder.com/48";
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-            return url; // Nếu backend đã trả về full đường dẫn thì giữ nguyên
-        }
-        // Nếu backend chỉ trả về dạng "/uploads/chats/..."
-        const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-        return `http://localhost:8080${cleanUrl}`;
-    };
+    // const formatFileUrl = (url) => {
+    //     if (!url) return "https://via.placeholder.com/48";
+    //     if (url.startsWith('http://') || url.startsWith('https://')) {
+    //         return url; // Nếu backend đã trả về full đường dẫn thì giữ nguyên
+    //     }
+    //     // Nếu backend chỉ trả về dạng "/uploads/chats/..."
+    //     const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+    //     return `http://localhost:8080${cleanUrl}`;
+    // };
     const handleTypingStatus = (typing) => {
         if (stompClient.current?.connected && selectedUser) {
             stompClient.current.publish({
@@ -319,11 +322,14 @@ const ChatPage = ({ onClose, targetDoctor }) => {
         item.tenDoiPhuong?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.maDoiPhuong?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    console.log(filteredInbox);
+
 
     const filteredPatients = patientList.filter(item =>
         item.hoVaTen?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.maBenhNhan?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
     if (location.pathname === "/chon-tinhthanh") {
         return null;
     }
@@ -349,15 +355,17 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                     </div>
 
                     <div className={styles.chatLayout}>
-                        <div className={styles.sidebar}>
+                        <div className={`${styles.sidebar} ${selectedUser ? styles.hideOnMobile : ''}`}>
                             <div className={styles.searchBar}>
                                 <input
                                     type="text"
-                                    placeholder={isDoctor ? "Tìm kiếm bệnh nhân, mã..." : "Tìm kiếm cuộc hội thoại..."}
+                                    placeholder={`${role === "BenhNhan" ? "Tìm kiếm bác sĩ" : "Tìm kiếm bênh nhân"}`}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                                <span className={styles.filterIcon}>🔍</span>
+                                <span className={styles.filterIcon}>
+                                    <img src='https://cdn-icons-png.flaticon.com/128/3031/3031293.png' />
+                                </span>
                             </div>
 
                             {isDoctor && (
@@ -368,12 +376,12 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                     >
                                         Hộp thư ({filteredInbox.length})
                                     </button>
-                                    <button
+                                    {role === "BacSi" && <button
                                         onClick={() => setActiveTab('patients')}
                                         style={{ flex: 1, padding: '10px', background: 'none', border: 'none', fontWeight: activeTab === 'patients' ? 'bold' : 'normal', borderBottom: activeTab === 'patients' ? '2px solid #007bff' : 'none', cursor: 'pointer' }}
                                     >
                                         Bệnh nhân ({filteredPatients.length})
-                                    </button>
+                                    </button>}
                                 </div>
                             )}
 
@@ -387,7 +395,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 onClick={() => setSelectedUser(inbox)}
                                             >
                                                 {/*  Hiển thị avatar đối phương thật từ DTO mới */}
-                                                <img src={formatFileUrl(inbox.avatarDoiPhuong)} alt="avt" className={styles.avatar} />
+                                                <img src={inbox.avatarDoiPhuong} alt="avt" className={styles.avatar} />
                                                 <div className={styles.inboxInfo}>
                                                     <div className={styles.inboxItemHeader}>
                                                         <h4>{inbox.tenDoiPhuong}</h4>
@@ -421,7 +429,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                     className={`${styles.inboxItem} ${selectedUser?.maDoiPhuong === mappedChatId ? styles.active : ''}`}
                                                     onClick={() => handleSelectPatientNewChat(patient)}
                                                 >
-                                                    <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.avatar} />
+                                                    <img src={patient?.avatar} alt="avt" className={styles.avatar} />
                                                     <div className={styles.inboxInfo}>
                                                         <div className={styles.inboxItemHeader}>
                                                             <h4>{patient.hoVaTen}</h4>
@@ -443,7 +451,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                             </div>
                         </div>
 
-                        <div className={styles.chatWindow}>
+                        <div className={`${styles.chatWindow} ${!selectedUser ? styles.hideOnMobile : ''}`}>
                             {selectedUser ? (
                                 <>
                                     {/* <<<<<<< HEAD
@@ -465,7 +473,17 @@ const ChatPage = ({ onClose, targetDoctor }) => {
 ======= */}
                                     <div className={styles.chatHeader}>
                                         <div className={styles.headerUser}>
-                                            <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.avatar} />                                            <div>
+                                            {/* NÚT QUAY LẠI CHỈ XUẤT HIỆN TRÊN MOBILE */}
+                                            <button
+                                                type="button"
+                                                className={styles.backBtn}
+                                                onClick={() => setSelectedUser(null)}
+                                            >
+                                                <img src='https://cdn-icons-png.flaticon.com/128/3114/3114883.png' />
+                                            </button>
+
+                                            <img src={selectedUser.avatarDoiPhuong} alt="avt" className={styles.avatar} />
+                                            <div>
                                                 <h4>{selectedUser.tenDoiPhuong}</h4>
                                                 <p style={{ fontSize: '12px', color: '#666' }}>ID: {selectedUser.maDoiPhuong}</p>
                                             </div>
@@ -478,7 +496,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                 const isMe = msg.maNguoiGui === currentUserId;
                                                 return (
                                                     <div key={msg.maTinNhan || `msg_${idx}`} className={`${styles.messageWrapper} ${isMe ? styles.messageRight : styles.messageLeft}`}>
-                                                        {!isMe && <img src={formatFileUrl(selectedUser.avatarDoiPhuong)} alt="avt" className={styles.messageAvatar} />}
+                                                        {!isMe && <img src={selectedUser.avatarDoiPhuong} alt="avt" className={styles.messageAvatar} />}
                                                         <div className={styles.messageContent}>
 
                                                             {/*  RENDER TIN NHẮN THEO ĐỊNH DẠNG TEXT / IMAGE / FILE */}
@@ -486,7 +504,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                                 {msg.loaiTinNhan === "IMAGE" ? (
                                                                     <Zoom>
                                                                         <img
-                                                                            src={formatFileUrl(msg.noiDung)}
+                                                                            src={msg.noiDung}
                                                                             alt="Ảnh gửi trong cuộc trò chuyện"
                                                                             className={styles.chatImage}
                                                                             style={{
@@ -505,7 +523,7 @@ const ChatPage = ({ onClose, targetDoctor }) => {
                                                                     </Zoom>
                                                                 ) : msg.loaiTinNhan === "FILE" ? (
                                                                     <a
-                                                                        href={formatFileUrl(msg.noiDung)}
+                                                                        href={msg.noiDung}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                         className={styles.chatFileLink}

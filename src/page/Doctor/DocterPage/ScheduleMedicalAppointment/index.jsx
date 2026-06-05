@@ -5,7 +5,8 @@ import styles from './DoctorSchedulePage.module.css';
 const DoctorSchedulePage = () => {
     const maBacSi = localStorage.getItem('idDoctor');
     const homNayStr = new Date().toISOString().split('T')[0];
-
+    const idC = JSON.parse(localStorage.getItem("user")).phongKham.maPhongKham;
+    
     // QUẢN LÝ TRẠNG THÁI TUẦN
     const [currentMonday, setCurrentMonday] = useState(() => {
         const today = new Date();
@@ -129,6 +130,7 @@ const DoctorSchedulePage = () => {
                 ngayLamViec: date,
                 khungGio: selectedSlots,
                 loaiHinhKham: loaiHinhKham,
+                maPhongKham:idC,
                 trangThai: trangThaiBanDau
             }))
         };

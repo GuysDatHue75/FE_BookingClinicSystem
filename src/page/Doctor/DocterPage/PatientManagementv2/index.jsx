@@ -16,9 +16,11 @@ const PatientManagement = () => {
   const [patientIdToDelete, setPatientIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const idDoctor = localStorage.getItem("idDoctor");
   const idClinic = JSON.parse(localStorage.getItem("user")).phongKham.maPhongKham;
+
   const pageSize = 10;
 
   const fetchPatients = useCallback(async () => {
@@ -26,10 +28,8 @@ const PatientManagement = () => {
     try {
       const response = await apiClient.get(`/api/v1/patient/get-all?page=${currentPage}&size=${pageSize}&maBacSi=${idDoctor}&maPhongKham=${idClinic}&keyword=${searchTerm}`);
       setPatients(response.data.content || []);
-      console.log(response.data.content);
-      
-
       setTotalPages(response.data.totalPages || 0);
+      setTotalElements(response.data.totalElements || 0);
     } catch (error) {
       console.error("Lỗi API:", error);
     } finally {
@@ -78,7 +78,7 @@ const PatientManagement = () => {
     },
     { header: "Ngày Sinh", render: (p) => p.ngaySinh },
 
-    { header: "Giới tính", render: (p) => p.taiKhoan?.gioiTinh ? "Nam" : "Nữ" },
+    { header: "Giới tính", render: (p) => p.gioiTinh ? "Nam" : "Nữ" },
     { header: "Số điện thoại", render: (p) => p.soDienThoai },
     { header: "Địa chỉ", render: (p) => p.diaChi },
     {
@@ -115,8 +115,6 @@ const PatientManagement = () => {
   // Giao diện Bộ lọc
   const FilterUI = (
     <div className={styles.filterContainer}>
-
-
       <div className={styles.filterRight}>
         <div className={styles.inputWrapper}>
           <i className="fa-solid fa-magnifying-glass"></i>
@@ -136,7 +134,7 @@ const PatientManagement = () => {
   // Giao diện Phân trang
   const PaginationUI = (
     <div className={styles.paginationFlex}>
-      <span>Showing {patients.length} out of {totalPages * pageSize}</span>
+      <span>Showing {patients.length} out of {totalElements}</span>
       <div className={styles.pageButtons}>
         <button disabled={currentPage === 0} onClick={() => setCurrentPage(p => p - 1)}>
           <i className="fa-solid fa-chevron-left"></i>
@@ -155,7 +153,6 @@ const PatientManagement = () => {
   return (
 
     <>
-      {/* Component Bảng của sếp */}
       <ReusableTable
         columns={columns}
         data={patients}
@@ -164,7 +161,6 @@ const PatientManagement = () => {
         pagination={PaginationUI}
       />
 
-      {/*THÊM CỤC NÀY VÀO ĐÂY THÌ NÓ MỚI HIỆN POPUP ĐƯỢC --- */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

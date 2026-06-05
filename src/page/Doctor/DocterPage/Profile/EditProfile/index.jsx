@@ -23,15 +23,16 @@ const EditProfile = () => {
     try {
       const response = await apiClient.get(`/api/v1/doctor/profile/${maBacSi}`);
       const data = response.data;
-
+      console.log(data);
+      
       // MAPPING ĐẦU VÀO: Chuyển đổi cấu trúc Entity lồng nhau về dạng phẳng chuẩn DTO
       setFormData({
-        hoVaTen: data.taiKhoan?.hoVaTen || data.tenBacSi || "",
+        hoVaTen: data.hoVaTen || data.tenBacSi || "",
         soDienThoai: data.soDienThoai || "",
         ngaySinh: data.ngaySinh ? data.ngaySinh.substring(0, 10) : "", // Định dạng YYYY-MM-DD cho thẻ input date
         gioiTinh: data.gioiTinh ?? true,
         diaChi: data.diaChi || "",
-        anhDaiDien: data.avt || "",
+        anhDaiDien: data.anhDaiDien || "",
         cccd: data.cccd || "",
         maChuyenKhoa: data.maChuyenKhoa || "",
         maPhongKham: data.maPhongKham || "",
@@ -73,7 +74,8 @@ const EditProfile = () => {
         ...formData,
         ngayCap: formData.ngayCap ? `${formData.ngayCap}T00:00:00` : null
       };
-
+      console.log("1. NÚT CẬP NHẬT ĐÃ ĐƯỢC BẤM!");
+      console.log("2. DỮ LIỆU (PAYLOAD) CHUẨN BỊ GỬI ĐI LÀ:", payload);
       const response = await apiClient.put(`/api/v1/doctor/profile/${maBacSi}`, payload);
       toast.success("Cập nhật thông tin hồ sơ thành công!");
 
@@ -82,6 +84,7 @@ const EditProfile = () => {
         setImage(formData.anhDaiDien); // Cập nhật Context chung để Header đổi ảnh theo
         localStorage.setItem("doctorAvatar", formData.anhDaiDien); // Lưu lại để khi F5 không mất ảnh
       }
+
 
       const updatedDto = response.data;
       setFormData({
@@ -105,7 +108,7 @@ const EditProfile = () => {
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
-
+    console.log("3. ĐÃ CHỌN FILE TỪ MÁY TÍNH:", file);
     if (file) {
       if (file.size > 500 * 1024) {
         toast.error("Ảnh không được vượt quá 500KB!");
@@ -115,6 +118,7 @@ const EditProfile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result;
+        console.log("4. ĐÃ CHUYỂN ẢNH SANG BASE64 THÀNH CÔNG! Độ dài chuỗi:", base64String.length);
 
         setFormData((prev) => ({
           ...prev,
