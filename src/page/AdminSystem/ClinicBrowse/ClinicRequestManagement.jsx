@@ -115,16 +115,17 @@ const ClinicRequestManagement = () => {
   };
 
   // Xem chi tiết
-  const handleViewDetails = async (maPhongKham) => {
+  const handleViewDetails = async (clinic) => {
     try {
       // Gọi API lấy chi tiết để có dữ liệu đầy đủ nhất (Giấy phép, File đính kèm...)
+      const maPhongKham = clinic.maPhongKham || clinic.id;
       const detailData = await browseClinicService.detailBrowseClinic(maPhongKham);
       setSelectedRequest(detailData);
       setShowDetailModal(true);
     } catch (error) {
       console.error("Lỗi lấy chi tiết:", error);
       // Fallback: Nếu API lỗi thì dùng tạm dữ liệu ở Table
-      setSelectedRequest(maPhongKham);
+      setSelectedRequest(clinic);
       setShowDetailModal(true);
     }
   };

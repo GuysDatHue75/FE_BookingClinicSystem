@@ -63,6 +63,7 @@ import MNSpecialty from "./page/Clinic/MNSpecialtyPage/MNSpecialty.jsx";
 import ClinicView from "./page/Clinic/ProfileClinicPage/ClinicView.jsx";
 
 // admin system
+import AccountManagement from "./page/AdminSystem/AccountSystem/AccountManager.jsx";
 import ClinicRequestManagement from "./page/AdminSystem/ClinicBrowse/ClinicRequestManagement.jsx";
 import ClinicManagers from "./page/AdminSystem/ClinicSystem/ClinicManagers.jsx";
 import NotificationManager from "./page/AdminSystem/notification/NotificationManager.jsx";
@@ -260,6 +261,7 @@ function App() {
               <>
                 <Route path="/admin" element={<LayoutAdmin />}>
                   <Route index element={<Statistical />} />
+                  <Route path="quan-ly-tai-khoan" element={<AccountManagement />} />
                   <Route path="profile" element={<OrganizationProfile />} />
                   <Route path="duyet-phong-kham" element={<ClinicRequestManagement />} />
                   <Route path="quan-ly-phong-kham" element={<ClinicManagers />} />

@@ -10,6 +10,7 @@ import profileIcon from "../../../assets/svg/profile.svg";
 const menuItems = [
   // 💥 SỬA Ở ĐÂY: Truyền thẳng biến vào, KHÔNG DÙNG THẺ < ... /> NỮA!
   { icon: dashboardIcon, label: "Dashboard", path: "" },
+  { icon: profileIcon, label: "Quản lý tài khoản", path: "quan-ly-tai-khoan" },
   { icon: duyetphongkhamIcon, label: "Duyệt phòng khám", path: "duyet-phong-kham" },
   { icon: quanlyphongkhamIcon, label: "Quản lý phòng khám", path: "quan-ly-phong-kham" },
   { icon: quanLythongbaoIcon, label: "Quản lý thông báo", path: "quan-ly-thong-bao" },

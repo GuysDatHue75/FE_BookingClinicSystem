@@ -3,7 +3,7 @@ import "./Loading.css";
 const Loading = () => {
   return (
     <div className="container-Loading">
-      <i class="fa-solid fa-spinner"></i>
+      <i className="fa-solid fa-spinner"></i>
     </div>
   );
 };
